@@ -1,15 +1,33 @@
 const prisma = require("../config/db");
 
+// Helper: format a ride's createdAt to IST string
+const formatRide = (ride) => ({
+    ...ride,
+    createdAt: new Date(ride.createdAt).toLocaleString("en-IN", {
+        timeZone: "Asia/Kolkata",
+        dateStyle: "medium",
+        timeStyle: "medium"
+    })
+});
+
 // POST /ride — create a new ride
 const addRide = async (req, res) => {
     try {
-        const { pickup, dropoff, fare } = req.body;
+        const { pickup, dropoff, fare, platform } = req.body;
 
         // validation
-        if (!pickup || !dropoff || !fare) {
+        if (!pickup || !dropoff || fare === undefined || fare === null || fare === "") {
             return res.status(400).json({
                 success: false,
                 message: "Pickup, dropoff and fare are required"
+            });
+        }
+
+        const fareValue = parseFloat(fare);
+        if (isNaN(fareValue) || fareValue < 0) {
+            return res.status(400).json({
+                success: false,
+                message: "Fare must be a non-negative number"
             });
         }
 
@@ -17,14 +35,15 @@ const addRide = async (req, res) => {
             data: {
                 pickup,
                 dropoff,
-                fare: parseFloat(fare)
+                fare: fareValue,
+                platform
             }
         });
 
         res.status(201).json({
             success: true,
             message: "Ride added successfully",
-            data: ride
+            data: formatRide(ride)
         });
     } catch (error) {
         console.error("addRide error:", error);
@@ -44,7 +63,7 @@ const getAllRides = async (req, res) => {
         res.status(200).json({
             success: true,
             totalRides: rides.length,
-            data: rides
+            data: rides.map(formatRide)
         });
     } catch (error) {
         console.error("getAllRides error:", error);
@@ -74,7 +93,7 @@ const getRidesById = async (req, res) => {
 
         res.status(200).json({
             success: true,
-            data: ride
+            data: formatRide(ride)
         });
     } catch (error) {
         console.error("getRidesById error:", error);
@@ -90,7 +109,7 @@ const getRidesById = async (req, res) => {
 const updateRide = async (req, res) => {
     try {
         const rideId = parseInt(req.params.id);
-        const { pickup, dropoff, fare } = req.body;
+        const { pickup, dropoff, fare, platform } = req.body;
 
         // Check if ride exists first (findUnique returns null instead of throwing)
         const existing = await prisma.ride.findUnique({
@@ -108,7 +127,17 @@ const updateRide = async (req, res) => {
         const updateData = {};
         if (pickup !== undefined) updateData.pickup = pickup;
         if (dropoff !== undefined) updateData.dropoff = dropoff;
-        if (fare !== undefined) updateData.fare = parseFloat(fare);
+        if (fare !== undefined) {
+            const fareValue = parseFloat(fare);
+            if (isNaN(fareValue) || fareValue < 0) {
+                return res.status(400).json({
+                    success: false,
+                    message: "Fare must be a non-negative number"
+                });
+            }
+            updateData.fare = fareValue;
+        }
+        if (platform !== undefined) updateData.platform = platform;
 
         const ride = await prisma.ride.update({
             where: { id: rideId },
@@ -118,7 +147,7 @@ const updateRide = async (req, res) => {
         res.status(200).json({
             success: true,
             message: "Ride updated successfully",
-            data: ride
+            data: formatRide(ride)
         });
     } catch (error) {
         console.error("updateRide error:", error);
@@ -165,10 +194,64 @@ const deleteRide = async (req, res) => {
     }
 };
 
+// GET /ride/monthly-summary — calculate monthly stats
+const getMonthlySummary = async (req, res) => {
+    try {
+        const now = new Date();
+        const month = parseInt(req.query.month) || now.getMonth() + 1; // 1-12
+        const year = parseInt(req.query.year) || now.getFullYear();
+
+        // IST offset: UTC+5:30 = 19800000 ms
+        const IST_OFFSET = 5.5 * 60 * 60 * 1000;
+
+        // Start of month in IST (e.g., Jun 1, 00:00 IST = May 31, 18:30 UTC)
+        const startDate = new Date(Date.UTC(year, month - 1, 1) - IST_OFFSET);
+        // End of month in IST (e.g., Jun 30, 23:59:59 IST = Jun 30, 18:29:59 UTC)
+        const endDate = new Date(Date.UTC(year, month, 1) - IST_OFFSET - 1);
+
+        // Aggregate: count + sum in one query
+        const result = await prisma.ride.aggregate({
+            where: {
+                createdAt: {
+                    gte: startDate,
+                    lte: endDate
+                }
+            },
+            _count: { id: true },
+            _sum: { fare: true }
+        });
+
+        const totalRides = result._count.id;
+        const grossIncome = result._sum.fare || 0;
+        const tax = grossIncome * 0.05;
+        const netIncome = grossIncome - tax;
+
+        res.status(200).json({
+            success: true,
+            data: {
+                month,
+                year,
+                totalRides,
+                grossIncome: Math.round(grossIncome * 100) / 100,
+                tax: Math.round(tax * 100) / 100,
+                netIncome: Math.round(netIncome * 100) / 100
+            }
+        });
+    } catch (error) {
+        console.error("getMonthlySummary error:", error);
+        res.status(500).json({
+            success: false,
+            message: "Failed to calculate monthly summary",
+            error: error.message
+        });
+    }
+};
+
 module.exports = {
     addRide,
     getAllRides,
     getRidesById,
     updateRide,
-    deleteRide
+    deleteRide,
+    getMonthlySummary
 };

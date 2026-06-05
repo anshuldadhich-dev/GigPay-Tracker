@@ -19,6 +19,7 @@ model Ride {
   pickup    String
   dropoff   String   @map("dropoff")
   fare      Float
+  platform  String?
   createdAt DateTime @default(now()) @map("created_at")
 
   @@map("rides")

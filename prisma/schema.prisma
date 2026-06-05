@@ -4,18 +4,22 @@
 // Get a free hosted Postgres database in seconds: `npx create-db`
 
 generator client {
-  provider = "prisma-client"
-  output   = "../generated/prisma"
+  provider             = "prisma-client"
+  output               = "../generated/prisma-client-ts"
+  moduleFormat         = "cjs"
+  importFileExtension  = "js"
 }
 
 datasource db {
   provider = "postgresql"
-}	
+}
 
 model Ride {
-	id		Int		@id @default(autoincrement())
-	pickup		String		
-	drop		String		
-	fare		Float
-	createdAt	DateTime	@default(now())
-	}
+  id        Int      @id @default(autoincrement())
+  pickup    String
+  dropoff   String   @map("dropoff")
+  fare      Float
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@map("rides")
+}

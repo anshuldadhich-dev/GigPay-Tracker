@@ -8,7 +8,8 @@ const {
     getRidesById,
     updateRide,
     deleteRide,
-    getMonthlySummary
+    getMonthlySummary,
+    getPlatformSummary
 } = require("../controllers/rideController");
 
 router.post("/", addRide);
@@ -16,6 +17,8 @@ router.post("/", addRide);
 router.get("/" , getAllRides);
 
 router.get("/monthly-summary", getMonthlySummary);
+
+router.get("/platform-summary", getPlatformSummary);
 
 router.get("/:id", getRidesById);
 

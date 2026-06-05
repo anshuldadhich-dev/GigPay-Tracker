@@ -247,11 +247,43 @@ const getMonthlySummary = async (req, res) => {
     }
 };
 
+// GET /ride/platform-summary — earnings grouped by platform
+const getPlatformSummary = async (req, res) => {
+    try {
+        const result = await prisma.ride.groupBy({
+            by: ["platform"],
+            _count: { id: true },
+            _sum: { fare: true },
+            orderBy: { _sum: { fare: "desc" } }
+        });
+
+        const data = result.map((row) => ({
+            platform: row.platform || "Unknown",
+            totalRides: row._count.id,
+            totalEarnings: row._sum.fare || 0
+        }));
+
+        res.status(200).json({
+            success: true,
+            totalPlatforms: data.length,
+            data
+        });
+    } catch (error) {
+        console.error("getPlatformSummary error:", error);
+        res.status(500).json({
+            success: false,
+            message: "Failed to fetch platform summary",
+            error: error.message
+        });
+    }
+};
+
 module.exports = {
     addRide,
     getAllRides,
     getRidesById,
     updateRide,
     deleteRide,
-    getMonthlySummary
+    getMonthlySummary,
+    getPlatformSummary
 };

@@ -9,7 +9,8 @@ const {
     updateRide,
     deleteRide,
     getMonthlySummary,
-    getPlatformSummary
+    getPlatformSummary,
+    generateReport
 } = require("../controllers/rideController");
 
 router.post("/", addRide);
@@ -19,6 +20,8 @@ router.get("/" , getAllRides);
 router.get("/monthly-summary", getMonthlySummary);
 
 router.get("/platform-summary", getPlatformSummary);
+
+router.get("/report", generateReport);
 
 router.get("/:id", getRidesById);
 

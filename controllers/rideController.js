@@ -1,4 +1,82 @@
 const prisma = require("../config/db");
+const { generatePDF } = require("../services/pdfService");
+
+const getReportMonthYear = (query) => {
+    const now = new Date();
+    const month = parseInt(query.month) || now.getMonth() + 1;
+    const year = parseInt(query.year) || now.getFullYear();
+
+    return { month, year };
+};
+
+const getMonthDateRange = (month, year) => {
+    const IST_OFFSET = 5.5 * 60 * 60 * 1000;
+    const startDate = new Date(Date.UTC(year, month - 1, 1) - IST_OFFSET);
+    const endDate = new Date(Date.UTC(year, month, 1) - IST_OFFSET - 1);
+
+    return { startDate, endDate };
+};
+
+const getMonthlySummaryData = async (month, year) => {
+    const { startDate, endDate } = getMonthDateRange(month, year);
+
+    const result = await prisma.ride.aggregate({
+        where: {
+            createdAt: {
+                gte: startDate,
+                lte: endDate
+            }
+        },
+        _count: { id: true },
+        _sum: { fare: true }
+    });
+
+    const totalRides = result._count.id;
+    const grossIncome = result._sum.fare || 0;
+    const tax = grossIncome * 0.05;
+    const netIncome = grossIncome - tax;
+
+    return {
+        month,
+        year,
+        totalRides,
+        grossIncome: Math.round(grossIncome * 100) / 100,
+        tax: Math.round(tax * 100) / 100,
+        netIncome: Math.round(netIncome * 100) / 100
+    };
+};
+
+const getPlatformSummaryData = async (where = {}) => {
+    const result = await prisma.ride.groupBy({
+        by: ["platform"],
+        where,
+        _count: { id: true },
+        _sum: { fare: true },
+        orderBy: { _sum: { fare: "desc" } }
+    });
+
+    return result.map((row) => ({
+        platform: row.platform || "Unknown",
+        totalRides: row._count.id,
+        totalEarnings: row._sum.fare || 0
+    }));
+};
+
+const getRidesForReport = async (month, year) => {
+    const { startDate, endDate } = getMonthDateRange(month, year);
+
+    return prisma.ride.findMany({
+        where: {
+            createdAt: {
+                gte: startDate,
+                lte: endDate
+            }
+        },
+        orderBy: {
+            createdAt: "asc"
+        }
+    });
+};
 
 // Helper: format a ride's createdAt to IST string
 const formatRide = (ride) => ({
@@ -197,45 +275,12 @@ const deleteRide = async (req, res) => {
 // GET /ride/monthly-summary — calculate monthly stats
 const getMonthlySummary = async (req, res) => {
     try {
-        const now = new Date();
-        const month = parseInt(req.query.month) || now.getMonth() + 1; // 1-12
-        const year = parseInt(req.query.year) || now.getFullYear();
-
-        // IST offset: UTC+5:30 = 19800000 ms
-        const IST_OFFSET = 5.5 * 60 * 60 * 1000;
-
-        // Start of month in IST (e.g., Jun 1, 00:00 IST = May 31, 18:30 UTC)
-        const startDate = new Date(Date.UTC(year, month - 1, 1) - IST_OFFSET);
-        // End of month in IST (e.g., Jun 30, 23:59:59 IST = Jun 30, 18:29:59 UTC)
-        const endDate = new Date(Date.UTC(year, month, 1) - IST_OFFSET - 1);
-
-        // Aggregate: count + sum in one query
-        const result = await prisma.ride.aggregate({
-            where: {
-                createdAt: {
-                    gte: startDate,
-                    lte: endDate
-                }
-            },
-            _count: { id: true },
-            _sum: { fare: true }
-        });
-
-        const totalRides = result._count.id;
-        const grossIncome = result._sum.fare || 0;
-        const tax = grossIncome * 0.05;
-        const netIncome = grossIncome - tax;
+        const { month, year } = getReportMonthYear(req.query);
+        const data = await getMonthlySummaryData(month, year);
 
         res.status(200).json({
             success: true,
-            data: {
-                month,
-                year,
-                totalRides,
-                grossIncome: Math.round(grossIncome * 100) / 100,
-                tax: Math.round(tax * 100) / 100,
-                netIncome: Math.round(netIncome * 100) / 100
-            }
+            data
         });
     } catch (error) {
         console.error("getMonthlySummary error:", error);
@@ -250,18 +295,7 @@ const getMonthlySummary = async (req, res) => {
 // GET /ride/platform-summary — earnings grouped by platform
 const getPlatformSummary = async (req, res) => {
     try {
-        const result = await prisma.ride.groupBy({
-            by: ["platform"],
-            _count: { id: true },
-            _sum: { fare: true },
-            orderBy: { _sum: { fare: "desc" } }
-        });
-
-        const data = result.map((row) => ({
-            platform: row.platform || "Unknown",
-            totalRides: row._count.id,
-            totalEarnings: row._sum.fare || 0
-        }));
+        const data = await getPlatformSummaryData();
 
         res.status(200).json({
             success: true,
@@ -278,6 +312,57 @@ const getPlatformSummary = async (req, res) => {
     }
 };
 
+// GET /ride/report — generate a downloadable monthly PDF report
+const generateReport = async (req, res) => {
+    try {
+        const { month, year } = getReportMonthYear(req.query);
+        const { startDate, endDate } = getMonthDateRange(month, year);
+        const monthlySummary = await getMonthlySummaryData(month, year);
+        const platformSummary = await getPlatformSummaryData({
+            createdAt: {
+                gte: startDate,
+                lte: endDate
+            }
+        });
+        const rides = await getRidesForReport(month, year);
+
+        const pdfBuffer = await generatePDF({
+            title: "GigPay Tracker Report",
+            subtitle: `Monthly report for ${month}/${year}`,
+            totalEarnings: `Rs. ${monthlySummary.grossIncome}`,
+            totalJobs: monthlySummary.totalRides,
+            dateRange: `${month}/${year}`,
+            monthlySummary,
+            platformSummary,
+            jobs: rides.map((ride) => ({
+                client: ride.platform || "Unknown",
+                title: `${ride.pickup} to ${ride.dropoff}`,
+                date: new Date(ride.createdAt).toLocaleDateString("en-IN", {
+                    timeZone: "Asia/Kolkata"
+                }),
+                rawAmount: ride.fare,
+                amount: `Rs. ${ride.fare}`,
+                status: "Completed"
+            }))
+        });
+
+        res.setHeader("Content-Type", "application/pdf");
+        res.setHeader(
+            "Content-Disposition",
+            `attachment; filename="GigPay_Report_${month}_${year}.pdf"`
+        );
+
+        res.status(200).send(pdfBuffer);
+    } catch (error) {
+        console.error("generateReport error:", error);
+        res.status(500).json({
+            success: false,
+            message: "Failed to generate PDF report",
+            error: error.message
+        });
+    }
+};
+
 module.exports = {
     addRide,
     getAllRides,
@@ -285,5 +370,6 @@ module.exports = {
     updateRide,
     deleteRide,
     getMonthlySummary,
-    getPlatformSummary
+    getPlatformSummary,
+    generateReport
 };

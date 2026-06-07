@@ -1,10 +1,20 @@
+import { useState } from 'react'
 import { Bell, Menu } from 'lucide-react'
+import { useNavigate } from 'react-router-dom'
 import SearchBar from '../ui/SearchBar'
 import GigTrackLogo from '../ui/GigTrackLogo'
 import { useAuth } from '../../contexts/AuthContext'
 
 export default function Header({ onMenuClick }) {
   const { user } = useAuth()
+  const navigate = useNavigate()
+  const [searchVal, setSearchVal] = useState('')
+
+  function handleSearch(val) {
+    const q = (val ?? '').trim()
+    if (q) navigate(`/rides?q=${encodeURIComponent(q)}`)
+    setSearchVal('')
+  }
   return (
     <header className="sticky top-0 z-30 glass border-b border-white/60 px-4 sm:px-6 lg:px-8 py-3">
       <div className="flex items-center justify-between gap-3">
@@ -23,7 +33,12 @@ export default function Header({ onMenuClick }) {
         </div>
 
         <div className="flex items-center gap-2 sm:gap-3">
-          <SearchBar className="hidden md:block w-48 lg:w-64 xl:w-72" />
+          <SearchBar
+            className="hidden md:block w-48 lg:w-64 xl:w-72"
+            value={searchVal}
+            onChange={e => setSearchVal(e.target.value)}
+            onSubmit={handleSearch}
+          />
           <button
             type="button"
             className="relative p-2.5 rounded-xl bg-white border border-border/60 hover:border-secondary/30 hover:shadow-sm transition-all btn-press"

@@ -15,12 +15,13 @@ datasource db {
 }
 
 model User {
-  id        Int      @id @default(autoincrement())
+  id        Int        @id @default(autoincrement())
   name      String
-  email     String   @unique
+  email     String     @unique
   password  String
-  createdAt DateTime @default(now()) @map("created_at")
+  createdAt DateTime   @default(now()) @map("created_at")
   rides     Ride[]
+  fuelLogs  FuelLog[]
 
   @@map("users")
 }
@@ -36,4 +37,18 @@ model Ride {
   user      User     @relation(fields: [userId], references: [id])
 
   @@map("rides")
+}
+
+model FuelLog {
+  id            Int      @id @default(autoincrement())
+  date          DateTime
+  liters        Float
+  pricePerLiter Float    @map("price_per_liter")
+  totalCost     Float    @map("total_cost")
+  notes         String?
+  createdAt     DateTime @default(now()) @map("created_at")
+  userId        Int      @map("user_id")
+  user          User     @relation(fields: [userId], references: [id])
+
+  @@map("fuel_logs")
 }

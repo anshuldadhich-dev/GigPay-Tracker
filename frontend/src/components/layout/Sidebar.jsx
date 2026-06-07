@@ -1,5 +1,5 @@
 import { NavLink, useNavigate, Link } from 'react-router-dom'
-import { LayoutDashboard, Car, BarChart3, FileText, Settings, LogOut, Plus, ChevronRight } from 'lucide-react'
+import { LayoutDashboard, Car, BarChart3, FileText, Settings, LogOut, Plus, ChevronRight, Fuel } from 'lucide-react'
 import GigTrackLogo from '../ui/GigTrackLogo'
 import { useAuth } from '../../contexts/AuthContext'
 
@@ -8,6 +8,7 @@ const navItems = [
   { to: '/rides', label: 'Rides', icon: Car },
   { to: '/analytics', label: 'Analytics', icon: BarChart3 },
   { to: '/reports', label: 'Reports', icon: FileText },
+  { to: '/fuel', label: 'Fuel Log', icon: Fuel },
   { to: '/settings', label: 'Settings', icon: Settings },
 ]
 

@@ -14,6 +14,17 @@ datasource db {
   provider = "postgresql"
 }
 
+model User {
+  id        Int      @id @default(autoincrement())
+  name      String
+  email     String   @unique
+  password  String
+  createdAt DateTime @default(now()) @map("created_at")
+  rides     Ride[]
+
+  @@map("users")
+}
+
 model Ride {
   id        Int      @id @default(autoincrement())
   pickup    String
@@ -21,6 +32,8 @@ model Ride {
   fare      Float
   platform  String?
   createdAt DateTime @default(now()) @map("created_at")
+  userId    Int      @map("user_id")
+  user      User     @relation(fields: [userId], references: [id])
 
   @@map("rides")
 }

@@ -13,20 +13,22 @@ const {
     generateReport
 } = require("../controllers/rideController");
 
-router.post("/", addRide);
+const { protect } = require("../middlewares/authMiddleware");
 
-router.get("/" , getAllRides);
+router.post("/", protect, addRide);
 
-router.get("/monthly-summary", getMonthlySummary);
+router.get("/", protect, getAllRides);
 
-router.get("/platform-summary", getPlatformSummary);
+router.get("/monthly-summary", protect, getMonthlySummary);
 
-router.get("/report", generateReport);
+router.get("/platform-summary", protect, getPlatformSummary);
 
-router.get("/:id", getRidesById);
+router.get("/report", protect, generateReport);
 
-router.put("/:id" , updateRide);
+router.get("/:id", protect, getRidesById);
 
-router.delete("/:id" , deleteRide);
+router.put("/:id", protect, updateRide);
+
+router.delete("/:id", protect, deleteRide);
 
 module.exports = router;

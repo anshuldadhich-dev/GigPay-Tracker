@@ -17,11 +17,12 @@ const getMonthDateRange = (month, year) => {
     return { startDate, endDate };
 };
 
-const getMonthlySummaryData = async (month, year) => {
+const getMonthlySummaryData = async (month, year, userId) => {
     const { startDate, endDate } = getMonthDateRange(month, year);
 
     const result = await prisma.ride.aggregate({
         where: {
+            userId,
             createdAt: {
                 gte: startDate,
                 lte: endDate
@@ -62,11 +63,12 @@ const getPlatformSummaryData = async (where = {}) => {
     }));
 };
 
-const getRidesForReport = async (month, year) => {
+const getRidesForReport = async (month, year, userId) => {
     const { startDate, endDate } = getMonthDateRange(month, year);
 
     return prisma.ride.findMany({
         where: {
+            userId,
             createdAt: {
                 gte: startDate,
                 lte: endDate
@@ -114,7 +116,8 @@ const addRide = async (req, res) => {
                 pickup,
                 dropoff,
                 fare: fareValue,
-                platform
+                platform,
+                userId: req.user.id
             }
         });
 
@@ -136,7 +139,9 @@ const addRide = async (req, res) => {
 // GET /ride — fetch all rides
 const getAllRides = async (req, res) => {
     try {
-        const rides = await prisma.ride.findMany();
+        const rides = await prisma.ride.findMany({
+            where: { userId: req.user.id }
+        });
 
         res.status(200).json({
             success: true,
@@ -169,6 +174,13 @@ const getRidesById = async (req, res) => {
             });
         }
 
+        if (ride.userId !== req.user.id) {
+            return res.status(403).json({
+                success: false,
+                message: "Access denied"
+            });
+        }
+
         res.status(200).json({
             success: true,
             data: formatRide(ride)
@@ -198,6 +210,13 @@ const updateRide = async (req, res) => {
             return res.status(404).json({
                 success: false,
                 message: "Ride not found"
+            });
+        }
+
+        if (existing.userId !== req.user.id) {
+            return res.status(403).json({
+                success: false,
+                message: "Access denied"
             });
         }
 
@@ -254,6 +273,13 @@ const deleteRide = async (req, res) => {
             });
         }
 
+        if (existing.userId !== req.user.id) {
+            return res.status(403).json({
+                success: false,
+                message: "Access denied"
+            });
+        }
+
         await prisma.ride.delete({
             where: { id: rideId }
         });
@@ -276,7 +302,7 @@ const deleteRide = async (req, res) => {
 const getMonthlySummary = async (req, res) => {
     try {
         const { month, year } = getReportMonthYear(req.query);
-        const data = await getMonthlySummaryData(month, year);
+        const data = await getMonthlySummaryData(month, year, req.user.id);
 
         res.status(200).json({
             success: true,
@@ -295,7 +321,7 @@ const getMonthlySummary = async (req, res) => {
 // GET /ride/platform-summary — earnings grouped by platform
 const getPlatformSummary = async (req, res) => {
     try {
-        const data = await getPlatformSummaryData();
+        const data = await getPlatformSummaryData({ userId: req.user.id });
 
         res.status(200).json({
             success: true,
@@ -317,14 +343,16 @@ const generateReport = async (req, res) => {
     try {
         const { month, year } = getReportMonthYear(req.query);
         const { startDate, endDate } = getMonthDateRange(month, year);
-        const monthlySummary = await getMonthlySummaryData(month, year);
+        const userId = req.user.id;
+        const monthlySummary = await getMonthlySummaryData(month, year, userId);
         const platformSummary = await getPlatformSummaryData({
+            userId,
             createdAt: {
                 gte: startDate,
                 lte: endDate
             }
         });
-        const rides = await getRidesForReport(month, year);
+        const rides = await getRidesForReport(month, year, userId);
 
         const pdfBuffer = await generatePDF({
             title: "GigPay Tracker Report",

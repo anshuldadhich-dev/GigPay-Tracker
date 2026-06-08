@@ -1,4 +1,5 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
+import { useSearchParams } from 'react-router-dom'
 import {
   User, Target, Zap, FileText, Sun, Shield, Database,
   Camera, Check, ChevronRight, Eye, EyeOff, Download,
@@ -60,20 +61,65 @@ const lockedInputCls = 'w-full px-4 py-3 rounded-xl border border-border/40 bg-s
 // ─────────────────────────────────────────
 
 function ProfileSection({ user }) {
+  const { updateUser } = useAuth()
   const [form, setForm] = useState({
     name: user?.name || '',
     email: user?.email || '',
     phone: '',
     city: '',
   })
+  const [photoUrl, setPhotoUrl] = useState(user?.profilePhoto || null)
+  const [saving, setSaving] = useState(false)
+  const [uploading, setUploading] = useState(false)
   const [saved, setSaved] = useState(false)
+  const [error, setError] = useState(null)
+  const fileRef = useRef(null)
 
-  function handleSave() {
-    setSaved(true)
-    setTimeout(() => setSaved(false), 2200)
+  useEffect(() => {
+    api.get('/auth/profile').then(res => {
+      const u = res.data.data.user
+      setForm(f => ({ ...f, name: u.name || '', phone: u.phone || '', city: u.city || '' }))
+      setPhotoUrl(u.profilePhoto || null)
+    }).catch(() => {})
+  }, [])
+
+  async function handleSave() {
+    setSaving(true)
+    setError(null)
+    try {
+      const res = await api.put('/auth/profile', { name: form.name, phone: form.phone, city: form.city })
+      updateUser(res.data.data.user)
+      setSaved(true)
+      setTimeout(() => setSaved(false), 2200)
+    } catch {
+      setError('Failed to save. Try again.')
+    } finally {
+      setSaving(false)
+    }
+  }
+
+  async function handlePhotoChange(e) {
+    const file = e.target.files?.[0]
+    if (!file) return
+    setUploading(true)
+    setError(null)
+    try {
+      const fd = new FormData()
+      fd.append('photo', file)
+      const res = await api.post('/auth/photo', fd, { headers: { 'Content-Type': 'multipart/form-data' } })
+      const url = res.data.data.user.profilePhoto
+      setPhotoUrl(url)
+      updateUser(res.data.data.user)
+    } catch {
+      setError('Photo upload failed. Max 5MB, images only.')
+    } finally {
+      setUploading(false)
+      e.target.value = ''
+    }
   }
 
   const initial = form.name?.charAt(0)?.toUpperCase() || 'G'
+  const fullPhotoUrl = photoUrl ? `http://localhost:5000${photoUrl}` : null
 
   return (
     <div className="space-y-5">
@@ -82,25 +128,41 @@ function ProfileSection({ user }) {
         description="Your personal information. Email is tied to your account and cannot be changed here."
       />
 
-      {/* Avatar card */}
       <SettingsCard>
         <div className="p-6 sm:p-7 border-b border-border/40 flex items-center gap-5">
-          <div className="relative group shrink-0">
-            <div className="w-[72px] h-[72px] rounded-2xl bg-gradient-to-br from-secondary via-primary to-primary-dark flex items-center justify-center text-white text-2xl font-black shadow-lg select-none">
-              {initial}
-            </div>
-            <div className="absolute inset-0 rounded-2xl bg-black/55 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-all duration-200 cursor-pointer">
-              <Camera className="w-5 h-5 text-white" />
+          <div className="relative group shrink-0 cursor-pointer" onClick={() => fileRef.current?.click()}>
+            {fullPhotoUrl ? (
+              <img
+                src={fullPhotoUrl}
+                alt="Profile"
+                className="w-[72px] h-[72px] rounded-2xl object-cover shadow-lg"
+              />
+            ) : (
+              <div className="w-[72px] h-[72px] rounded-2xl bg-gradient-to-br from-secondary via-primary to-primary-dark flex items-center justify-center text-white text-2xl font-black shadow-lg select-none">
+                {initial}
+              </div>
+            )}
+            <div className="absolute inset-0 rounded-2xl bg-black/55 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-all duration-200">
+              {uploading
+                ? <Loader2 className="w-5 h-5 text-white animate-spin" />
+                : <Camera className="w-5 h-5 text-white" />}
             </div>
             <div className="absolute -bottom-1 -right-1 w-5 h-5 rounded-full bg-emerald-500 ring-2 ring-white" />
           </div>
 
+          <input ref={fileRef} type="file" accept="image/*" className="hidden" onChange={handlePhotoChange} />
+
           <div className="min-w-0">
             <p className="text-base font-extrabold text-primary leading-tight truncate">{form.name || 'Your Name'}</p>
             <p className="text-xs text-muted mt-0.5 truncate">{form.email}</p>
-            <button type="button" className="mt-2.5 inline-flex items-center gap-1.5 text-[11px] font-bold text-secondary hover:text-secondary-dark transition-colors">
-              <Camera className="w-3 h-3" />
-              Upload photo
+            <button
+              type="button"
+              onClick={() => fileRef.current?.click()}
+              disabled={uploading}
+              className="mt-2.5 inline-flex items-center gap-1.5 text-[11px] font-bold text-secondary hover:text-secondary-dark transition-colors disabled:opacity-50"
+            >
+              {uploading ? <Loader2 className="w-3 h-3 animate-spin" /> : <Camera className="w-3 h-3" />}
+              {uploading ? 'Uploading…' : 'Upload photo'}
             </button>
           </div>
 
@@ -110,6 +172,12 @@ function ProfileSection({ user }) {
             </div>
           </div>
         </div>
+
+        {error && (
+          <div className="mx-6 mt-4 flex items-center gap-2 p-3 rounded-xl bg-red-50 border border-red-100 text-red-600 text-sm">
+            <AlertCircle className="w-4 h-4 shrink-0" />{error}
+          </div>
+        )}
 
         <div className="p-6 sm:p-7 grid sm:grid-cols-2 gap-4">
           <div>
@@ -165,12 +233,21 @@ function ProfileSection({ user }) {
         </div>
 
         <div className="px-6 sm:px-7 pb-6 flex items-center gap-3 border-t border-border/40 pt-5">
-          <Button variant="primary" size="md" onClick={handleSave}>
-            {saved
-              ? <><Check className="w-4 h-4" /> Saved!</>
-              : <><Save className="w-4 h-4" /> Save Changes</>}
+          <Button variant="primary" size="md" onClick={handleSave} disabled={saving}>
+            {saving
+              ? <><Loader2 className="w-4 h-4 animate-spin" /> Saving…</>
+              : saved
+                ? <><Check className="w-4 h-4" /> Saved!</>
+                : <><Save className="w-4 h-4" /> Save Changes</>}
           </Button>
-          <button type="button" className="text-sm font-semibold text-muted hover:text-primary transition-colors">
+          <button
+            type="button"
+            onClick={() => {
+              setForm(f => ({ ...f, name: user?.name || '', phone: '', city: '' }))
+              setError(null)
+            }}
+            className="text-sm font-semibold text-muted hover:text-primary transition-colors"
+          >
             Discard
           </button>
         </div>
@@ -184,9 +261,56 @@ function ProfileSection({ user }) {
 // ─────────────────────────────────────────
 
 function GoalsSection() {
+  const { updateUser } = useAuth()
   const [goals, setGoals] = useState({ daily: 1500, weekly: 8000, monthly: 30000 })
-  const earned = { daily: 890, weekly: 4200, monthly: 14500 }
+  const [earned, setEarned] = useState({ daily: 0, weekly: 0, monthly: 0 })
+  const [loading, setLoading] = useState(true)
+  const [refreshKey, setRefreshKey] = useState(0)
+  const [saving, setSaving] = useState(false)
   const [saved, setSaved] = useState(false)
+  const [fetchError, setFetchError] = useState(null)
+
+  useEffect(() => {
+    setLoading(true)
+    setFetchError(null)
+
+    Promise.allSettled([
+      api.get('/auth/profile'),
+      api.get('/ride/earnings-summary'),
+    ]).then(([profileResult, earningsResult]) => {
+      if (profileResult.status === 'fulfilled') {
+        const u = profileResult.value.data.data.user
+        setGoals({ daily: u.goalDaily, weekly: u.goalWeekly, monthly: u.goalMonthly })
+      } else {
+        console.error('Goals fetch error:', profileResult.reason)
+        setFetchError('Could not load goal targets.')
+      }
+
+      if (earningsResult.status === 'fulfilled') {
+        setEarned(earningsResult.value.data.data)
+      } else {
+        console.error('Earnings fetch error:', earningsResult.reason)
+        setFetchError(prev => prev ? prev + ' Could not load earnings.' : 'Could not load earnings.')
+      }
+    }).finally(() => setLoading(false))
+  }, [refreshKey])
+
+  async function handleSave() {
+    setSaving(true)
+    try {
+      const res = await api.put('/auth/profile', {
+        goalDaily: goals.daily,
+        goalWeekly: goals.weekly,
+        goalMonthly: goals.monthly,
+      })
+      updateUser(res.data.data.user)
+      setSaved(true)
+      setTimeout(() => setSaved(false), 2000)
+    } catch {
+    } finally {
+      setSaving(false)
+    }
+  }
 
   const config = [
     { key: 'daily',   label: 'Daily Goal',   icon: Sun,          iconBg: 'bg-teal-100',   iconColor: 'text-teal-600',   gradient: 'from-teal-400 to-secondary',  pill: 'bg-teal-50 text-teal-700 ring-teal-100'     },
@@ -196,10 +320,27 @@ function GoalsSection() {
 
   return (
     <div className="space-y-5">
-      <SectionHeader
-        title="Earnings Goals"
-        description="Set targets to stay motivated. Your progress updates in real-time on the dashboard."
-      />
+      <div className="flex items-start justify-between gap-4">
+        <SectionHeader
+          title="Earnings Goals"
+          description="Set targets to stay motivated. Progress reflects your actual rides for today, this week, and this month."
+        />
+        <button
+          type="button"
+          onClick={() => setRefreshKey(k => k + 1)}
+          disabled={loading}
+          className="shrink-0 mt-1 flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-border text-xs font-bold text-muted hover:text-primary hover:border-secondary/40 transition-all disabled:opacity-40"
+        >
+          <Loader2 className={`w-3.5 h-3.5 ${loading ? 'animate-spin' : ''}`} />
+          Refresh
+        </button>
+      </div>
+
+      {fetchError && (
+        <div className="flex items-center gap-2 p-3 rounded-xl bg-red-50 border border-red-100 text-red-600 text-sm">
+          <AlertCircle className="w-4 h-4 shrink-0" />{fetchError}
+        </div>
+      )}
 
       <div className="space-y-4">
         {config.map(({ key, label, icon: Icon, iconBg, iconColor, gradient, pill }) => {
@@ -216,10 +357,16 @@ function GoalsSection() {
                     <div>
                       <p className="font-extrabold text-primary">{label}</p>
                       <div className="flex items-center gap-1.5 mt-1">
-                        <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold ring-1 ${pill}`}>
-                          ₹{earned[key].toLocaleString('en-IN')} earned
-                        </span>
-                        <span className="text-[10px] text-muted font-medium">of ₹{goals[key].toLocaleString('en-IN')}</span>
+                        {loading ? (
+                          <div className="skeleton h-4 w-24 rounded-full" />
+                        ) : (
+                          <>
+                            <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold ring-1 ${pill}`}>
+                              ₹{earned[key].toLocaleString('en-IN')} earned
+                            </span>
+                            <span className="text-[10px] text-muted font-medium">of ₹{goals[key].toLocaleString('en-IN')}</span>
+                          </>
+                        )}
                       </div>
                     </div>
                   </div>
@@ -245,7 +392,7 @@ function GoalsSection() {
                   </div>
                   <div className="flex items-center justify-between text-[11px] font-semibold">
                     <span className={`${pct >= 100 ? 'text-emerald-600' : 'text-muted'}`}>
-                      {pct >= 100 ? '🎉 Goal reached!' : `${pct}% of goal`}
+                      {pct >= 100 ? 'Goal reached!' : `${pct}% of goal`}
                     </span>
                     {pct < 100 && (
                       <span className="text-muted">₹{remaining.toLocaleString('en-IN')} remaining</span>
@@ -258,8 +405,12 @@ function GoalsSection() {
         })}
       </div>
 
-      <Button variant="primary" size="md" onClick={() => { setSaved(true); setTimeout(() => setSaved(false), 2000) }}>
-        {saved ? <><Check className="w-4 h-4" /> Saved!</> : <><Save className="w-4 h-4" /> Save Goals</>}
+      <Button variant="primary" size="md" onClick={handleSave} disabled={saving}>
+        {saving
+          ? <><Loader2 className="w-4 h-4 animate-spin" /> Saving…</>
+          : saved
+            ? <><Check className="w-4 h-4" /> Saved!</>
+            : <><Save className="w-4 h-4" /> Save Goals</>}
       </Button>
     </div>
   )
@@ -872,7 +1023,10 @@ const SECTIONS = [
 
 export default function SettingsPage() {
   const { user } = useAuth()
-  const [active, setActive] = useState('profile')
+  const [searchParams] = useSearchParams()
+  const validTabs = ['profile', 'goals', 'platforms', 'reports', 'appearance', 'security', 'data']
+  const tabFromUrl = searchParams.get('tab')
+  const [active, setActive] = useState(validTabs.includes(tabFromUrl) ? tabFromUrl : 'profile')
 
   const sectionMap = {
     profile:    <ProfileSection user={user} />,

@@ -10,7 +10,10 @@ const {
     deleteRide,
     getMonthlySummary,
     getPlatformSummary,
-    generateReport
+    generateReport,
+    getEarningsSummary,
+    getAnalytics,
+    getFinancialSummary,
 } = require("../controllers/rideController");
 
 const { protect } = require("../middlewares/authMiddleware");
@@ -20,9 +23,10 @@ router.post("/", protect, addRide);
 router.get("/", protect, getAllRides);
 
 router.get("/monthly-summary", protect, getMonthlySummary);
-
+router.get("/earnings-summary", protect, getEarningsSummary);
 router.get("/platform-summary", protect, getPlatformSummary);
-
+router.get("/analytics", protect, getAnalytics);
+router.get("/financial-summary", protect, getFinancialSummary);
 router.get("/report", protect, generateReport);
 
 router.get("/:id", protect, getRidesById);

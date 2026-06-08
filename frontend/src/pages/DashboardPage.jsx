@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react'
-import StatCard from '../components/ui/StatCard'
 import FloatingActionButton from '../components/ui/FloatingActionButton'
 import DashboardHero from '../components/dashboard/DashboardHero'
 import EarningsChart from '../components/dashboard/EarningsChart'
@@ -7,7 +6,8 @@ import ActivityHeatmap from '../components/dashboard/ActivityHeatmap'
 import PlatformEarnings from '../components/dashboard/PlatformEarnings'
 import RecentRidesTable from '../components/dashboard/RecentRidesTable'
 import ReportsSection from '../components/dashboard/ReportsSection'
-import { summaryStats } from '../data/dummyData'
+import WeeklyEarnings from '../components/dashboard/WeeklyEarnings'
+import NetEarningsCards from '../components/dashboard/NetEarningsCards'
 import api from '../services/api'
 
 const PLATFORM_COLORS = {
@@ -91,7 +91,6 @@ export default function DashboardPage() {
             rides: p.totalRides,
             percentage: total > 0 ? Math.round((p.totalEarnings / total) * 100) : 0,
             color: PLATFORM_COLORS[p.platform] || '#64748B',
-            growth: '+0%',
           }))
         )
       } catch (err) {
@@ -113,22 +112,8 @@ export default function DashboardPage() {
   const todayRides = rides.filter((r) => r.createdAt?.startsWith(todayStr))
   const todayEarnings = todayRides.reduce((s, r) => s + r.fare, 0)
 
-  // All-time totals
+  // All-time totals (used for chart insights)
   const grossAll = rides.reduce((s, r) => s + r.fare, 0)
-  const netAll = Math.round(grossAll * 0.95)
-
-  // Current month
-  const nowIST = new Date().toLocaleDateString('en-IN', { timeZone: 'Asia/Kolkata', month: 'short', year: 'numeric' })
-  const monthRides = rides.filter((r) => r.createdAt?.includes(nowIST))
-  const monthlyTotal = monthRides.reduce((s, r) => s + r.fare, 0)
-
-  // Stat cards — always real data (zeros when no rides)
-  const computedStats = [
-    { ...summaryStats[0], value: String(rides.length), change: '' },
-    { ...summaryStats[1], value: `₹${grossAll.toLocaleString('en-IN')}`, change: '' },
-    { ...summaryStats[2], value: `₹${netAll.toLocaleString('en-IN')}`, change: '' },
-    { ...summaryStats[3], value: `₹${monthlyTotal.toLocaleString('en-IN')}`, change: '' },
-  ]
 
   // Monthly chart data from rides
   const monthlyChartData = computeMonthlyChartData(rides)
@@ -162,13 +147,7 @@ export default function DashboardPage() {
       <DashboardHero todaySummary={todaySummaryReal} loading={loading} />
 
       <section>
-        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 sm:gap-5">
-          {computedStats.map((stat, i) => (
-            <div key={stat.id} className="animate-fade-up" style={{ animationDelay: `${i * 70}ms` }}>
-              <StatCard {...stat} />
-            </div>
-          ))}
-        </div>
+        <NetEarningsCards />
       </section>
 
       <section className="grid grid-cols-1 xl:grid-cols-5 gap-5">
@@ -178,6 +157,10 @@ export default function DashboardPage() {
         <div className="xl:col-span-2 min-w-0">
           <ActivityHeatmap rides={rides} />
         </div>
+      </section>
+
+      <section>
+        <WeeklyEarnings rides={rides} loading={loading} />
       </section>
 
       <section className="grid grid-cols-1 lg:grid-cols-5 gap-5">

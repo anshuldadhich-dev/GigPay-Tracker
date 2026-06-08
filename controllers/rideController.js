@@ -391,6 +391,310 @@ const generateReport = async (req, res) => {
     }
 };
 
+// GET /ride/earnings-summary — current day/week/month earned totals (IST)
+const getEarningsSummary = async (req, res) => {
+    try {
+        const IST_OFFSET = 5.5 * 60 * 60 * 1000;
+        const now = new Date();
+        const nowIST = new Date(now.getTime() + IST_OFFSET);
+
+        // Today
+        const todayStartIST = new Date(Date.UTC(nowIST.getUTCFullYear(), nowIST.getUTCMonth(), nowIST.getUTCDate()));
+        const todayStart = new Date(todayStartIST.getTime() - IST_OFFSET);
+        const todayEnd = new Date(todayStart.getTime() + 24 * 60 * 60 * 1000 - 1);
+
+        // This week (Mon–Sun)
+        const dayOfWeek = nowIST.getUTCDay();
+        const daysFromMonday = dayOfWeek === 0 ? 6 : dayOfWeek - 1;
+        const weekStartIST = new Date(Date.UTC(nowIST.getUTCFullYear(), nowIST.getUTCMonth(), nowIST.getUTCDate() - daysFromMonday));
+        const weekStart = new Date(weekStartIST.getTime() - IST_OFFSET);
+        const weekEnd = new Date(weekStart.getTime() + 7 * 24 * 60 * 60 * 1000 - 1);
+
+        // This month
+        const monthStartIST = new Date(Date.UTC(nowIST.getUTCFullYear(), nowIST.getUTCMonth(), 1));
+        const monthStart = new Date(monthStartIST.getTime() - IST_OFFSET);
+        const monthEndIST = new Date(Date.UTC(nowIST.getUTCFullYear(), nowIST.getUTCMonth() + 1, 1));
+        const monthEnd = new Date(monthEndIST.getTime() - IST_OFFSET - 1);
+
+        const [daily, weekly, monthly] = await Promise.all([
+            prisma.ride.aggregate({ where: { userId: req.user.id, createdAt: { gte: todayStart, lte: todayEnd } }, _sum: { fare: true } }),
+            prisma.ride.aggregate({ where: { userId: req.user.id, createdAt: { gte: weekStart, lte: weekEnd } }, _sum: { fare: true } }),
+            prisma.ride.aggregate({ where: { userId: req.user.id, createdAt: { gte: monthStart, lte: monthEnd } }, _sum: { fare: true } }),
+        ]);
+
+        return res.json({
+            success: true,
+            data: {
+                daily: Math.round((daily._sum.fare || 0) * 100) / 100,
+                weekly: Math.round((weekly._sum.fare || 0) * 100) / 100,
+                monthly: Math.round((monthly._sum.fare || 0) * 100) / 100,
+            }
+        });
+    } catch (error) {
+        console.error("getEarningsSummary error:", error);
+        res.status(500).json({ success: false, message: "Failed to fetch earnings summary", error: error.message });
+    }
+};
+
+// GET /ride/analytics — comprehensive analytics for the analytics page
+const getAnalytics = async (req, res) => {
+    try {
+        const userId = req.user.id;
+        const IST_OFFSET = 5.5 * 60 * 60 * 1000;
+        const now = new Date();
+        const nowIST = new Date(now.getTime() + IST_OFFSET);
+
+        const period = req.query.period || "month";
+
+        const todayStartIST = new Date(Date.UTC(nowIST.getUTCFullYear(), nowIST.getUTCMonth(), nowIST.getUTCDate()));
+        const todayStart = new Date(todayStartIST.getTime() - IST_OFFSET);
+
+        let startDate, endDate;
+
+        if (period === "today") {
+            startDate = todayStart;
+            endDate = new Date(todayStart.getTime() + 24 * 60 * 60 * 1000 - 1);
+        } else if (period === "week") {
+            const dow = nowIST.getUTCDay();
+            const daysFromMon = dow === 0 ? 6 : dow - 1;
+            const weekStartIST = new Date(Date.UTC(nowIST.getUTCFullYear(), nowIST.getUTCMonth(), nowIST.getUTCDate() - daysFromMon));
+            startDate = new Date(weekStartIST.getTime() - IST_OFFSET);
+            endDate = new Date(startDate.getTime() + 7 * 24 * 60 * 60 * 1000 - 1);
+        } else if (period === "month") {
+            const ms = new Date(Date.UTC(nowIST.getUTCFullYear(), nowIST.getUTCMonth(), 1));
+            startDate = new Date(ms.getTime() - IST_OFFSET);
+            const me = new Date(Date.UTC(nowIST.getUTCFullYear(), nowIST.getUTCMonth() + 1, 1));
+            endDate = new Date(me.getTime() - IST_OFFSET - 1);
+        } else if (period === "3months") {
+            const ms = new Date(Date.UTC(nowIST.getUTCFullYear(), nowIST.getUTCMonth() - 2, 1));
+            startDate = new Date(ms.getTime() - IST_OFFSET);
+            endDate = now;
+        } else if (period === "year") {
+            const ms = new Date(Date.UTC(nowIST.getUTCFullYear(), 0, 1));
+            startDate = new Date(ms.getTime() - IST_OFFSET);
+            endDate = now;
+        } else {
+            startDate = new Date(0);
+            endDate = now;
+        }
+
+        const [rides, fuelLogs, allRides, userRows] = await Promise.all([
+            prisma.ride.findMany({ where: { userId, createdAt: { gte: startDate, lte: endDate } }, orderBy: { createdAt: "asc" } }),
+            prisma.fuelLog.findMany({ where: { userId, date: { gte: startDate, lte: endDate } } }),
+            prisma.ride.findMany({ where: { userId }, orderBy: { createdAt: "asc" } }),
+            prisma.$queryRaw`SELECT goal_daily, goal_weekly, goal_monthly FROM users WHERE id = ${userId}`,
+        ]);
+        const userGoals = userRows[0] || {};
+        const user = {
+            goalDaily: Number(userGoals.goal_daily) || 1500,
+            goalWeekly: Number(userGoals.goal_weekly) || 8000,
+            goalMonthly: Number(userGoals.goal_monthly) || 30000,
+        };
+
+        const grossIncome = rides.reduce((s, r) => s + r.fare, 0);
+        const totalFuelCost = fuelLogs.reduce((s, l) => s + l.totalCost, 0);
+        const profit = grossIncome - totalFuelCost;
+        const profitMargin = grossIncome > 0 ? Math.round((profit / grossIncome) * 100) : 0;
+        const avgPerRide = rides.length > 0 ? Math.round(grossIncome / rides.length) : 0;
+
+        // Daily trend
+        const dailyMap = {};
+        rides.forEach((ride) => {
+            const rIST = new Date(new Date(ride.createdAt).getTime() + IST_OFFSET);
+            const key = `${rIST.getUTCFullYear()}-${String(rIST.getUTCMonth() + 1).padStart(2, "0")}-${String(rIST.getUTCDate()).padStart(2, "0")}`;
+            if (!dailyMap[key]) dailyMap[key] = { date: key, earnings: 0, rides: 0 };
+            dailyMap[key].earnings += ride.fare;
+            dailyMap[key].rides += 1;
+        });
+        const dailyTrend = Object.values(dailyMap)
+            .sort((a, b) => a.date.localeCompare(b.date))
+            .map((d) => ({ ...d, earnings: Math.round(d.earnings * 100) / 100 }));
+
+        // Platform breakdown
+        const platformMap = {};
+        rides.forEach((ride) => {
+            const p = ride.platform || "Unknown";
+            if (!platformMap[p]) platformMap[p] = { platform: p, earnings: 0, rides: 0 };
+            platformMap[p].earnings += ride.fare;
+            platformMap[p].rides += 1;
+        });
+        const platformBreakdown = Object.values(platformMap)
+            .map((p) => ({
+                ...p,
+                earnings: Math.round(p.earnings * 100) / 100,
+                percentage: grossIncome > 0 ? Math.round((p.earnings / grossIncome) * 100) : 0,
+            }))
+            .sort((a, b) => b.earnings - a.earnings);
+
+        // Day-of-week analysis
+        const DAY_NAMES = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+        const dowMap = {};
+        DAY_NAMES.forEach((d, i) => { dowMap[i] = { day: d, earnings: 0, rides: 0, dayIndex: i }; });
+        rides.forEach((ride) => {
+            const rIST = new Date(new Date(ride.createdAt).getTime() + IST_OFFSET);
+            const dow = rIST.getUTCDay();
+            dowMap[dow].earnings += ride.fare;
+            dowMap[dow].rides += 1;
+        });
+        const dayOfWeekAnalysis = Object.values(dowMap).map((d) => ({
+            day: d.day,
+            earnings: Math.round(d.earnings * 100) / 100,
+            rides: d.rides,
+            avgEarnings: d.rides > 0 ? Math.round((d.earnings / d.rides) * 100) / 100 : 0,
+        }));
+
+        // Monthly trend (last 12 months from all rides)
+        const monthlyMap = {};
+        allRides.forEach((ride) => {
+            const rIST = new Date(new Date(ride.createdAt).getTime() + IST_OFFSET);
+            const key = `${rIST.getUTCFullYear()}-${String(rIST.getUTCMonth() + 1).padStart(2, "0")}`;
+            const monthName = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"][rIST.getUTCMonth()];
+            if (!monthlyMap[key]) monthlyMap[key] = { key, month: monthName, year: rIST.getUTCFullYear(), earnings: 0, rides: 0 };
+            monthlyMap[key].earnings += ride.fare;
+            monthlyMap[key].rides += 1;
+        });
+        const monthlyTrend = Object.values(monthlyMap)
+            .sort((a, b) => a.key.localeCompare(b.key))
+            .slice(-12)
+            .map((m) => ({ ...m, earnings: Math.round(m.earnings * 100) / 100 }));
+
+        // Goal progress — always current day/week/month
+        const todayKey = `${nowIST.getUTCFullYear()}-${String(nowIST.getUTCMonth() + 1).padStart(2, "0")}-${String(nowIST.getUTCDate()).padStart(2, "0")}`;
+        const todayEarnings = dailyMap[todayKey]?.earnings || 0;
+
+        const dowNow = nowIST.getUTCDay();
+        const daysFromMon = dowNow === 0 ? 6 : dowNow - 1;
+        const wkStartIST = new Date(Date.UTC(nowIST.getUTCFullYear(), nowIST.getUTCMonth(), nowIST.getUTCDate() - daysFromMon));
+        const wkStart = new Date(wkStartIST.getTime() - IST_OFFSET);
+        const wkEnd = new Date(wkStart.getTime() + 7 * 24 * 60 * 60 * 1000 - 1);
+        const mStartIST = new Date(Date.UTC(nowIST.getUTCFullYear(), nowIST.getUTCMonth(), 1));
+        const mStart = new Date(mStartIST.getTime() - IST_OFFSET);
+        const mEndIST = new Date(Date.UTC(nowIST.getUTCFullYear(), nowIST.getUTCMonth() + 1, 1));
+        const mEnd = new Date(mEndIST.getTime() - IST_OFFSET - 1);
+
+        const [weekAgg, monthAgg] = await Promise.all([
+            prisma.ride.aggregate({ where: { userId, createdAt: { gte: wkStart, lte: wkEnd } }, _sum: { fare: true } }),
+            prisma.ride.aggregate({ where: { userId, createdAt: { gte: mStart, lte: mEnd } }, _sum: { fare: true } }),
+        ]);
+
+        const weeklyEarnings = weekAgg._sum.fare || 0;
+        const monthlyEarnings = monthAgg._sum.fare || 0;
+
+        const goalProgress = {
+            daily: { goal: user.goalDaily, achieved: Math.round(todayEarnings * 100) / 100, percentage: user.goalDaily > 0 ? Math.min(100, Math.round((todayEarnings / user.goalDaily) * 100)) : 0 },
+            weekly: { goal: user.goalWeekly, achieved: Math.round(weeklyEarnings * 100) / 100, percentage: user.goalWeekly > 0 ? Math.min(100, Math.round((weeklyEarnings / user.goalWeekly) * 100)) : 0 },
+            monthly: { goal: user.goalMonthly, achieved: Math.round(monthlyEarnings * 100) / 100, percentage: user.goalMonthly > 0 ? Math.min(100, Math.round((monthlyEarnings / user.goalMonthly) * 100)) : 0 },
+        };
+
+        // Top routes
+        const routeMap = {};
+        rides.forEach((ride) => {
+            const key = `${ride.pickup}|||${ride.dropoff}`;
+            if (!routeMap[key]) routeMap[key] = { pickup: ride.pickup, dropoff: ride.dropoff, count: 0, totalEarnings: 0 };
+            routeMap[key].count += 1;
+            routeMap[key].totalEarnings += ride.fare;
+        });
+        const topRoutes = Object.values(routeMap)
+            .sort((a, b) => b.count - a.count || b.totalEarnings - a.totalEarnings)
+            .slice(0, 8)
+            .map((r) => ({ ...r, totalEarnings: Math.round(r.totalEarnings * 100) / 100 }));
+
+        return res.json({
+            success: true,
+            data: {
+                period,
+                overview: {
+                    totalRides: rides.length,
+                    grossIncome: Math.round(grossIncome * 100) / 100,
+                    avgPerRide,
+                    totalFuelCost: Math.round(totalFuelCost * 100) / 100,
+                    profit: Math.round(profit * 100) / 100,
+                    profitMargin,
+                },
+                dailyTrend,
+                platformBreakdown,
+                dayOfWeekAnalysis,
+                monthlyTrend,
+                goalProgress,
+                topRoutes,
+            },
+        });
+    } catch (error) {
+        console.error("getAnalytics error:", error);
+        res.status(500).json({ success: false, message: "Failed to fetch analytics", error: error.message });
+    }
+};
+
+// GET /ride/financial-summary — gross / fuel / net / margin for all periods
+const getFinancialSummary = async (req, res) => {
+    try {
+        const userId = req.user.id;
+        const IST_OFFSET = 5.5 * 60 * 60 * 1000;
+        const now = new Date();
+        const nowIST = new Date(now.getTime() + IST_OFFSET);
+
+        // ── period helpers ───────────────────────────────────────────────
+        const todayStartIST = new Date(Date.UTC(nowIST.getUTCFullYear(), nowIST.getUTCMonth(), nowIST.getUTCDate()));
+        const todayStart = new Date(todayStartIST.getTime() - IST_OFFSET);
+        const todayEnd   = new Date(todayStart.getTime() + 24 * 60 * 60 * 1000 - 1);
+
+        const dow = nowIST.getUTCDay();
+        const daysFromMon = dow === 0 ? 6 : dow - 1;
+        const weekStartIST = new Date(Date.UTC(nowIST.getUTCFullYear(), nowIST.getUTCMonth(), nowIST.getUTCDate() - daysFromMon));
+        const weekStart = new Date(weekStartIST.getTime() - IST_OFFSET);
+        const weekEnd   = new Date(weekStart.getTime() + 7 * 24 * 60 * 60 * 1000 - 1);
+
+        const mStartIST = new Date(Date.UTC(nowIST.getUTCFullYear(), nowIST.getUTCMonth(), 1));
+        const mStart    = new Date(mStartIST.getTime() - IST_OFFSET);
+        const mEndIST   = new Date(Date.UTC(nowIST.getUTCFullYear(), nowIST.getUTCMonth() + 1, 1));
+        const mEnd      = new Date(mEndIST.getTime() - IST_OFFSET - 1);
+
+        const pmStartIST = new Date(Date.UTC(nowIST.getUTCFullYear(), nowIST.getUTCMonth() - 1, 1));
+        const pmStart    = new Date(pmStartIST.getTime() - IST_OFFSET);
+        const pmEndIST   = new Date(Date.UTC(nowIST.getUTCFullYear(), nowIST.getUTCMonth(), 1));
+        const pmEnd      = new Date(pmEndIST.getTime() - IST_OFFSET - 1);
+
+        // ── parallel DB queries ──────────────────────────────────────────
+        const [
+            allRides, monthRides, lastMonthRides, weekRides, todayRides,
+            allFuel,  monthFuel,  lastMonthFuel,  weekFuel,  todayFuel,
+        ] = await Promise.all([
+            prisma.ride.aggregate({ where: { userId },                                              _sum: { fare: true }, _count: { id: true } }),
+            prisma.ride.aggregate({ where: { userId, createdAt: { gte: mStart,    lte: mEnd   } }, _sum: { fare: true }, _count: { id: true } }),
+            prisma.ride.aggregate({ where: { userId, createdAt: { gte: pmStart,   lte: pmEnd  } }, _sum: { fare: true }, _count: { id: true } }),
+            prisma.ride.aggregate({ where: { userId, createdAt: { gte: weekStart, lte: weekEnd} }, _sum: { fare: true }, _count: { id: true } }),
+            prisma.ride.aggregate({ where: { userId, createdAt: { gte: todayStart,lte: todayEnd}}, _sum: { fare: true }, _count: { id: true } }),
+            prisma.fuelLog.aggregate({ where: { userId },                                          _sum: { totalCost: true } }),
+            prisma.fuelLog.aggregate({ where: { userId, date: { gte: mStart,    lte: mEnd   } },   _sum: { totalCost: true } }),
+            prisma.fuelLog.aggregate({ where: { userId, date: { gte: pmStart,   lte: pmEnd  } },   _sum: { totalCost: true } }),
+            prisma.fuelLog.aggregate({ where: { userId, date: { gte: weekStart, lte: weekEnd} },   _sum: { totalCost: true } }),
+            prisma.fuelLog.aggregate({ where: { userId, date: { gte: todayStart,lte: todayEnd}},   _sum: { totalCost: true } }),
+        ]);
+
+        const calc = (rideAgg, fuelAgg) => {
+            const gross = Math.round((rideAgg._sum.fare || 0) * 100) / 100;
+            const fuel  = Math.round((fuelAgg._sum.totalCost || 0) * 100) / 100;
+            const net   = Math.round((gross - fuel) * 100) / 100;
+            const margin = gross > 0 ? Math.round((net / gross) * 100 * 10) / 10 : 0;
+            return { gross, fuel, net, margin, rides: rideAgg._count.id };
+        };
+
+        return res.json({
+            success: true,
+            data: {
+                allTime:   calc(allRides,       allFuel),
+                thisMonth: calc(monthRides,     monthFuel),
+                lastMonth: calc(lastMonthRides, lastMonthFuel),
+                thisWeek:  calc(weekRides,      weekFuel),
+                today:     calc(todayRides,     todayFuel),
+            },
+        });
+    } catch (error) {
+        console.error("getFinancialSummary error:", error);
+        res.status(500).json({ success: false, message: "Failed to fetch financial summary", error: error.message });
+    }
+};
+
 module.exports = {
     addRide,
     getAllRides,
@@ -399,5 +703,8 @@ module.exports = {
     deleteRide,
     getMonthlySummary,
     getPlatformSummary,
-    generateReport
+    generateReport,
+    getEarningsSummary,
+    getAnalytics,
+    getFinancialSummary,
 };

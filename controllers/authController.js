@@ -122,4 +122,56 @@ const changePassword = async (req, res) => {
   }
 };
 
-module.exports = { register, login, changePassword };
+const USER_SELECT = {
+  id: true, name: true, email: true, phone: true, city: true,
+  profilePhoto: true, goalDaily: true, goalWeekly: true, goalMonthly: true, createdAt: true,
+};
+
+const getProfile = async (req, res) => {
+  try {
+    const user = await prisma.user.findUnique({ where: { id: req.user.id }, select: USER_SELECT });
+    return res.json({ success: true, data: { user } });
+  } catch (err) {
+    console.error("getProfile error:", err);
+    return res.status(500).json({ success: false, message: "Server error" });
+  }
+};
+
+const updateProfile = async (req, res) => {
+  try {
+    const { name, phone, city, goalDaily, goalWeekly, goalMonthly } = req.body;
+    const data = {};
+    if (name !== undefined) data.name = name.trim();
+    if (phone !== undefined) data.phone = phone;
+    if (city !== undefined) data.city = city;
+    if (goalDaily !== undefined) data.goalDaily = parseFloat(goalDaily) || 0;
+    if (goalWeekly !== undefined) data.goalWeekly = parseFloat(goalWeekly) || 0;
+    if (goalMonthly !== undefined) data.goalMonthly = parseFloat(goalMonthly) || 0;
+
+    const user = await prisma.user.update({ where: { id: req.user.id }, data, select: USER_SELECT });
+    return res.json({ success: true, data: { user } });
+  } catch (err) {
+    console.error("updateProfile error:", err);
+    return res.status(500).json({ success: false, message: "Server error" });
+  }
+};
+
+const uploadPhoto = async (req, res) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({ success: false, message: "No file uploaded" });
+    }
+    const photoUrl = `/uploads/${req.file.filename}`;
+    const user = await prisma.user.update({
+      where: { id: req.user.id },
+      data: { profilePhoto: photoUrl },
+      select: USER_SELECT,
+    });
+    return res.json({ success: true, data: { user } });
+  } catch (err) {
+    console.error("uploadPhoto error:", err);
+    return res.status(500).json({ success: false, message: "Server error" });
+  }
+};
+
+module.exports = { register, login, changePassword, getProfile, updateProfile, uploadPhoto };

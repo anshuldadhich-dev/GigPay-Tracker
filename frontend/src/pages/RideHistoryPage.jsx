@@ -46,7 +46,8 @@ export default function RideHistoryPage() {
       result = result.filter(r =>
         r.pickup?.toLowerCase().includes(q) ||
         r.dropoff?.toLowerCase().includes(q) ||
-        r.platform?.toLowerCase().includes(q)
+        r.platform?.toLowerCase().includes(q) ||
+        String(r.fare ?? '').includes(q)
       )
     }
 
@@ -85,7 +86,7 @@ export default function RideHistoryPage() {
 
   const handleEdit = useCallback(async (id, data) => {
     const res = await api.put(`/ride/${id}`, data)
-    const updated = res.data?.ride || res.data
+    const updated = res.data?.data || res.data?.ride || {}
     setRides(prev => prev.map(r => (r.id === id ? { ...r, ...updated } : r)))
   }, [])
 

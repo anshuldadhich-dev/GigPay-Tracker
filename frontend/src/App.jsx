@@ -7,7 +7,7 @@ import DashboardPage from './pages/DashboardPage'
 import AddRidePage from './pages/AddRidePage'
 import RideHistoryPage from './pages/RideHistoryPage'
 import SettingsPage from './pages/SettingsPage'
-import PlaceholderPage from './pages/PlaceholderPage'
+import AnalyticsPage from './pages/AnalyticsPage'
 import FuelPage from './pages/FuelPage'
 import ReportsPage from './pages/ReportsPage'
 
@@ -34,7 +34,7 @@ export default function App() {
               <Route path="/dashboard" element={<DashboardPage />} />
               <Route path="/rides" element={<RideHistoryPage />} />
               <Route path="/rides/add" element={<AddRidePage />} />
-              <Route path="/analytics" element={<PlaceholderPage title="Analytics" description="Deep dive into your earnings trends and performance metrics." />} />
+              <Route path="/analytics" element={<AnalyticsPage />} />
               <Route path="/reports" element={<ReportsPage />} />
               <Route path="/fuel" element={<FuelPage />} />
               <Route path="/settings" element={<SettingsPage />} />

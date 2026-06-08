@@ -1,14 +1,17 @@
 import { useState } from 'react'
-import { Bell, Menu } from 'lucide-react'
-import { useNavigate } from 'react-router-dom'
+import { Menu } from 'lucide-react'
+import { useNavigate, useLocation } from 'react-router-dom'
 import SearchBar from '../ui/SearchBar'
 import GigTrackLogo from '../ui/GigTrackLogo'
 import { useAuth } from '../../contexts/AuthContext'
+import NotificationPanel from '../ui/NotificationPanel'
 
 export default function Header({ onMenuClick }) {
   const { user } = useAuth()
   const navigate = useNavigate()
+  const { pathname } = useLocation()
   const [searchVal, setSearchVal] = useState('')
+  const hideSearch = pathname.startsWith('/rides')
 
   function handleSearch(val) {
     const q = (val ?? '').trim()
@@ -33,23 +36,16 @@ export default function Header({ onMenuClick }) {
         </div>
 
         <div className="flex items-center gap-2 sm:gap-3">
-          <SearchBar
-            className="hidden md:block w-48 lg:w-64 xl:w-72"
-            value={searchVal}
-            onChange={e => setSearchVal(e.target.value)}
-            onSubmit={handleSearch}
-          />
-          <button
-            type="button"
-            className="relative p-2.5 rounded-xl bg-white border border-border/60 hover:border-secondary/30 hover:shadow-sm transition-all btn-press"
-            aria-label="Notifications"
-          >
-            <Bell className="w-[18px] h-[18px] text-primary" />
-            <span className="absolute -top-1 -right-1 w-5 h-5 bg-accent text-white text-[10px] font-extrabold rounded-full flex items-center justify-center border-2 border-white shadow-sm">
-              3
-            </span>
-          </button>
-          <div className="hidden sm:flex items-center gap-2.5 pl-1 pr-1 py-1 rounded-xl hover:bg-white/60 transition-colors cursor-pointer">
+          {!hideSearch && (
+            <SearchBar
+              className="hidden md:block w-48 lg:w-64 xl:w-72"
+              value={searchVal}
+              onChange={e => setSearchVal(e.target.value)}
+              onSubmit={handleSearch}
+            />
+          )}
+          <NotificationPanel />
+          <div className="hidden sm:flex items-center gap-2.5 pl-1 pr-1 py-1 rounded-xl hover:bg-white/60 transition-colors cursor-pointer" onClick={() => navigate('/settings?tab=profile')}>
             <div className="text-right hidden lg:block">
               <p className="text-sm font-bold text-primary leading-none">{user?.name || 'Rider'}</p>
               <p className="text-[10px] text-muted font-semibold mt-0.5">Gig Rider</p>

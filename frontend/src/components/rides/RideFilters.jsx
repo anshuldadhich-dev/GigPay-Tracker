@@ -1,3 +1,4 @@
+import { useRef } from 'react'
 import { Search, ChevronDown, ArrowUpDown, SlidersHorizontal, X } from 'lucide-react'
 import Card from '../ui/Card'
 
@@ -22,6 +23,7 @@ export default function RideFilters({
   sort, onSort,
   total,
 }) {
+  const inputRef = useRef(null)
   const hasFilters = platform !== 'All' || dateFrom || dateTo || search.trim()
 
   function clearAll() {
@@ -30,6 +32,12 @@ export default function RideFilters({
     onDateFrom('')
     onDateTo('')
     onSort('latest')
+    inputRef.current?.focus()
+  }
+
+  function handleClearSearch() {
+    onSearch('')
+    inputRef.current?.focus()
   }
 
   return (
@@ -38,16 +46,19 @@ export default function RideFilters({
       <div className="relative group">
         <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted group-focus-within:text-secondary transition-colors pointer-events-none" />
         <input
+          ref={inputRef}
           type="text"
           value={search}
           onChange={e => onSearch(e.target.value)}
-          placeholder="Search by pickup, dropoff or platform…"
+          onFocus={e => e.target.select()}
+          autoFocus
+          placeholder="Search by pickup, dropoff, platform or fare…"
           className="w-full pl-11 pr-10 py-3 rounded-xl border border-border/60 bg-slate-50/60 text-sm text-primary placeholder:text-muted focus:outline-none focus:ring-4 focus:ring-secondary/10 focus:border-secondary/50 focus:bg-white transition-all font-medium"
         />
         {search && (
           <button
             type="button"
-            onClick={() => onSearch('')}
+            onClick={handleClearSearch}
             className="absolute right-3.5 top-1/2 -translate-y-1/2 p-1 rounded-lg hover:bg-slate-200 transition-colors"
           >
             <X className="w-3.5 h-3.5 text-muted" />

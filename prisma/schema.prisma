@@ -15,13 +15,19 @@ datasource db {
 }
 
 model User {
-  id        Int        @id @default(autoincrement())
-  name      String
-  email     String     @unique
-  password  String
-  createdAt DateTime   @default(now()) @map("created_at")
-  rides     Ride[]
-  fuelLogs  FuelLog[]
+  id           Int        @id @default(autoincrement())
+  name         String
+  email        String     @unique
+  password     String
+  phone        String?
+  city         String?
+  profilePhoto String?    @map("profile_photo")
+  goalDaily    Float      @default(1500) @map("goal_daily")
+  goalWeekly   Float      @default(8000) @map("goal_weekly")
+  goalMonthly  Float      @default(30000) @map("goal_monthly")
+  createdAt    DateTime   @default(now()) @map("created_at")
+  rides        Ride[]
+  fuelLogs     FuelLog[]
 
   @@map("users")
 }

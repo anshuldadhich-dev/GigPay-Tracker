@@ -10,9 +10,17 @@ const rideRoutes = require("./routes/rideRoutes");
 const authRoutes = require("./routes/authRoutes");
 const fuelRoutes = require("./routes/fuelRoutes");
 
+const allowedOrigins = process.env.CLIENT_URL
+  ? process.env.CLIENT_URL.split(',').map(o => o.trim())
+  : ['http://localhost:5173'];
+
 app.use(cors({
   origin: function (origin, callback) {
-    callback(null, true);
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
   },
   credentials: true,
 }));

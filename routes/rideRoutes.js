@@ -14,6 +14,8 @@ const {
     getEarningsSummary,
     getAnalytics,
     getFinancialSummary,
+    clearAllRides,
+    exportCSV,
 } = require("../controllers/rideController");
 
 const { protect } = require("../middlewares/authMiddleware");
@@ -28,6 +30,9 @@ router.get("/platform-summary", protect, getPlatformSummary);
 router.get("/analytics", protect, getAnalytics);
 router.get("/financial-summary", protect, getFinancialSummary);
 router.get("/report", protect, generateReport);
+router.get("/export/csv", protect, exportCSV);
+
+router.delete("/all", protect, clearAllRides);
 
 router.get("/:id", protect, getRidesById);
 

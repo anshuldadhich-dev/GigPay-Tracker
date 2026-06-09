@@ -174,4 +174,17 @@ const uploadPhoto = async (req, res) => {
   }
 };
 
-module.exports = { register, login, changePassword, getProfile, updateProfile, uploadPhoto };
+const deleteAccount = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    await prisma.fuelLog.deleteMany({ where: { userId } });
+    await prisma.ride.deleteMany({ where: { userId } });
+    await prisma.user.delete({ where: { id: userId } });
+    return res.json({ success: true, message: "Account deleted successfully" });
+  } catch (err) {
+    console.error("deleteAccount error:", err);
+    return res.status(500).json({ success: false, message: "Server error" });
+  }
+};
+
+module.exports = { register, login, changePassword, getProfile, updateProfile, uploadPhoto, deleteAccount };

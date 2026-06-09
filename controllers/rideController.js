@@ -695,6 +695,47 @@ const getFinancialSummary = async (req, res) => {
     }
 };
 
+// DELETE /ride/all — delete all rides for the user
+const clearAllRides = async (req, res) => {
+    try {
+        const { count } = await prisma.ride.deleteMany({ where: { userId: req.user.id } });
+        return res.json({ success: true, message: `Deleted ${count} rides`, data: { count } });
+    } catch (error) {
+        console.error("clearAllRides error:", error);
+        res.status(500).json({ success: false, message: "Failed to clear ride history", error: error.message });
+    }
+};
+
+// GET /ride/export/csv — export all rides as CSV
+const exportCSV = async (req, res) => {
+    try {
+        const rides = await prisma.ride.findMany({
+            where: { userId: req.user.id },
+            orderBy: { createdAt: "desc" },
+        });
+
+        const rows = [
+            ["ID", "Platform", "Pickup", "Dropoff", "Fare (INR)", "Date"].join(","),
+            ...rides.map(r => [
+                r.id,
+                `"${(r.platform || "Unknown").replace(/"/g, '""')}"`,
+                `"${r.pickup.replace(/"/g, '""')}"`,
+                `"${r.dropoff.replace(/"/g, '""')}"`,
+                r.fare,
+                new Date(r.createdAt).toLocaleString("en-IN", { timeZone: "Asia/Kolkata" }),
+            ].join(",")),
+        ];
+
+        const csv = rows.join("\n");
+        res.setHeader("Content-Type", "text/csv");
+        res.setHeader("Content-Disposition", `attachment; filename="GigPay_Rides_Export.csv"`);
+        res.status(200).send(csv);
+    } catch (error) {
+        console.error("exportCSV error:", error);
+        res.status(500).json({ success: false, message: "Failed to export CSV", error: error.message });
+    }
+};
+
 module.exports = {
     addRide,
     getAllRides,
@@ -707,4 +748,6 @@ module.exports = {
     getEarningsSummary,
     getAnalytics,
     getFinancialSummary,
+    clearAllRides,
+    exportCSV,
 };

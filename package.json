@@ -4,7 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "start": "node server.js",
     "dev": "nodemon server.js",
+    "build": "npx prisma generate",
     "generate": "npx prisma generate && npx tsc -p tsconfig.prisma.json"
   },
   "keywords": [],

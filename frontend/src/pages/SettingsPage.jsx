@@ -119,7 +119,8 @@ function ProfileSection({ user }) {
   }
 
   const initial = form.name?.charAt(0)?.toUpperCase() || 'G'
-  const fullPhotoUrl = photoUrl ? `http://localhost:5000${photoUrl}` : null
+  const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:5000'
+  const fullPhotoUrl = photoUrl ? `${API_BASE}${photoUrl}` : null
 
   return (
     <div className="space-y-5">
@@ -687,6 +688,7 @@ function AppearanceSection() {
 // ─────────────────────────────────────────
 
 function SecuritySection() {
+  const { logout } = useAuth()
   const [show, setShow] = useState({ current: false, next: false, confirm: false })
   const [pass, setPass] = useState({ current: '', next: '', confirm: '' })
   const [loading, setLoading] = useState(false)
@@ -867,7 +869,11 @@ function SecuritySection() {
         </div>
 
         <div className="px-6 py-4">
-          <button type="button" className="flex items-center gap-2 text-sm font-bold text-red-500 hover:text-red-600 transition-colors group">
+          <button
+            type="button"
+            onClick={logout}
+            className="flex items-center gap-2 text-sm font-bold text-red-500 hover:text-red-600 transition-colors group"
+          >
             <LogOut className="w-4 h-4 group-hover:translate-x-0.5 transition-transform duration-150" />
             Sign out of all devices
           </button>
@@ -882,8 +888,76 @@ function SecuritySection() {
 // ─────────────────────────────────────────
 
 function DataSection() {
+  const { logout } = useAuth()
   const [confirmClear, setConfirmClear] = useState(false)
   const [confirmDelete, setConfirmDelete] = useState(false)
+  const [clearLoading, setClearLoading] = useState(false)
+  const [deleteLoading, setDeleteLoading] = useState(false)
+  const [exportLoading, setExportLoading] = useState({ csv: false, pdf: false })
+  const [actionError, setActionError] = useState(null)
+
+  async function handleExportCSV() {
+    setExportLoading(s => ({ ...s, csv: true }))
+    try {
+      const res = await api.get('/ride/export/csv', { responseType: 'blob' })
+      const url = URL.createObjectURL(new Blob([res.data], { type: 'text/csv' }))
+      const a = document.createElement('a')
+      a.href = url
+      a.download = 'GigPay_Rides_Export.csv'
+      a.click()
+      URL.revokeObjectURL(url)
+    } catch {
+      setActionError('CSV export failed. Try again.')
+    } finally {
+      setExportLoading(s => ({ ...s, csv: false }))
+    }
+  }
+
+  async function handleExportPDF() {
+    setExportLoading(s => ({ ...s, pdf: true }))
+    try {
+      const now = new Date()
+      const month = now.getMonth() + 1
+      const year = now.getFullYear()
+      const res = await api.get(`/ride/report?month=${month}&year=${year}`, { responseType: 'blob' })
+      const url = URL.createObjectURL(new Blob([res.data], { type: 'application/pdf' }))
+      const a = document.createElement('a')
+      a.href = url
+      a.download = `GigPay_Report_${month}_${year}.pdf`
+      a.click()
+      URL.revokeObjectURL(url)
+    } catch {
+      setActionError('PDF export failed. Try again.')
+    } finally {
+      setExportLoading(s => ({ ...s, pdf: false }))
+    }
+  }
+
+  async function handleClearHistory() {
+    setClearLoading(true)
+    setActionError(null)
+    try {
+      await api.delete('/ride/all')
+      setConfirmClear(false)
+    } catch {
+      setActionError('Failed to clear ride history. Try again.')
+    } finally {
+      setClearLoading(false)
+    }
+  }
+
+  async function handleDeleteAccount() {
+    setDeleteLoading(true)
+    setActionError(null)
+    try {
+      await api.delete('/auth/account')
+      logout()
+    } catch {
+      setActionError('Failed to delete account. Try again.')
+    } finally {
+      setDeleteLoading(false)
+    }
+  }
 
   return (
     <div className="space-y-5">
@@ -898,25 +972,40 @@ function DataSection() {
           <p className="font-extrabold text-primary">Export Data</p>
           <p className="text-xs text-muted mt-0.5">Download a complete copy of your rides and earnings history</p>
         </div>
+        {actionError && (
+          <div className="mx-5 mt-4 flex items-center gap-2 p-3 rounded-xl bg-red-50 border border-red-100 text-red-600 text-sm">
+            <AlertCircle className="w-4 h-4 shrink-0" />{actionError}
+          </div>
+        )}
         <div className="p-5 grid sm:grid-cols-2 gap-3">
-          <button type="button" className="group flex items-center gap-4 p-4 rounded-2xl border border-emerald-100 bg-gradient-to-br from-emerald-50/80 to-teal-50/60 hover:scale-[1.02] hover:shadow-sm transition-all duration-200">
+          <button
+            type="button"
+            onClick={handleExportCSV}
+            disabled={exportLoading.csv}
+            className="group flex items-center gap-4 p-4 rounded-2xl border border-emerald-100 bg-gradient-to-br from-emerald-50/80 to-teal-50/60 hover:scale-[1.02] hover:shadow-sm transition-all duration-200 disabled:opacity-60 disabled:cursor-not-allowed"
+          >
             <div className="w-10 h-10 rounded-xl bg-emerald-100/80 flex items-center justify-center text-emerald-600 shrink-0">
-              <FileText className="w-5 h-5" />
+              {exportLoading.csv ? <Loader2 className="w-5 h-5 animate-spin" /> : <FileText className="w-5 h-5" />}
             </div>
             <div className="text-left min-w-0">
-              <p className="font-bold text-emerald-800 text-sm">Export CSV</p>
+              <p className="font-bold text-emerald-800 text-sm">{exportLoading.csv ? 'Exporting…' : 'Export CSV'}</p>
               <p className="text-[11px] text-emerald-600/80 mt-0.5">Spreadsheet-ready format</p>
             </div>
             <Download className="w-4 h-4 text-emerald-500 ml-auto group-hover:translate-y-0.5 transition-transform" />
           </button>
 
-          <button type="button" className="group flex items-center gap-4 p-4 rounded-2xl border border-blue-100 bg-gradient-to-br from-blue-50/80 to-indigo-50/60 hover:scale-[1.02] hover:shadow-sm transition-all duration-200">
+          <button
+            type="button"
+            onClick={handleExportPDF}
+            disabled={exportLoading.pdf}
+            className="group flex items-center gap-4 p-4 rounded-2xl border border-blue-100 bg-gradient-to-br from-blue-50/80 to-indigo-50/60 hover:scale-[1.02] hover:shadow-sm transition-all duration-200 disabled:opacity-60 disabled:cursor-not-allowed"
+          >
             <div className="w-10 h-10 rounded-xl bg-blue-100/80 flex items-center justify-center text-blue-600 shrink-0">
-              <FileText className="w-5 h-5" />
+              {exportLoading.pdf ? <Loader2 className="w-5 h-5 animate-spin" /> : <FileText className="w-5 h-5" />}
             </div>
             <div className="text-left min-w-0">
-              <p className="font-bold text-blue-800 text-sm">Export PDF</p>
-              <p className="text-[11px] text-blue-600/80 mt-0.5">Formatted earnings report</p>
+              <p className="font-bold text-blue-800 text-sm">{exportLoading.pdf ? 'Exporting…' : 'Export PDF'}</p>
+              <p className="text-[11px] text-blue-600/80 mt-0.5">Current month report</p>
             </div>
             <Download className="w-4 h-4 text-blue-500 ml-auto group-hover:translate-y-0.5 transition-transform" />
           </button>
@@ -955,15 +1044,18 @@ function DataSection() {
                 <button
                   type="button"
                   onClick={() => setConfirmClear(false)}
-                  className="px-3.5 py-2 rounded-xl border border-border text-sm font-bold text-muted hover:bg-slate-100 transition-all"
+                  disabled={clearLoading}
+                  className="px-3.5 py-2 rounded-xl border border-border text-sm font-bold text-muted hover:bg-slate-100 transition-all disabled:opacity-50"
                 >
                   Cancel
                 </button>
                 <button
                   type="button"
-                  className="px-3.5 py-2 rounded-xl bg-red-500 hover:bg-red-600 text-white text-sm font-bold transition-all shadow-sm"
+                  onClick={handleClearHistory}
+                  disabled={clearLoading}
+                  className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-red-500 hover:bg-red-600 text-white text-sm font-bold transition-all shadow-sm disabled:opacity-60"
                 >
-                  Yes, clear it
+                  {clearLoading ? <><Loader2 className="w-3.5 h-3.5 animate-spin" /> Clearing…</> : 'Yes, clear it'}
                 </button>
               </div>
             )}
@@ -988,15 +1080,18 @@ function DataSection() {
                 <button
                   type="button"
                   onClick={() => setConfirmDelete(false)}
-                  className="px-3.5 py-2 rounded-xl border border-border text-sm font-bold text-muted hover:bg-slate-100 transition-all"
+                  disabled={deleteLoading}
+                  className="px-3.5 py-2 rounded-xl border border-border text-sm font-bold text-muted hover:bg-slate-100 transition-all disabled:opacity-50"
                 >
                   Cancel
                 </button>
                 <button
                   type="button"
-                  className="px-3.5 py-2 rounded-xl bg-red-700 hover:bg-red-800 text-white text-sm font-bold transition-all shadow-sm animate-pulse"
+                  onClick={handleDeleteAccount}
+                  disabled={deleteLoading}
+                  className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-red-700 hover:bg-red-800 text-white text-sm font-bold transition-all shadow-sm disabled:opacity-60"
                 >
-                  I understand, delete
+                  {deleteLoading ? <><Loader2 className="w-3.5 h-3.5 animate-spin" /> Deleting…</> : 'I understand, delete'}
                 </button>
               </div>
             )}

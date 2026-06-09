@@ -10,10 +10,12 @@ const rideRoutes = require("./routes/rideRoutes");
 const authRoutes = require("./routes/authRoutes");
 const fuelRoutes = require("./routes/fuelRoutes");
 
-const allowedOrigins = process.env.CLIENT_URL
-  ? process.env.CLIENT_URL.split(',').map(o => o.trim())
-  : ['http://localhost:5173'];
-app.use(cors({ origin: allowedOrigins, credentials: true }));
+app.use(cors({
+  origin: function (origin, callback) {
+    callback(null, true);
+  },
+  credentials: true,
+}));
 app.use(express.json());
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 

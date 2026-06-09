@@ -59,9 +59,9 @@ export default function LoginPage() {
             <input type="checkbox" className="rounded border-border text-secondary focus:ring-secondary/20" />
             Remember me
           </label>
-          <button type="button" className="text-secondary font-semibold hover:text-secondary-light transition-colors">
+          <span className="text-slate-400 text-sm font-medium cursor-not-allowed" title="Coming soon">
             Forgot password?
-          </button>
+          </span>
         </div>
 
         <Button type="submit" variant="primary" size="lg" className="w-full group" disabled={loading}>

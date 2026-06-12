@@ -1,7 +1,8 @@
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const prisma = require("../config/db");
-const admin = require("../config/firebase");
+require("../config/firebase");
+const { getAuth } = require("firebase-admin/auth");
 
 const register = async (req, res) => {
   try {
@@ -114,7 +115,7 @@ const googleLogin = async (req, res) => {
     }
 
     // Firebase se token verify karo
-    const decodedToken = await admin.auth().verifyIdToken(idToken);
+    const decodedToken = await getAuth().verifyIdToken(idToken);
     const { email, name, picture } = decodedToken;
 
     // User find karo ya create karo

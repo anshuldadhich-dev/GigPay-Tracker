@@ -2,6 +2,8 @@ const admin = require('firebase-admin')
 const path = require('path')
 const fs = require('fs')
 
+console.log('🔍Checking FIREBASE_SERVICE_ACCOUNT env var presence:', process.env.FIREBASE_SERVICE_ACCOUNT ? 'DEFINED (length: ' + process.env.FIREBASE_SERVICE_ACCOUNT.length + ')' : 'UNDEFINED')
+
 let serviceAccount = null
 let serviceAccountFile = null
 

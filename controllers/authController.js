@@ -1,6 +1,7 @@
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const prisma = require("../config/db");
+const admin = require("../config/firebase");
 
 const register = async (req, res) => {
   try {
@@ -65,6 +66,14 @@ const login = async (req, res) => {
       });
     }
 
+    // Google user ko password login se roko
+    if (!user.password) {
+      return res.status(400).json({
+        success: false,
+        message: "This account uses Google Sign-In. Please sign in with Google.",
+      });
+    }
+
     const match = await bcrypt.compare(password, user.password);
     if (!match) {
       return res.status(401).json({
@@ -90,6 +99,63 @@ const login = async (req, res) => {
   } catch (err) {
     console.error("Login error:", err);
     return res.status(500).json({ success: false, message: "Server error" });
+  }
+};
+
+const googleLogin = async (req, res) => {
+  try {
+    const { idToken } = req.body;
+
+    if (!idToken) {
+      return res.status(400).json({
+        success: false,
+        message: "ID token is required",
+      });
+    }
+
+    // Firebase se token verify karo
+    const decodedToken = await admin.auth().verifyIdToken(idToken);
+    const { email, name, picture } = decodedToken;
+
+    // User find karo ya create karo
+    let user = await prisma.user.findUnique({ where: { email } });
+
+    if (!user) {
+      user = await prisma.user.create({
+        data: {
+          name: name || email.split("@")[0],
+          email,
+          authProvider: "google",
+          profilePhoto: picture || null,
+        },
+      });
+    }
+
+    const token = jwt.sign(
+      { id: user.id, email: user.email },
+      process.env.JWT_SECRET,
+      { expiresIn: "7d" }
+    );
+
+    return res.json({
+      success: true,
+      message: "Google login successful",
+      data: {
+        token,
+        user: {
+          id: user.id,
+          name: user.name,
+          email: user.email,
+          createdAt: user.createdAt,
+        },
+      },
+    });
+  } catch (err) {
+    console.error("Google login error:", err);
+    return res.status(401).json({
+      success: false,
+      message: "Invalid Google token",
+    });
   }
 };
 
@@ -187,4 +253,4 @@ const deleteAccount = async (req, res) => {
   }
 };
 
-module.exports = { register, login, changePassword, getProfile, updateProfile, uploadPhoto, deleteAccount };
+module.exports = { register, login, googleLogin, changePassword, getProfile, updateProfile, uploadPhoto, deleteAccount };

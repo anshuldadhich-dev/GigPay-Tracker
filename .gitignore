@@ -3,3 +3,5 @@ node_modules/
 frontend/.env
 generated/
 dist/
+firebase-service-account.json
+gigpay-tracker-firebase-adminsdk-*.json

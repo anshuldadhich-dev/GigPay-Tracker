@@ -1,4 +1,6 @@
 import { createContext, useContext, useState } from 'react'
+import { signInWithPopup } from 'firebase/auth'
+import { auth, googleProvider } from '../services/firebase'
 import api from '../services/api'
 
 const AuthContext = createContext(null)
@@ -45,6 +47,26 @@ export function AuthProvider({ children }) {
     }
   }
 
+  const googleLogin = async () => {
+    setLoading(true)
+    setError(null)
+    try {
+      const result = await signInWithPopup(auth, googleProvider)
+      const idToken = await result.user.getIdToken()
+      const { data } = await api.post('/auth/google-login', { idToken })
+      localStorage.setItem('token', data.data.token)
+      localStorage.setItem('user', JSON.stringify(data.data.user))
+      setUser(data.data.user)
+      return { success: true }
+    } catch (err) {
+      const msg = err.response?.data?.message || err.message || 'Google sign-in failed'
+      setError(msg)
+      return { success: false, message: msg }
+    } finally {
+      setLoading(false)
+    }
+  }
+
   const updateUser = (userData) => {
     const merged = { ...user, ...userData }
     localStorage.setItem('user', JSON.stringify(merged))
@@ -58,7 +80,7 @@ export function AuthProvider({ children }) {
   }
 
   return (
-    <AuthContext.Provider value={{ user, token, loading, error, login, register, logout, updateUser }}>
+    <AuthContext.Provider value={{ user, token, loading, error, login, register, googleLogin, logout, updateUser }}>
       {children}
     </AuthContext.Provider>
   )

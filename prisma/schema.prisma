@@ -18,7 +18,8 @@ model User {
   id           Int        @id @default(autoincrement())
   name         String
   email        String     @unique
-  password     String
+  password     String?
+  authProvider String     @default("local") @map("auth_provider")
   phone        String?
   city         String?
   profilePhoto String?    @map("profile_photo")

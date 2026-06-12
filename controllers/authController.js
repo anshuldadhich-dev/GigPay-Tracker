@@ -155,7 +155,7 @@ const googleLogin = async (req, res) => {
     console.error("Google login error:", err);
     return res.status(401).json({
       success: false,
-      message: "Invalid Google token",
+      message: `Google login error: ${err.message}`,
     });
   }
 };

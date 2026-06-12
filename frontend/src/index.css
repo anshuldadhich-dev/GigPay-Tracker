@@ -1,12 +1,12 @@
 @import "tailwindcss";
 
 @theme {
-  --color-primary: #1e3a8a;
-  --color-primary-dark: #172554;
-  --color-primary-light: #3b5cb8;
-  --color-secondary: #14b8a6;
-  --color-secondary-light: #2dd4bf;
-  --color-secondary-dark: #0d9488;
+  --color-primary: #1e3b8b;
+  --color-primary-dark: #0f1d4a;
+  --color-primary-light: #3a5fc5;
+  --color-secondary: #0d9488;
+  --color-secondary-light: #14b8a6;
+  --color-secondary-dark: #0f766e;
   --color-accent: #f97316;
   --color-accent-dark: #ea580c;
   --color-background: #f8fafc;
@@ -14,12 +14,12 @@
   --color-muted: #64748b;
   --color-border: #e2e8f0;
   --font-sans: "Plus Jakarta Sans", system-ui, -apple-system, sans-serif;
-  --shadow-xs: 0 1px 2px rgba(30, 58, 138, 0.04);
-  --shadow-card: 0 0 0 1px rgba(30, 58, 138, 0.04), 0 2px 8px rgba(30, 58, 138, 0.04), 0 12px 40px -12px rgba(30, 58, 138, 0.1);
-  --shadow-soft: 0 8px 40px -12px rgba(30, 58, 138, 0.14), 0 4px 16px -4px rgba(30, 58, 138, 0.06);
-  --shadow-glow-teal: 0 8px 32px -6px rgba(20, 184, 166, 0.4);
-  --shadow-glow-orange: 0 8px 32px -6px rgba(249, 115, 22, 0.4);
-  --shadow-glow-blue: 0 8px 32px -6px rgba(30, 58, 138, 0.35);
+  --shadow-xs: 0 1px 2px rgba(30, 58, 139, 0.02);
+  --shadow-card: 0 0 0 1px rgba(30, 58, 139, 0.03), 0 2px 8px rgba(30, 58, 139, 0.02), 0 12px 32px -12px rgba(30, 58, 139, 0.08);
+  --shadow-soft: 0 12px 32px -8px rgba(30, 58, 139, 0.12), 0 4px 12px -2px rgba(30, 58, 139, 0.04);
+  --shadow-glow-teal: 0 8px 24px -6px rgba(13, 148, 136, 0.3);
+  --shadow-glow-orange: 0 8px 24px -6px rgba(249, 117, 22, 0.3);
+  --shadow-glow-blue: 0 8px 24px -6px rgba(30, 59, 139, 0.25);
 }
 
 @layer base {
@@ -66,46 +66,46 @@
 @layer utilities {
   .mesh-bg {
     background-image:
-      radial-gradient(ellipse 80% 60% at 0% 0%, rgba(20, 184, 166, 0.06) 0%, transparent 60%),
-      radial-gradient(ellipse 60% 50% at 100% 0%, rgba(249, 115, 22, 0.04) 0%, transparent 50%),
-      radial-gradient(ellipse 70% 60% at 50% 100%, rgba(30, 58, 138, 0.04) 0%, transparent 60%);
+      radial-gradient(ellipse 70% 50% at 0% 0%, rgba(30, 59, 139, 0.04) 0%, transparent 60%),
+      radial-gradient(ellipse 60% 40% at 100% 0%, rgba(13, 148, 136, 0.03) 0%, transparent 50%),
+      radial-gradient(ellipse 50% 50% at 50% 100%, rgba(249, 117, 22, 0.02) 0%, transparent 60%);
   }
 
   .dot-grid {
-    background-image: radial-gradient(circle, #cbd5e1 0.8px, transparent 0.8px);
+    background-image: radial-gradient(circle, #e2e8f0 0.8px, transparent 0.8px);
     background-size: 20px 20px;
   }
 
   .glass {
-    background: rgba(255, 255, 255, 0.75);
-    backdrop-filter: blur(20px) saturate(180%);
-    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    background: rgba(255, 255, 255, 0.82);
+    backdrop-filter: blur(16px) saturate(180%);
+    -webkit-backdrop-filter: blur(16px) saturate(180%);
   }
 
   .glass-dark {
-    background: rgba(255, 255, 255, 0.06);
-    backdrop-filter: blur(20px) saturate(150%);
-    -webkit-backdrop-filter: blur(20px) saturate(150%);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(15, 23, 42, 0.75);
+    backdrop-filter: blur(16px) saturate(150%);
+    -webkit-backdrop-filter: blur(16px) saturate(150%);
+    border: 1px solid rgba(255, 255, 255, 0.06);
   }
 
   .sidebar-gradient {
-    background: linear-gradient(180deg, #1e3a8a 0%, #172554 55%, #0f2744 100%);
+    background: linear-gradient(180deg, #1e3b8b 0%, #0f1d4a 60%, #0a1333 100%);
   }
 
   .hero-gradient {
-    background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 35%, #0e7490 70%, #14b8a6 100%);
+    background: linear-gradient(135deg, #1e3b8b 0%, #1e40af 35%, #0f766e 70%, #0d9488 100%);
   }
 
   .hero-mesh {
     background-image:
-      radial-gradient(circle at 20% 80%, rgba(249, 115, 22, 0.15) 0%, transparent 40%),
-      radial-gradient(circle at 80% 20%, rgba(20, 184, 166, 0.2) 0%, transparent 40%),
-      linear-gradient(135deg, #1e3a8a 0%, #1e40af 40%, #0e7490 100%);
+      radial-gradient(circle at 20% 80%, rgba(249, 117, 22, 0.1) 0%, transparent 40%),
+      radial-gradient(circle at 80% 20%, rgba(13, 148, 136, 0.15) 0%, transparent 40%),
+      linear-gradient(135deg, #1e3b8b 0%, #172554 100%);
   }
 
   .text-gradient {
-    background: linear-gradient(135deg, #1e3a8a 0%, #14b8a6 100%);
+    background: linear-gradient(135deg, #1e3b8b 0%, #0d9488 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -123,7 +123,7 @@
     inset: 0;
     border-radius: inherit;
     padding: 1px;
-    background: linear-gradient(135deg, rgba(20, 184, 166, 0.35), rgba(30, 58, 138, 0.15), rgba(249, 115, 22, 0.2));
+    background: linear-gradient(135deg, rgba(13, 148, 136, 0.25), rgba(30, 59, 139, 0.12), rgba(249, 117, 22, 0.15));
     -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
     mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
     -webkit-mask-composite: xor;
@@ -132,19 +132,26 @@
   }
 
   .card-premium {
-    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease;
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
   }
 
   .card-premium:hover {
-    transform: translateY(-4px);
+    transform: translateY(-3px);
     box-shadow: var(--shadow-soft);
+    border-color: rgba(30, 59, 139, 0.1);
   }
 
   .nav-active-glow {
-    box-shadow: 0 0 20px rgba(20, 184, 166, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    box-shadow: 0 0 20px rgba(13, 148, 136, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.1);
   }
 
-  .btn-press:active { transform: scale(0.97); }
+  .btn-press {
+    transition: all 0.15s ease;
+  }
+
+  .btn-press:active {
+    transform: scale(0.98);
+  }
 
   .skeleton {
     background: linear-gradient(90deg, #f1f5f9 25%, #e2e8f0 50%, #f1f5f9 75%);
@@ -153,27 +160,27 @@
   }
 
   .animate-float { animation: float 6s ease-in-out infinite; }
-  .animate-fade-up { animation: fade-up 0.6s cubic-bezier(0.22, 1, 0.36, 1) forwards; opacity: 0; }
-  .animate-fade-in { animation: fade-in 0.5s ease forwards; opacity: 0; }
-  .animate-scale-in { animation: scale-in 0.45s cubic-bezier(0.34, 1.56, 0.64, 1) forwards; opacity: 0; }
+  .animate-fade-up { animation: fade-up 0.5s cubic-bezier(0.25, 0.8, 0.25, 1) forwards; opacity: 0; }
+  .animate-fade-in { animation: fade-in 0.4s ease forwards; opacity: 0; }
+  .animate-scale-in { animation: scale-in 0.4s cubic-bezier(0.25, 0.8, 0.25, 1) forwards; opacity: 0; }
   .animate-pulse-ring { animation: pulse-ring 2.5s ease-out infinite; }
   .animate-trend { animation: trend-up 2s ease-in-out infinite; }
 }
 
 @keyframes float {
   0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-8px); }
+  50% { transform: translateY(-6px); }
 }
 
 @keyframes fade-up {
-  from { opacity: 0; transform: translateY(16px); }
+  from { opacity: 0; transform: translateY(12px); }
   to { opacity: 1; transform: translateY(0); }
 }
 
 @keyframes pulse-ring {
-  0% { box-shadow: 0 0 0 0 rgba(249, 115, 22, 0.45); }
-  70% { box-shadow: 0 0 0 14px rgba(249, 115, 22, 0); }
-  100% { box-shadow: 0 0 0 0 rgba(249, 115, 22, 0); }
+  0% { box-shadow: 0 0 0 0 rgba(249, 117, 22, 0.3); }
+  70% { box-shadow: 0 0 0 12px rgba(249, 117, 22, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(249, 117, 22, 0); }
 }
 
 @keyframes shimmer {
@@ -192,6 +199,6 @@
 }
 
 @keyframes scale-in {
-  from { opacity: 0; transform: scale(0.85); }
+  from { opacity: 0; transform: scale(0.96); }
   to { opacity: 1; transform: scale(1); }
 }

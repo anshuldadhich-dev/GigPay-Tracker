@@ -11,11 +11,12 @@ export default function LoginPage() {
   const { login, googleLogin, loading } = useAuth()
   const [form, setForm] = useState({ email: '', password: '' })
   const [error, setError] = useState(null)
+  const [rememberMe, setRememberMe] = useState(false)
 
   const handleSubmit = async (e) => {
     e.preventDefault()
     setError(null)
-    const result = await login(form.email, form.password)
+    const result = await login(form.email, form.password, rememberMe)
     if (result.success) {
       navigate('/dashboard')
     } else {
@@ -25,7 +26,7 @@ export default function LoginPage() {
 
   const handleGoogleLogin = async () => {
     setError(null)
-    const result = await googleLogin()
+    const result = await googleLogin(rememberMe)
     if (result.success) {
       navigate('/dashboard')
     } else {
@@ -66,7 +67,12 @@ export default function LoginPage() {
 
         <div className="flex items-center justify-between text-sm">
           <label className="flex items-center gap-2 text-slate-600 cursor-pointer font-medium">
-            <input type="checkbox" className="rounded border-border text-secondary focus:ring-secondary/20" />
+            <input 
+              type="checkbox" 
+              checked={rememberMe}
+              onChange={(e) => setRememberMe(e.target.checked)}
+              className="rounded border-border text-secondary focus:ring-secondary/20" 
+            />
             Remember me
           </label>
           <span className="text-slate-400 text-sm font-medium cursor-not-allowed" title="Coming soon">

@@ -7,20 +7,23 @@ const AuthContext = createContext(null)
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(() => {
-    try { return JSON.parse(localStorage.getItem('user')) || null } catch { return null }
+    try { 
+      return JSON.parse(localStorage.getItem('user') || sessionStorage.getItem('user')) || null 
+    } catch { 
+      return null 
+    }
   })
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
 
-  const token = localStorage.getItem('token')
-
-  const login = async (email, password) => {
+  const login = async (email, password, rememberMe = false) => {
     setLoading(true)
     setError(null)
     try {
       const { data } = await api.post('/auth/login', { email, password })
-      localStorage.setItem('token', data.data.token)
-      localStorage.setItem('user', JSON.stringify(data.data.user))
+      const storage = rememberMe ? localStorage : sessionStorage
+      storage.setItem('token', data.data.token)
+      storage.setItem('user', JSON.stringify(data.data.user))
       setUser(data.data.user)
       return { success: true }
     } catch (err) {
@@ -47,15 +50,16 @@ export function AuthProvider({ children }) {
     }
   }
 
-  const googleLogin = async () => {
+  const googleLogin = async (rememberMe = false) => {
     setLoading(true)
     setError(null)
     try {
       const result = await signInWithPopup(auth, googleProvider)
       const idToken = await result.user.getIdToken()
       const { data } = await api.post('/auth/google-login', { idToken })
-      localStorage.setItem('token', data.data.token)
-      localStorage.setItem('user', JSON.stringify(data.data.user))
+      const storage = rememberMe ? localStorage : sessionStorage
+      storage.setItem('token', data.data.token)
+      storage.setItem('user', JSON.stringify(data.data.user))
       setUser(data.data.user)
       return { success: true }
     } catch (err) {
@@ -69,18 +73,25 @@ export function AuthProvider({ children }) {
 
   const updateUser = (userData) => {
     const merged = { ...user, ...userData }
-    localStorage.setItem('user', JSON.stringify(merged))
+    if (localStorage.getItem('user')) {
+      localStorage.setItem('user', JSON.stringify(merged))
+    }
+    if (sessionStorage.getItem('user')) {
+      sessionStorage.setItem('user', JSON.stringify(merged))
+    }
     setUser(merged)
   }
 
   const logout = () => {
     localStorage.removeItem('token')
     localStorage.removeItem('user')
+    sessionStorage.removeItem('token')
+    sessionStorage.removeItem('user')
     setUser(null)
   }
 
   return (
-    <AuthContext.Provider value={{ user, token, loading, error, login, register, googleLogin, logout, updateUser }}>
+    <AuthContext.Provider value={{ user, loading, error, login, register, googleLogin, logout, updateUser }}>
       {children}
     </AuthContext.Provider>
   )

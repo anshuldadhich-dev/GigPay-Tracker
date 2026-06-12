@@ -165,10 +165,10 @@ export default function DashboardPage() {
 
       <section className="grid grid-cols-1 lg:grid-cols-5 gap-5">
         <div className="lg:col-span-2 min-w-0">
-          <PlatformEarnings data={platformData.length > 0 ? platformData : undefined} loading={loading} />
+          <PlatformEarnings data={platformData} loading={loading} />
         </div>
         <div className="lg:col-span-3 min-w-0">
-          <RecentRidesTable rides={rides.length > 0 ? rides.slice(0, 8) : undefined} loading={loading} />
+          <RecentRidesTable rides={rides.slice(0, 8)} loading={loading} />
         </div>
       </section>
 

@@ -4,7 +4,7 @@ import PlatformLogo from '../ui/PlatformLogo'
 import { recentRides as dummyRides } from '../../data/dummyData'
 
 export default function RecentRidesTable({ rides, loading }) {
-  const displayRides = rides || dummyRides
+  const displayRides = rides || []
 
   return (
     <Card padding="lg" className="overflow-hidden">

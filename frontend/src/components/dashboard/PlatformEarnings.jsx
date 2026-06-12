@@ -21,7 +21,7 @@ function RingProgress({ percentage, color, size = 52 }) {
 }
 
 export default function PlatformEarnings({ data, loading }) {
-  const earnings = data || dummyData
+  const earnings = data || []
   const total = earnings.reduce((s, p) => s + p.amount, 0)
   const maxAmount = Math.max(...earnings.map((p) => p.amount), 1)
 

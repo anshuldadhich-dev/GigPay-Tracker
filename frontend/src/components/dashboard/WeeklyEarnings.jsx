@@ -65,12 +65,12 @@ export default function WeeklyEarnings({ rides = [], loading = false }) {
       {/* Header */}
       <div className="flex items-start justify-between mb-6">
         <div>
-          <p className="text-[11px] font-bold text-secondary uppercase tracking-[0.12em]">This Week</p>
-          <h3 className="text-lg font-extrabold text-primary tracking-tight mt-0.5">Daily Breakdown</h3>
+          <p className="text-[11px] font-bold text-royal uppercase tracking-[0.12em]">This Week</p>
+          <h3 className="text-lg font-extrabold text-navy tracking-tight mt-0.5">Daily Breakdown</h3>
         </div>
         {!loading && weekTotal > 0 && (
           <div className="text-right">
-            <p className="text-xl font-extrabold text-primary">₹{Math.round(weekTotal).toLocaleString('en-IN')}</p>
+            <p className="text-xl font-extrabold text-navy">₹{Math.round(weekTotal).toLocaleString('en-IN')}</p>
             <p className="text-[11px] text-muted mt-0.5">{weekRides} rides · {activeDays} days active</p>
           </div>
         )}
@@ -106,13 +106,13 @@ export default function WeeklyEarnings({ rides = [], loading = false }) {
                       <div
                         className={`w-full rounded-xl transition-all duration-500 relative group cursor-default ${
                           day.isToday
-                            ? 'bg-gradient-to-t from-secondary to-secondary-light shadow-sm shadow-secondary/30'
-                            : 'bg-gradient-to-t from-teal-100 to-teal-200 hover:from-secondary/60 hover:to-secondary-light/60'
+                            ? 'bg-gradient-to-t from-royal to-royal-light shadow-sm shadow-royal/30'
+                            : 'bg-gradient-to-t from-navy/10 to-royal/20 hover:from-royal/50 hover:to-royal-light/50'
                         }`}
                         style={{ height: `${heightPct}%` }}
                       >
                         {/* Tooltip on hover */}
-                        <div className="absolute -top-8 left-1/2 -translate-x-1/2 bg-primary text-white text-[10px] font-bold px-2 py-1 rounded-lg whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-10">
+                        <div className="absolute -top-8 left-1/2 -translate-x-1/2 bg-navy text-white text-[10px] font-bold px-2 py-1 rounded-lg whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-10">
                           ₹{Math.round(day.earnings).toLocaleString('en-IN')}
                         </div>
                       </div>
@@ -124,17 +124,17 @@ export default function WeeklyEarnings({ rides = [], loading = false }) {
                   {/* Date number */}
                   <span className={`text-[11px] font-bold w-6 h-6 flex items-center justify-center rounded-lg ${
                     day.isToday
-                      ? 'bg-secondary text-white'
+                      ? 'bg-royal text-white'
                       : day.earnings > 0
-                      ? 'text-primary'
-                      : 'text-slate-300'
+                      ? 'text-navy'
+                      : 'text-muted/30'
                   }`}>
                     {day.date}
                   </span>
 
                   {/* Earnings label */}
                   <span className={`text-[10px] font-semibold text-center leading-tight ${
-                    day.isFuture ? 'text-transparent' : day.earnings > 0 ? 'text-secondary' : 'text-slate-300'
+                    day.isFuture ? 'text-transparent' : day.earnings > 0 ? 'text-royal' : 'text-muted/30'
                   }`}>
                     {day.earnings > 0
                       ? day.earnings >= 1000
@@ -158,9 +158,9 @@ export default function WeeklyEarnings({ rides = [], loading = false }) {
                   { label: 'Daily Avg', value: avgDay > 0 ? `₹${avgDay.toLocaleString('en-IN')}` : '—' },
                   { label: 'Active Days', value: `${activeDays} / 7` },
                 ].map(({ label, value }) => (
-                  <div key={label} className="rounded-xl bg-slate-50 p-3 text-center">
+                  <div key={label} className="rounded-xl bg-background border border-border/40 p-3 text-center">
                     <p className="text-[10px] font-bold text-muted uppercase tracking-wider">{label}</p>
-                    <p className="text-sm font-extrabold text-primary mt-1">{value}</p>
+                    <p className="text-sm font-extrabold text-navy mt-1">{value}</p>
                   </div>
                 ))
               })()}

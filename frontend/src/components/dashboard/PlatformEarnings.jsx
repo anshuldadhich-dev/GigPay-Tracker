@@ -10,7 +10,7 @@ function RingProgress({ percentage, color, size = 52 }) {
 
   return (
     <svg width={size} height={size} className="-rotate-90">
-      <circle cx={size / 2} cy={size / 2} r={r} fill="none" stroke="#f1f5f9" strokeWidth="4" />
+      <circle cx={size / 2} cy={size / 2} r={r} fill="none" stroke="#E5DDD5" strokeWidth="4" />
       <circle
         cx={size / 2} cy={size / 2} r={r} fill="none" stroke={color} strokeWidth="4"
         strokeDasharray={circ} strokeDashoffset={offset} strokeLinecap="round"
@@ -28,9 +28,9 @@ export default function PlatformEarnings({ data, loading }) {
   return (
     <Card className="h-full" padding="lg">
       <div className="mb-6">
-        <p className="text-[11px] font-bold text-secondary uppercase tracking-[0.12em]">Revenue</p>
-        <h3 className="text-xl font-extrabold text-primary tracking-tight mt-1">Platform Performance</h3>
-        <p className="text-2xl font-extrabold text-primary mt-2">
+        <p className="text-[11px] font-bold text-royal uppercase tracking-[0.12em]">Revenue</p>
+        <h3 className="text-xl font-extrabold text-navy tracking-tight mt-1">Platform Performance</h3>
+        <p className="text-2xl font-extrabold text-navy mt-2">
           {loading ? '…' : `₹${total.toLocaleString('en-IN')}`}
         </p>
         <p className="text-xs text-muted">Combined earnings across platforms</p>
@@ -58,7 +58,7 @@ export default function PlatformEarnings({ data, loading }) {
             {earnings.map(({ platform, amount, percentage, color, rides, growth }) => (
               <div
                 key={platform}
-                className="flex items-center gap-4 p-4 rounded-2xl bg-slate-50/60 border border-border/40 hover:border-secondary/30 hover:bg-white hover:shadow-sm transition-all duration-300 card-premium group"
+                className="flex items-center gap-4 p-4 rounded-2xl bg-background border border-border/40 hover:border-royal/30 hover:bg-white hover:shadow-sm transition-all duration-300 card-premium group"
               >
                 <div className="relative shrink-0">
                   <RingProgress percentage={percentage} color={color} />
@@ -68,8 +68,8 @@ export default function PlatformEarnings({ data, loading }) {
                 </div>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center justify-between gap-2">
-                    <p className="font-bold text-primary">{platform}</p>
-                    <p className="font-extrabold text-primary">₹{amount.toLocaleString('en-IN')}</p>
+                    <p className="font-bold text-navy">{platform}</p>
+                    <p className="font-extrabold text-navy">₹{amount.toLocaleString('en-IN')}</p>
                   </div>
                   <div className="flex items-center justify-between mt-1">
                     <p className="text-[11px] text-muted font-medium">{rides} rides</p>
@@ -79,7 +79,7 @@ export default function PlatformEarnings({ data, loading }) {
                       </span>
                     )}
                   </div>
-                  <div className="h-1.5 bg-slate-200/60 rounded-full mt-2.5 overflow-hidden">
+                  <div className="h-1.5 bg-border/50 rounded-full mt-2.5 overflow-hidden">
                     <div
                       className="h-full rounded-full transition-all duration-700 ease-out"
                       style={{ width: `${percentage}%`, background: `linear-gradient(90deg, ${color}, ${color}99)` }}

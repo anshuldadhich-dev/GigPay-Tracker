@@ -1,11 +1,11 @@
 import { Link } from 'react-router-dom'
-import gigTrackLogo from '../../assets/GigTrackLogo.png'
+import gigPayLogo from '../../assets/GigLogo.png'
 
 const markSizes = {
-  sm: 'h-8 w-8',
-  md: 'h-10 w-10',
-  lg: 'h-12 w-12',
-  xl: 'h-20 w-20',
+  sm:   'h-8 w-8',
+  md:   'h-10 w-10',
+  lg:   'h-12 w-12',
+  xl:   'h-14 w-14',
   hero: 'h-20 w-20 sm:h-24 sm:w-24',
 }
 
@@ -17,9 +17,13 @@ export default function GigTrackLogo({
   variant = 'light',
 }) {
   const mark = (
-    <div className={`${markSizes[size]} shrink-0 rounded-2xl overflow-hidden shadow-xl p-1.5 ${variant === 'dark' ? 'bg-white ring-2 ring-white/30' : 'bg-white ring-1 ring-primary/10'}`}>
+    <div className={`${markSizes[size]} shrink-0 rounded-2xl overflow-hidden ${
+      variant === 'dark'
+        ? 'ring-2 ring-white/25 shadow-lg'
+        : 'ring-1 ring-navy/10 shadow-md'
+    }`}>
       <img
-        src={gigTrackLogo}
+        src={gigPayLogo}
         alt=""
         aria-hidden="true"
         className="w-full h-full object-contain"
@@ -29,18 +33,14 @@ export default function GigTrackLogo({
 
   const wordmark = showWordmark && (
     <div className="min-w-0 leading-none">
-      <span
-        className={`block text-[17px] font-extrabold tracking-tight ${
-          variant === 'dark' ? 'text-white' : 'text-primary'
-        }`}
-      >
-        GigTrack
+      <span className={`block text-[17px] font-extrabold tracking-tight ${
+        variant === 'dark' ? 'text-white' : 'text-navy'
+      }`}>
+        GigPay
       </span>
-      <span
-        className={`block text-[11px] font-semibold tracking-widest uppercase mt-0.5 ${
-          variant === 'dark' ? 'text-white/65' : 'text-muted'
-        }`}
-      >
+      <span className={`block text-[10px] font-bold tracking-[0.18em] uppercase mt-0.5 ${
+        variant === 'dark' ? 'text-white/55' : 'text-muted'
+      }`}>
         Tracker
       </span>
     </div>
@@ -58,7 +58,7 @@ export default function GigTrackLogo({
       <Link
         to={to}
         className="inline-flex items-center gap-2.5 hover:opacity-90 transition-opacity duration-200"
-        aria-label="GigTrack — Home"
+        aria-label="GigPay Tracker — Home"
       >
         {mark}
         {wordmark}
@@ -71,10 +71,14 @@ export default function GigTrackLogo({
 
 export function GigTrackMark({ size = 'md', className = '', variant = 'light' }) {
   return (
-    <div className={`${markSizes[size]} shrink-0 rounded-2xl overflow-hidden shadow-xl p-2 ${variant === 'dark' ? 'bg-white ring-2 ring-white/30' : 'bg-white ring-1 ring-primary/10'} ${className}`}>
+    <div className={`${markSizes[size]} shrink-0 rounded-2xl overflow-hidden ${
+      variant === 'dark'
+        ? 'ring-2 ring-white/25 shadow-xl'
+        : 'ring-1 ring-navy/10 shadow-lg'
+    } ${className}`}>
       <img
-        src={gigTrackLogo}
-        alt="GigTrack"
+        src={gigPayLogo}
+        alt="GigPay Tracker"
         className="w-full h-full object-contain"
       />
     </div>

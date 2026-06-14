@@ -1,69 +1,92 @@
-import { TrendingUp, Shield, Zap } from 'lucide-react'
+import { TrendingUp, Shield, Zap, Star } from 'lucide-react'
 import GigTrackLogo, { GigTrackMark } from '../ui/GigTrackLogo'
 import { authStats } from '../../data/dummyData'
 
 const features = [
-  { icon: TrendingUp, text: 'Track earnings across Uber, Ola & Rapido', color: 'text-secondary-light' },
-  { icon: Shield, text: 'Your ride data stays private and secure', color: 'text-secondary-light' },
-  { icon: Zap, text: 'One-click PDF report generation', color: 'text-accent' },
+  { icon: TrendingUp, text: 'Track earnings across Uber, Ola & Rapido', color: 'text-gold' },
+  { icon: Shield,     text: 'Your ride data stays private and secure',   color: 'text-bronze' },
+  { icon: Zap,        text: 'One-click PDF report generation',           color: 'text-gold' },
+  { icon: Star,       text: 'Analytics & weekly performance insights',   color: 'text-bronze' },
 ]
 
 export default function AuthLayout({ children, title, subtitle }) {
   return (
     <div className="min-h-svh flex">
-      <div className="hidden lg:flex lg:w-[55%] bg-primary p-10 xl:p-14 flex-col justify-between relative overflow-hidden">
+      {/* ── Left Panel: Deep Navy ── */}
+      <div className="hidden lg:flex lg:w-[52%] bg-navy-dark p-10 xl:p-14 flex-col justify-between relative overflow-hidden">
+        {/* Ambient orbs */}
         <div className="absolute inset-0 pointer-events-none">
-          <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-secondary/12 rounded-full blur-[140px]" />
-          <div className="absolute bottom-0 right-0 w-96 h-96 bg-accent/8 rounded-full blur-[100px]" />
-          <div className="absolute inset-0 opacity-[0.04] dot-grid" />
+          <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[500px] h-[500px] bg-royal/10 rounded-full blur-[140px]" />
+          <div className="absolute bottom-0 right-0 w-80 h-80 bg-bronze/8 rounded-full blur-[100px]" />
+          <div className="absolute top-0 left-0 w-64 h-64 bg-gold/5 rounded-full blur-[80px]" />
+          <div className="absolute inset-0 opacity-[0.03] dot-grid" />
         </div>
 
-<div className="relative z-10 flex flex-col items-center text-center">
+        {/* Center content */}
+        <div className="relative z-10 flex flex-col items-center text-center flex-1 justify-center">
           <div className="animate-float">
             <GigTrackMark size="hero" variant="dark" className="drop-shadow-2xl" />
           </div>
-          <h2 className="text-3xl font-extrabold text-white mt-8 tracking-tight">GigTrack</h2>
-          <p className="text-secondary-light text-sm font-semibold tracking-widest uppercase mt-1">Gig Rider Earnings Tracker</p>
+          <h2 className="text-3xl xl:text-4xl font-extrabold text-white mt-8 tracking-tight">
+            GigPay Tracker
+          </h2>
+          <p className="text-bronze-light/80 text-[11px] font-bold tracking-[0.22em] uppercase mt-2">
+            Gig Rider Earnings Tracker
+          </p>
 
-          <div className="grid grid-cols-3 gap-4 mt-10 w-full max-w-lg">
+          {/* Stats */}
+          <div className="grid grid-cols-3 gap-3 mt-10 w-full max-w-xs">
             {authStats.map(({ value, label }) => (
-              <div key={label} className="glass-dark rounded-2xl p-4 text-center">
+              <div key={label} className="glass-dark rounded-2xl p-4 text-center border border-white/5">
                 <p className="text-xl font-extrabold text-white">{value}</p>
-                <p className="text-[10px] text-white/40 mt-1 font-medium">{label}</p>
+                <p className="text-[10px] text-white/35 mt-1 font-semibold tracking-wide">{label}</p>
               </div>
             ))}
           </div>
+
+          {/* Bronze divider */}
+          <div className="w-12 h-px bg-gradient-to-r from-transparent via-bronze to-transparent mt-8" />
         </div>
 
-        <div className="relative z-10 space-y-6 max-w-md">
-          <ul className="space-y-3">
-            {features.map(({ icon: Icon, text, color }) => (
-              <li key={text} className="flex items-center gap-3 text-slate-300 text-sm">
-                <div className="w-8 h-8 rounded-xl bg-white/10 border border-white/10 flex items-center justify-center shrink-0">
-                  <Icon className={`w-4 h-4 ${color}`} />
-                </div>
-                {text}
-              </li>
-            ))}
-          </ul>
-
+        {/* Feature list */}
+        <div className="relative z-10 space-y-3 max-w-sm mx-auto w-full">
+          {features.map(({ icon: Icon, text, color }) => (
+            <li key={text} className="flex items-center gap-3 text-white/60 text-[13px] list-none">
+              <div className="w-8 h-8 rounded-xl bg-white/6 border border-white/8 flex items-center justify-center shrink-0">
+                <Icon className={`w-4 h-4 ${color}`} />
+              </div>
+              {text}
+            </li>
+          ))}
         </div>
       </div>
 
+      {/* ── Right Panel: Warm Cream ── */}
       <div className="flex-1 flex items-center justify-center p-6 sm:p-10 bg-background mesh-bg relative">
-        <div className="absolute inset-0 dot-grid opacity-20 pointer-events-none" />
+        <div className="absolute inset-0 dot-grid opacity-15 pointer-events-none" />
+
+        {/* Subtle orbs */}
+        <div className="absolute top-0 right-0 w-64 h-64 bg-bronze/5 rounded-full blur-[80px] pointer-events-none" />
+        <div className="absolute bottom-0 left-0 w-48 h-48 bg-navy/4 rounded-full blur-[60px] pointer-events-none" />
+
         <div className="w-full max-w-[420px] relative z-10">
+          {/* Mobile logo */}
           <div className="lg:hidden flex justify-center mb-8">
-            <GigTrackLogo size="hero" />
+            <GigTrackLogo size="lg" />
           </div>
 
+          {/* Form card */}
           <div className="gradient-border rounded-3xl p-8 sm:p-10 shadow-soft bg-white">
-            <div className="mb-8">
-              <h2 className="text-2xl sm:text-3xl font-extrabold text-primary">{title}</h2>
-              <p className="text-muted mt-2 text-sm">{subtitle}</p>
+            <div className="mb-7">
+              <h1 className="text-2xl sm:text-[28px] font-extrabold text-navy tracking-tight">{title}</h1>
+              <p className="text-muted mt-2 text-[14px] leading-relaxed">{subtitle}</p>
             </div>
             {children}
           </div>
+
+          <p className="text-center text-[11px] text-muted/60 mt-6 font-medium">
+            Secure · Private · No subscription required
+          </p>
         </div>
       </div>
     </div>

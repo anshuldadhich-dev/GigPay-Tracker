@@ -5,8 +5,8 @@ export default function Card({ children, className = '', dark = false, padding =
     <div
       className={`rounded-[22px] ${paddings[padding]} ${
         dark
-          ? 'bg-primary text-white shadow-2xl shadow-primary/25 border border-white/[0.06]'
-          : 'bg-card border border-border/40 shadow-card'
+          ? 'bg-navy text-white shadow-2xl shadow-navy/25 border border-white/[0.06]'
+          : 'bg-card border border-border/50 shadow-card'
       } ${className}`}
       {...props}
     >

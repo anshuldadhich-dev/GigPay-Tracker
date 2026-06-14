@@ -47,7 +47,7 @@ export default function AddRidePage() {
       <button
         type="button"
         onClick={() => navigate(-1)}
-        className="flex items-center gap-2 text-sm font-medium text-muted hover:text-primary transition-colors mb-6"
+        className="flex items-center gap-2 text-sm font-medium text-muted hover:text-navy transition-colors mb-6"
       >
         <ArrowLeft className="w-4 h-4" />
         Back to dashboard
@@ -60,7 +60,7 @@ export default function AddRidePage() {
           </div>
           <div>
             <h2 className="text-2xl font-extrabold">Add New Ride</h2>
-            <p className="text-slate-300 text-sm mt-0.5">Log a trip and track your earnings instantly</p>
+            <p className="text-white/70 text-sm mt-0.5">Log a trip and track your earnings instantly</p>
           </div>
         </div>
       </div>
@@ -81,7 +81,7 @@ export default function AddRidePage() {
           )}
 
           <div className="space-y-3">
-            <label className="block text-sm font-semibold text-primary">Select Platform</label>
+            <label className="block text-[13px] font-semibold text-navy/80 tracking-wide">Select Platform</label>
             <div className="grid grid-cols-3 gap-3">
               {PLATFORMS.map((p) => (
                 <button
@@ -90,18 +90,18 @@ export default function AddRidePage() {
                   onClick={() => setForm({ ...form, platform: p })}
                   className={`p-3 rounded-2xl border-2 text-center transition-all flex flex-col items-center gap-2 ${
                     form.platform === p
-                      ? 'border-secondary shadow-sm scale-[1.04] bg-secondary/5'
-                      : 'border-border bg-white hover:border-secondary/30 hover:bg-slate-50'
+                      ? 'border-royal shadow-sm scale-[1.04] bg-royal/5'
+                      : 'border-border bg-white hover:border-royal/30 hover:bg-background'
                   }`}
                 >
                   <PlatformLogo platform={p} size="lg" />
-                  <p className="text-xs font-bold text-primary leading-tight">{p}</p>
+                  <p className="text-xs font-bold text-navy leading-tight">{p}</p>
                 </button>
               ))}
             </div>
           </div>
 
-          <div className="p-5 rounded-2xl bg-slate-50 border border-border/60 space-y-4">
+          <div className="p-5 rounded-2xl bg-background border border-border/60 space-y-4">
             <p className="text-xs font-bold text-muted uppercase tracking-wider flex items-center gap-2">
               <Navigation className="w-3.5 h-3.5" /> Route Details
             </p>
@@ -149,10 +149,10 @@ export default function AddRidePage() {
           </div>
 
           <div className="flex flex-col sm:flex-row gap-3 pt-2">
-            <Button type="submit" variant="accent" size="lg" className="flex-1" disabled={loading || success}>
+            <Button type="submit" variant="primary" size="lg" className="flex-1" disabled={loading || success}>
               {loading ? 'Saving…' : 'Save Ride'}
             </Button>
-            <Button type="button" variant="secondary" size="lg" className="flex-1" onClick={() => navigate('/dashboard')}>
+            <Button type="button" variant="outline" size="lg" className="flex-1" onClick={() => navigate('/dashboard')}>
               Cancel
             </Button>
           </div>

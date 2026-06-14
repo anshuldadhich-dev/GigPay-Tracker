@@ -89,7 +89,7 @@ export default function RegisterPage() {
           type="button"
           onClick={handleGoogleLogin}
           disabled={loading}
-          className="w-full flex items-center justify-center gap-3 px-5 py-3 rounded-xl border-2 border-border/60 bg-white hover:bg-slate-50 hover:border-secondary/30 text-primary font-bold text-sm transition-all hover:shadow-sm disabled:opacity-50"
+          className="w-full flex items-center justify-center gap-3 px-5 py-3 rounded-xl border-2 border-border/60 bg-white hover:bg-background hover:border-royal/30 text-navy font-semibold text-sm transition-all duration-200 hover:shadow-sm disabled:opacity-50"
         >
           <svg className="w-5 h-5" viewBox="0 0 24 24">
             <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 01-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" fill="#4285F4"/>
@@ -102,7 +102,7 @@ export default function RegisterPage() {
 
         <p className="text-center text-sm text-muted">
           Already have an account?{' '}
-          <Link to="/login" className="text-secondary font-bold hover:text-secondary-light transition-colors">
+          <Link to="/login" className="text-royal font-bold hover:text-navy transition-colors">
             Sign in →
           </Link>
         </p>

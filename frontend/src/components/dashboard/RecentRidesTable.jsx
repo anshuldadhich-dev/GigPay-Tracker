@@ -10,10 +10,10 @@ export default function RecentRidesTable({ rides, loading }) {
     <Card padding="lg" className="overflow-hidden">
       <div className="flex items-end justify-between mb-6">
         <div>
-          <p className="text-[11px] font-bold text-secondary uppercase tracking-[0.12em]">Transactions</p>
-          <h3 className="text-xl font-extrabold text-primary tracking-tight mt-1">Recent Rides</h3>
+          <p className="text-[11px] font-bold text-royal uppercase tracking-[0.12em]">Transactions</p>
+          <h3 className="text-xl font-extrabold text-navy tracking-tight mt-1">Recent Rides</h3>
         </div>
-        <button type="button" className="inline-flex items-center gap-1.5 text-sm font-bold text-primary hover:text-secondary transition-colors group">
+        <button type="button" className="inline-flex items-center gap-1.5 text-sm font-bold text-navy hover:text-royal transition-colors group">
           View all
           <ArrowUpRight className="w-4 h-4 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
         </button>
@@ -39,7 +39,7 @@ export default function RecentRidesTable({ rides, loading }) {
               {displayRides.map((ride) => (
                 <tr
                   key={ride.id}
-                  className="group border-b border-border/30 last:border-0 hover:bg-slate-50/80 transition-colors duration-150"
+                  className="group border-b border-border/30 last:border-0 hover:bg-background transition-colors duration-150"
                 >
                   <td className="px-4 py-4 first:pl-2">
                     <div className="flex items-center gap-2.5">
@@ -48,11 +48,11 @@ export default function RecentRidesTable({ rides, loading }) {
                     </div>
                   </td>
                   <td className="px-4 py-4">
-                    <p className="text-sm font-semibold text-primary truncate max-w-[200px]">{ride.pickup}</p>
+                    <p className="text-sm font-semibold text-navy truncate max-w-[200px]">{ride.pickup}</p>
                     <p className="text-xs text-muted truncate max-w-[200px] mt-0.5">→ {ride.dropoff}</p>
                   </td>
                   <td className="px-4 py-4">
-                    <span className="text-base font-extrabold text-primary">₹{ride.fare}</span>
+                    <span className="text-base font-extrabold text-navy">₹{ride.fare}</span>
                   </td>
                   <td className="px-4 py-4">
                     <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[11px] font-bold ring-1 bg-emerald-50 text-emerald-700 ring-emerald-100">

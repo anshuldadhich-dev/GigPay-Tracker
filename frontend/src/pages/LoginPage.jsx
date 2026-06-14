@@ -35,8 +35,9 @@ export default function LoginPage() {
   }
 
   return (
-    <AuthLayout title="Welcome back" subtitle="Sign in to track your gig earnings">
+    <AuthLayout title="Welcome back" subtitle="Sign in to your GigPay Tracker account">
       <form onSubmit={handleSubmit} className="space-y-5">
+        {/* Error alert */}
         {error && (
           <div className="flex items-center gap-2.5 p-3.5 rounded-xl bg-red-50 border border-red-100 text-red-600 text-sm font-medium">
             <AlertCircle className="w-4 h-4 shrink-0" />
@@ -46,7 +47,7 @@ export default function LoginPage() {
 
         <Input
           id="email"
-          label="Email"
+          label="Email address"
           type="email"
           placeholder="you@example.com"
           icon={Mail}
@@ -65,40 +66,49 @@ export default function LoginPage() {
           required
         />
 
+        {/* Remember me + Forgot */}
         <div className="flex items-center justify-between text-sm">
-          <label className="flex items-center gap-2 text-slate-600 cursor-pointer font-medium">
-            <input 
-              type="checkbox" 
+          <label className="flex items-center gap-2 text-muted cursor-pointer font-medium select-none">
+            <input
+              type="checkbox"
               checked={rememberMe}
               onChange={(e) => setRememberMe(e.target.checked)}
-              className="rounded border-border text-secondary focus:ring-secondary/20" 
+              className="w-4 h-4 rounded border-border accent-navy focus:ring-royal/20"
             />
             Remember me
           </label>
-          <span className="text-slate-400 text-sm font-medium cursor-not-allowed" title="Coming soon">
+          <span className="text-muted/60 text-sm font-medium cursor-not-allowed" title="Coming soon">
             Forgot password?
           </span>
         </div>
 
+        {/* Primary CTA */}
         <Button type="submit" variant="primary" size="lg" className="w-full group" disabled={loading}>
           {loading ? 'Signing in…' : 'Sign In'}
           {!loading && <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />}
         </Button>
 
-        <div className="relative py-2">
-          <div className="absolute inset-0 flex items-center"><div className="w-full border-t border-border" /></div>
-          <div className="relative flex justify-center"><span className="bg-white px-3 text-xs text-muted font-medium">or continue with</span></div>
+        {/* Divider */}
+        <div className="relative py-1">
+          <div className="absolute inset-0 flex items-center">
+            <div className="w-full border-t border-border/60" />
+          </div>
+          <div className="relative flex justify-center">
+            <span className="bg-white px-3 text-xs text-muted font-semibold">or continue with</span>
+          </div>
         </div>
 
+        {/* Google Sign In */}
         <button
           type="button"
+          id="google-signin-btn"
           onClick={handleGoogleLogin}
           disabled={loading || !serverReady}
-          className="w-full flex items-center justify-center gap-3 px-5 py-3 rounded-xl border-2 border-border/60 bg-white hover:bg-slate-50 hover:border-secondary/30 text-primary font-bold text-sm transition-all hover:shadow-sm disabled:opacity-50"
+          className="w-full flex items-center justify-center gap-3 px-5 py-3 rounded-xl border-2 border-border/60 bg-white hover:bg-background hover:border-royal/30 text-navy font-semibold text-sm transition-all duration-200 hover:shadow-sm disabled:opacity-50 disabled:cursor-not-allowed"
         >
           {!serverReady ? (
             <>
-              <svg className="w-4 h-4 animate-spin text-slate-400" fill="none" viewBox="0 0 24 24">
+              <svg className="w-4 h-4 animate-spin text-muted" fill="none" viewBox="0 0 24 24">
                 <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/>
                 <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"/>
               </svg>
@@ -117,13 +127,18 @@ export default function LoginPage() {
           )}
         </button>
 
-        <div className="relative py-2">
-          <div className="absolute inset-0 flex items-center"><div className="w-full border-t border-border" /></div>
-          <div className="relative flex justify-center"><span className="bg-white px-3 text-xs text-muted font-medium">New to GigPay?</span></div>
+        {/* Register link */}
+        <div className="relative py-1">
+          <div className="absolute inset-0 flex items-center">
+            <div className="w-full border-t border-border/60" />
+          </div>
+          <div className="relative flex justify-center">
+            <span className="bg-white px-3 text-xs text-muted font-semibold">New to GigPay?</span>
+          </div>
         </div>
 
         <p className="text-center text-sm text-muted">
-          <Link to="/register" className="text-secondary font-bold hover:text-secondary-light transition-colors">
+          <Link to="/register" className="text-royal font-bold hover:text-navy transition-colors">
             Create a free account →
           </Link>
         </p>

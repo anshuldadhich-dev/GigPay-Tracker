@@ -61,15 +61,9 @@ export default function Header({ onMenuClick }) {
               <p className="text-[13px] font-bold text-navy leading-none">{user?.name || 'Rider'}</p>
               <p className="text-[10px] text-muted font-semibold mt-0.5 tracking-wide">Gig Rider</p>
             </div>
-            <div className="relative shrink-0">
-              <div className="w-9 h-9 rounded-xl navy-gradient flex items-center justify-center text-white text-sm font-extrabold ring-2 ring-white shadow-md">
+            <div className="w-9 h-9 rounded-xl navy-gradient flex items-center justify-center text-white text-sm font-extrabold ring-2 ring-white shadow-md">
                 {initial}
               </div>
-              {/* PRO badge */}
-              <div className="absolute -top-1.5 -right-1.5 text-[8px] font-extrabold text-white bg-bronze px-1 py-0.5 rounded-md tracking-wider uppercase leading-none">
-                PRO
-              </div>
-            </div>
           </div>
         </div>
       </div>

@@ -117,9 +117,6 @@ export default function Sidebar({ isOpen, onClose }) {
               <p className="text-[13px] font-bold text-white truncate">{user?.name || 'Rider'}</p>
               <p className="text-[11px] text-white/35 truncate">{user?.email || ''}</p>
             </div>
-            <div className="text-[9px] font-extrabold text-bronze bg-bronze/20 px-1.5 py-0.5 rounded-md tracking-wider uppercase shrink-0">
-              PRO
-            </div>
           </div>
           <button
             type="button"

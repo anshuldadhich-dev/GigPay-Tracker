@@ -1,4 +1,4 @@
-import { createContext, useContext, useState } from 'react'
+import { createContext, useContext, useState, useEffect } from 'react'
 import { signInWithPopup } from 'firebase/auth'
 import { auth, googleProvider } from '../services/firebase'
 import api from '../services/api'
@@ -15,6 +15,21 @@ export function AuthProvider({ children }) {
   })
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
+  const [serverReady, setServerReady] = useState(false)
+
+  // Render free tier wake-up ping — backend ko pehle se warm kar do
+  useEffect(() => {
+    const warmUp = async () => {
+      try {
+        await api.get('/health', { timeout: 30000 })
+      } catch {
+        // ignore — bas wake-up ke liye
+      } finally {
+        setServerReady(true)
+      }
+    }
+    warmUp()
+  }, [])
 
   const login = async (email, password, rememberMe = false) => {
     setLoading(true)
@@ -91,7 +106,7 @@ export function AuthProvider({ children }) {
   }
 
   return (
-    <AuthContext.Provider value={{ user, loading, error, login, register, googleLogin, logout, updateUser }}>
+    <AuthContext.Provider value={{ user, loading, error, serverReady, login, register, googleLogin, logout, updateUser }}>
       {children}
     </AuthContext.Provider>
   )

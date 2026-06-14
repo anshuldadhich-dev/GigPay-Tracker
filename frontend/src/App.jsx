@@ -12,13 +12,13 @@ import FuelPage from './pages/FuelPage'
 import ReportsPage from './pages/ReportsPage'
 
 function ProtectedRoute() {
-  const { token } = useAuth()
-  return token ? <Outlet /> : <Navigate to="/login" replace />
+  const { user } = useAuth()
+  return user ? <Outlet /> : <Navigate to="/login" replace />
 }
 
 function GuestRoute({ children }) {
-  const { token } = useAuth()
-  return token ? <Navigate to="/dashboard" replace /> : children
+  const { user } = useAuth()
+  return user ? <Navigate to="/dashboard" replace /> : children
 }
 
 export default function App() {

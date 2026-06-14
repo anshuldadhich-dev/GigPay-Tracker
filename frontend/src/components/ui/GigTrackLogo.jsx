@@ -17,10 +17,10 @@ export default function GigTrackLogo({
   variant = 'light',
 }) {
   const mark = (
-    <div className={`${markSizes[size]} shrink-0 rounded-2xl overflow-hidden ${
+    <div className={`${markSizes[size]} shrink-0 rounded-2xl overflow-hidden flex items-center justify-center ${
       variant === 'dark'
-        ? 'ring-2 ring-white/25 shadow-lg'
-        : 'ring-1 ring-navy/10 shadow-md'
+        ? 'bg-white/90 shadow-lg ring-1 ring-white/30'
+        : 'bg-white shadow-md ring-1 ring-navy/8'
     }`}>
       <img
         src={gigPayLogo}
@@ -71,10 +71,10 @@ export default function GigTrackLogo({
 
 export function GigTrackMark({ size = 'md', className = '', variant = 'light' }) {
   return (
-    <div className={`${markSizes[size]} shrink-0 rounded-2xl overflow-hidden ${
+    <div className={`${markSizes[size]} shrink-0 rounded-2xl overflow-hidden flex items-center justify-center ${
       variant === 'dark'
-        ? 'ring-2 ring-white/25 shadow-xl'
-        : 'ring-1 ring-navy/10 shadow-lg'
+        ? 'bg-white/90 shadow-xl ring-1 ring-white/30'
+        : 'bg-white shadow-lg ring-1 ring-navy/8'
     } ${className}`}>
       <img
         src={gigPayLogo}

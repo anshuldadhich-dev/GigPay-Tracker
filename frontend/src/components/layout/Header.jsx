@@ -1,8 +1,9 @@
 import { useState } from 'react'
-import { Menu, Bell } from 'lucide-react'
+import { Menu } from 'lucide-react'
 import { useNavigate, useLocation } from 'react-router-dom'
 import SearchBar from '../ui/SearchBar'
 import GigTrackLogo from '../ui/GigTrackLogo'
+import UserAvatar from '../ui/UserAvatar'
 import { useAuth } from '../../contexts/AuthContext'
 import NotificationPanel from '../ui/NotificationPanel'
 
@@ -18,8 +19,6 @@ export default function Header({ onMenuClick }) {
     if (q) navigate(`/rides?q=${encodeURIComponent(q)}`)
     setSearchVal('')
   }
-
-  const initial = user?.name?.charAt(0)?.toUpperCase() || 'G'
 
   return (
     <header className="sticky top-0 z-30 glass border-b border-border/50 px-4 sm:px-6 lg:px-8 py-3">
@@ -52,18 +51,15 @@ export default function Header({ onMenuClick }) {
 
           <NotificationPanel />
 
-          {/* Profile */}
           <div
-            className="hidden sm:flex items-center gap-2.5 px-2 py-1.5 rounded-xl hover:bg-navy/[0.04] transition-colors cursor-pointer"
+            className="flex items-center gap-2.5 px-2 py-1.5 rounded-xl hover:bg-navy/[0.04] transition-colors cursor-pointer"
             onClick={() => navigate('/settings?tab=profile')}
           >
             <div className="text-right hidden lg:block">
               <p className="text-[13px] font-bold text-navy leading-none">{user?.name || 'Rider'}</p>
               <p className="text-[10px] text-muted font-semibold mt-0.5 tracking-wide">Gig Rider</p>
             </div>
-            <div className="w-9 h-9 rounded-xl navy-gradient flex items-center justify-center text-white text-sm font-extrabold ring-2 ring-white shadow-md">
-                {initial}
-              </div>
+            <UserAvatar size="sm" variant="light" />
           </div>
         </div>
       </div>

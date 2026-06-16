@@ -4,6 +4,7 @@ import {
   Settings, LogOut, Plus, ChevronRight, Fuel,
 } from 'lucide-react'
 import GigTrackLogo from '../ui/GigTrackLogo'
+import UserAvatar from '../ui/UserAvatar'
 import { useAuth } from '../../contexts/AuthContext'
 
 const navItems = [
@@ -24,7 +25,7 @@ export default function Sidebar({ isOpen, onClose }) {
     navigate('/login')
   }
 
-  const initial = user?.name?.charAt(0).toUpperCase() || 'U'
+
 
   return (
     <>
@@ -110,9 +111,7 @@ export default function Sidebar({ isOpen, onClose }) {
         {/* User section */}
         <div className="relative p-4 border-t border-white/[0.07] space-y-1.5">
           <div className="flex items-center gap-3 p-3 rounded-2xl glass-dark hover:bg-white/[0.07] transition-colors cursor-pointer">
-            <div className="w-9 h-9 rounded-xl navy-gradient flex items-center justify-center shrink-0 ring-2 ring-white/15">
-              <span className="text-sm font-extrabold text-white">{initial}</span>
-            </div>
+            <UserAvatar size="sm" variant="dark" />
             <div className="min-w-0 flex-1">
               <p className="text-[13px] font-bold text-white truncate">{user?.name || 'Rider'}</p>
               <p className="text-[11px] text-white/35 truncate">{user?.email || ''}</p>

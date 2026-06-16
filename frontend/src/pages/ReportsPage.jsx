@@ -43,11 +43,23 @@ const buildArchive = (rides) => {
 
 const triggerDownload = async (monthNum, year) => {
   const res = await api.get(`/ride/report?month=${monthNum}&year=${year}`, { responseType: 'blob' })
-  const url = URL.createObjectURL(res.data)
+
+  // Check if backend returned a JSON error instead of a PDF
+  const contentType = res.headers?.['content-type'] || ''
+  if (contentType.includes('application/json')) {
+    const text = await res.data.text()
+    const json = JSON.parse(text)
+    throw new Error(json.message || 'PDF generation failed')
+  }
+
+  const blob = res.data instanceof Blob ? res.data : new Blob([res.data], { type: 'application/pdf' })
+  const url = URL.createObjectURL(blob)
   const a = document.createElement('a')
   a.href = url
   a.download = `GigPay_Report_${MONTH_NAMES[monthNum - 1]}_${year}.pdf`
+  document.body.appendChild(a)
   a.click()
+  document.body.removeChild(a)
   URL.revokeObjectURL(url)
 }
 
@@ -69,6 +81,7 @@ export default function ReportsPage() {
   const [loading, setLoading] = useState(true)
   const [downloading, setDownloading] = useState(null)
   const [customError, setCustomError] = useState(null)
+  const [downloadError, setDownloadError] = useState(null)
 
   const now = new Date()
   const [customMonth, setCustomMonth] = useState(now.getMonth() + 1)
@@ -90,16 +103,19 @@ export default function ReportsPage() {
       return
     }
     setCustomError(null)
+    setDownloadError(null)
     handleDownload(customMonth, customYear)
   }
 
   const handleDownload = async (monthNum, year) => {
     const key = `${monthNum}-${year}`
     setDownloading(key)
+    setDownloadError(null)
     try {
       await triggerDownload(monthNum, year)
     } catch (err) {
       console.error('Report download failed:', err)
+      setDownloadError(err.message || 'Failed to generate PDF. Please try again.')
     } finally {
       setDownloading(null)
     }
@@ -134,9 +150,9 @@ export default function ReportsPage() {
           <h2 className="text-base font-bold text-primary mb-1">Generate Report</h2>
           <p className="text-xs text-muted mb-5">Pick any month and year to download a PDF report</p>
 
-          {customError && (
+          {(customError || downloadError) && (
             <div className="flex items-center gap-2.5 p-3.5 rounded-xl bg-red-50 border border-red-100 text-red-600 text-sm font-medium mb-4 animate-scale-in">
-              <AlertCircle className="w-4 h-4 shrink-0" /> {customError}
+              <AlertCircle className="w-4 h-4 shrink-0" /> {customError || downloadError}
             </div>
           )}
 

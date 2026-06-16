@@ -208,7 +208,7 @@ function buildPDFTemplate(data = {}) {
             left: 0;
             width: 72px;
             height: 2px;
-            background: #2563EB;
+            background: #C98D73;
           }
 
           .brand {
@@ -229,7 +229,7 @@ function buildPDFTemplate(data = {}) {
           .brand-sub {
             font-size: 10px;
             font-weight: 700;
-            color: #2563EB;
+            color: #C98D73;
             text-transform: uppercase;
             letter-spacing: 0.8px;
             margin-top: 2px;
@@ -244,8 +244,8 @@ function buildPDFTemplate(data = {}) {
 
           .period-pill {
             display: inline-block;
-            background: #EFF6FF;
-            color: #1D4ED8;
+            background: #F0EDE8;
+            color: #082B6B;
             font-weight: 800;
             font-size: 11px;
             padding: 4px 14px;
@@ -278,10 +278,10 @@ function buildPDFTemplate(data = {}) {
             border-radius: 10px 10px 0 0;
           }
 
-          .sc-earnings::after { background: #2563EB; }
-          .sc-jobs::after     { background: #7C3AED; }
-          .sc-avg::after      { background: #0891B2; }
-          .sc-period::after   { background: #D97706; }
+          .sc-earnings::after { background: #082B6B; }
+          .sc-jobs::after     { background: #C98D73; }
+          .sc-avg::after      { background: #2455B5; }
+          .sc-period::after   { background: #D7A66A; }
 
           .stat-label {
             font-size: 8.5px;
@@ -502,7 +502,7 @@ function buildPDFTemplate(data = {}) {
           }
 
           th {
-            background: #1E293B;
+            background: #082B6B;
             color: #FFFFFF;
             font-weight: 700;
             text-transform: uppercase;
@@ -743,8 +743,6 @@ async function generatePDF(data = {}) {
       '--disable-accelerated-2d-canvas',
       '--disable-gpu',
       '--no-first-run',
-      '--no-zygote',
-      '--single-process',
     ],
   });
   try {

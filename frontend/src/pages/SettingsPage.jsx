@@ -131,18 +131,25 @@ function ProfileSection({ user }) {
 
       <SettingsCard>
         <div className="p-6 sm:p-7 border-b border-border/40 flex items-center gap-5">
+          {/* Avatar — clickable to upload */}
           <div className="relative group shrink-0 cursor-pointer" onClick={() => fileRef.current?.click()}>
+            {/* Show uploaded/fetched photo or initials */}
             {fullPhotoUrl ? (
               <img
                 src={fullPhotoUrl}
-                alt="Profile"
+                alt={form.name || 'Profile'}
                 className="w-[72px] h-[72px] rounded-2xl object-cover shadow-lg"
+                onError={e => { e.currentTarget.onerror = null; e.currentTarget.style.display = 'none'; e.currentTarget.nextSibling.style.display = 'flex' }}
               />
-            ) : (
-              <div className="w-[72px] h-[72px] rounded-2xl bg-gradient-to-br from-secondary via-primary to-primary-dark flex items-center justify-center text-white text-2xl font-black shadow-lg select-none">
-                {initial}
-              </div>
-            )}
+            ) : null}
+            {/* Fallback initials — shown when no photo or image fails */}
+            <div
+              className="w-[72px] h-[72px] rounded-2xl navy-gradient flex items-center justify-center text-white text-2xl font-black shadow-lg select-none"
+              style={{ display: fullPhotoUrl ? 'none' : 'flex' }}
+            >
+              {initial}
+            </div>
+            {/* Hover overlay */}
             <div className="absolute inset-0 rounded-2xl bg-black/55 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-all duration-200">
               {uploading
                 ? <Loader2 className="w-5 h-5 text-white animate-spin" />
@@ -920,14 +927,26 @@ function DataSection() {
       const month = now.getMonth() + 1
       const year = now.getFullYear()
       const res = await api.get(`/ride/report?month=${month}&year=${year}`, { responseType: 'blob' })
-      const url = URL.createObjectURL(new Blob([res.data], { type: 'application/pdf' }))
+
+      // Check if backend returned a JSON error instead of a PDF
+      const contentType = res.headers?.['content-type'] || ''
+      if (contentType.includes('application/json')) {
+        const text = await res.data.text()
+        const json = JSON.parse(text)
+        throw new Error(json.message || 'PDF generation failed')
+      }
+
+      const blob = res.data instanceof Blob ? res.data : new Blob([res.data], { type: 'application/pdf' })
+      const url = URL.createObjectURL(blob)
       const a = document.createElement('a')
       a.href = url
       a.download = `GigPay_Report_${month}_${year}.pdf`
+      document.body.appendChild(a)
       a.click()
+      document.body.removeChild(a)
       URL.revokeObjectURL(url)
-    } catch {
-      setActionError('PDF export failed. Try again.')
+    } catch (err) {
+      setActionError(err.message || 'PDF export failed. Try again.')
     } finally {
       setExportLoading(s => ({ ...s, pdf: false }))
     }

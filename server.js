@@ -10,6 +10,10 @@ const rideRoutes = require("./routes/rideRoutes");
 const authRoutes = require("./routes/authRoutes");
 const fuelRoutes = require("./routes/fuelRoutes");
 
+// Pre-warm Puppeteer browser at startup (avoids cold-launch on first PDF request)
+require("./services/pdfService");
+
+
 const allowedOrigins = process.env.CLIENT_URL
   ? process.env.CLIENT_URL.split(',').map(o => o.trim())
   : ['http://localhost:5173'];

@@ -17,19 +17,20 @@ export function AuthProvider({ children }) {
   const [error, setError] = useState(null)
   const [serverReady, setServerReady] = useState(false)
 
-  // Render free tier wake-up ping — backend ko pehle se warm kar do
+  // Render free tier wake-up ping
   useEffect(() => {
     const warmUp = async () => {
       try {
         await api.get('/health', { timeout: 30000 })
       } catch {
-        // ignore — bas wake-up ke liye
+        // ignore
       } finally {
         setServerReady(true)
       }
     }
     warmUp()
   }, [])
+
 
   const login = async (email, password, rememberMe = false) => {
     setLoading(true)

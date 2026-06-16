@@ -2,6 +2,70 @@ const fs = require('fs');
 const path = require('path');
 const puppeteer = require('puppeteer');
 
+// ── Singleton browser instance — reused across all PDF requests ──────────────
+// Launching Chromium takes ~5-10s; reusing the same process is a massive win.
+let _browser = null;
+let _launching = false;
+let _launchQueue = [];
+
+async function getBrowser() {
+  if (_browser) {
+    try {
+      // Quick check if browser is still alive
+      await _browser.version();
+      return _browser;
+    } catch {
+      _browser = null;
+    }
+  }
+
+  // If a launch is already in progress, queue up and wait
+  if (_launching) {
+    return new Promise((resolve, reject) => {
+      _launchQueue.push({ resolve, reject });
+    });
+  }
+
+  _launching = true;
+  try {
+    const launchArgs = [
+      '--no-sandbox',
+      '--disable-setuid-sandbox',
+      '--disable-dev-shm-usage',
+      '--disable-accelerated-2d-canvas',
+      '--disable-gpu',
+      '--no-first-run',
+      '--no-zygote',
+      '--single-process',
+    ];
+
+    _browser = await puppeteer.launch({
+      headless: true,
+      executablePath: process.env.PUPPETEER_EXECUTABLE_PATH || undefined,
+      args: launchArgs,
+    });
+
+    // Auto-cleanup if browser crashes
+    _browser.on('disconnected', () => { _browser = null; });
+
+    // Resolve all queued callers
+    _launchQueue.forEach(({ resolve }) => resolve(_browser));
+    _launchQueue = [];
+
+    return _browser;
+  } catch (err) {
+    _launchQueue.forEach(({ reject }) => reject(err));
+    _launchQueue = [];
+    throw err;
+  } finally {
+    _launching = false;
+  }
+}
+
+// Pre-warm browser on module load so first PDF request is instant
+getBrowser().catch(() => {});
+
+
 function getLogoDataUri() {
   const requestedLogoPath = path.join(__dirname, '..', 'assets', 'logo.png');
   const fallbackLogoPath = path.join(__dirname, '..', 'assets', 'GigLogo.png');
@@ -734,21 +798,10 @@ function buildPDFTemplate(data = {}) {
 }
 
 async function generatePDF(data = {}) {
-  const browser = await puppeteer.launch({
-    headless: true,
-    args: [
-      '--no-sandbox',
-      '--disable-setuid-sandbox',
-      '--disable-dev-shm-usage',
-      '--disable-accelerated-2d-canvas',
-      '--disable-gpu',
-      '--no-first-run',
-    ],
-  });
+  const browser = await getBrowser();
+  const page = await browser.newPage();
   try {
-    const page = await browser.newPage();
     const html = buildPDFTemplate(data);
-
     await page.setContent(html, { waitUntil: 'domcontentloaded' });
 
     const pdfBuffer = await page.pdf({
@@ -768,7 +821,8 @@ async function generatePDF(data = {}) {
 
     return pdfBuffer;
   } finally {
-    await browser.close();
+    // Close the page (not the browser) to free memory
+    await page.close();
   }
 }
 

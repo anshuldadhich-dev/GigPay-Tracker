@@ -7,4 +7,9 @@ const adapter = new PrismaPg({
 
 const prisma = new PrismaClient({ adapter });
 
+// Pre-warm DB connection at startup so first request isn't slow
+prisma.$connect().catch((err) => {
+  console.warn("DB pre-connect failed (will retry on first query):", err.message);
+});
+
 module.exports = prisma;

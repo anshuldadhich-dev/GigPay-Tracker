@@ -2,8 +2,33 @@ const fs = require('fs');
 const path = require('path');
 const puppeteer = require('puppeteer');
 
+// ── Find Chrome/Chromium executable ──────────────────────────────────────────
+// Tries env var first, then common Linux/Render paths
+function findChromePath() {
+  if (process.env.PUPPETEER_EXECUTABLE_PATH) {
+    return process.env.PUPPETEER_EXECUTABLE_PATH;
+  }
+  const candidates = [
+    '/usr/bin/chromium-browser',
+    '/usr/bin/chromium',
+    '/usr/bin/google-chrome',
+    '/usr/bin/google-chrome-stable',
+    '/snap/bin/chromium',
+  ];
+  for (const p of candidates) {
+    try {
+      if (fs.existsSync(p)) {
+        console.log(`[PDF] Using Chrome at: ${p}`);
+        return p;
+      }
+    } catch {}
+  }
+  // Fall back to puppeteer's bundled Chrome
+  console.log('[PDF] No system Chrome found — using Puppeteer bundled Chrome');
+  return undefined;
+}
+
 // ── Singleton browser instance — reused across all PDF requests ──────────────
-// Launching Chromium takes ~5-10s; reusing the same process is a massive win.
 let _browser = null;
 let _launching = false;
 let _launchQueue = [];
@@ -11,7 +36,6 @@ let _launchQueue = [];
 async function getBrowser() {
   if (_browser) {
     try {
-      // Quick check if browser is still alive
       await _browser.version();
       return _browser;
     } catch {
@@ -19,7 +43,6 @@ async function getBrowser() {
     }
   }
 
-  // If a launch is already in progress, queue up and wait
   if (_launching) {
     return new Promise((resolve, reject) => {
       _launchQueue.push({ resolve, reject });
@@ -28,6 +51,7 @@ async function getBrowser() {
 
   _launching = true;
   try {
+    const executablePath = findChromePath();
     const launchArgs = [
       '--no-sandbox',
       '--disable-setuid-sandbox',
@@ -41,17 +65,13 @@ async function getBrowser() {
 
     _browser = await puppeteer.launch({
       headless: true,
-      executablePath: process.env.PUPPETEER_EXECUTABLE_PATH || undefined,
+      ...(executablePath ? { executablePath } : {}),
       args: launchArgs,
     });
 
-    // Auto-cleanup if browser crashes
     _browser.on('disconnected', () => { _browser = null; });
-
-    // Resolve all queued callers
     _launchQueue.forEach(({ resolve }) => resolve(_browser));
     _launchQueue = [];
-
     return _browser;
   } catch (err) {
     _launchQueue.forEach(({ reject }) => reject(err));
@@ -64,6 +84,7 @@ async function getBrowser() {
 
 // Pre-warm browser on module load so first PDF request is instant
 getBrowser().catch(() => {});
+
 
 
 function getLogoDataUri() {

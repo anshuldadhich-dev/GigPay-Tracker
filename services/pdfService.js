@@ -60,7 +60,6 @@ async function getBrowser() {
       '--disable-gpu',
       '--no-first-run',
       '--no-zygote',
-      '--single-process',
     ];
 
     _browser = await puppeteer.launch({

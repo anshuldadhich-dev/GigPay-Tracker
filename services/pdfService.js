@@ -55,7 +55,7 @@ async function getBrowser() {
 
   _launching = true;
   try {
-    const isProduction = process.env.NODE_ENV === 'production' || process.env.RENDER;
+    const isProduction = process.platform === 'linux' || process.env.NODE_ENV === 'production' || process.env.RENDER;
 
     if (isProduction) {
       console.log('[PDF] Using @sparticuz/chromium for production environment');

@@ -736,6 +736,22 @@ const exportCSV = async (req, res) => {
     }
 };
 
+// GET /ride/debug-pdf — debug endpoint for PDF generation errors
+const debugPdf = async (req, res) => {
+    try {
+        const { generatePDF } = require("../services/pdfService");
+        await generatePDF({});
+        res.status(200).send("PDF generated successfully");
+    } catch (error) {
+        console.error("debugPdf error:", error);
+        res.status(500).json({
+            success: false,
+            message: error.message,
+            stack: error.stack
+        });
+    }
+};
+
 module.exports = {
     addRide,
     getAllRides,
@@ -750,4 +766,5 @@ module.exports = {
     getFinancialSummary,
     clearAllRides,
     exportCSV,
+    debugPdf,
 };

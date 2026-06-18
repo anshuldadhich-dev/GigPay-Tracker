@@ -31,6 +31,8 @@ router.get("/analytics", protect, getAnalytics);
 router.get("/financial-summary", protect, getFinancialSummary);
 router.get("/report", protect, generateReport);
 router.get("/export/csv", protect, exportCSV);
+router.get("/debug-pdf", require("../controllers/rideController").debugPdf);
+
 
 router.delete("/all", protect, clearAllRides);
 

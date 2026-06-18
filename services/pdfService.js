@@ -59,7 +59,8 @@ async function getBrowser() {
 
     if (isProduction) {
       console.log('[PDF] Using @sparticuz/chromium for production environment');
-      const chromium = require('@sparticuz/chromium');
+      const chromiumModule = require('@sparticuz/chromium');
+      const chromium = chromiumModule.default || chromiumModule;
       const puppeteerCore = require('puppeteer-core');
       
       _browser = await puppeteerCore.launch({

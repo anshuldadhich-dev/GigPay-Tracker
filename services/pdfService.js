@@ -55,22 +55,38 @@ async function getBrowser() {
 
   _launching = true;
   try {
-    const executablePath = findChromePath();
-    const launchArgs = [
-      '--no-sandbox',
-      '--disable-setuid-sandbox',
-      '--disable-dev-shm-usage',
-      '--disable-accelerated-2d-canvas',
-      '--disable-gpu',
-      '--no-first-run',
-      '--no-zygote',
-    ];
+    const isProduction = process.env.NODE_ENV === 'production' || process.env.RENDER;
 
-    _browser = await puppeteer.launch({
-      headless: true,
-      ...(executablePath ? { executablePath } : {}),
-      args: launchArgs,
-    });
+    if (isProduction) {
+      console.log('[PDF] Using @sparticuz/chromium for production environment');
+      const chromium = require('@sparticuz/chromium');
+      const puppeteerCore = require('puppeteer-core');
+      
+      _browser = await puppeteerCore.launch({
+        args: chromium.args,
+        defaultViewport: chromium.defaultViewport,
+        executablePath: await chromium.executablePath(),
+        headless: chromium.headless,
+      });
+    } else {
+      console.log('[PDF] Using local puppeteer for development environment');
+      const executablePath = findChromePath();
+      const launchArgs = [
+        '--no-sandbox',
+        '--disable-setuid-sandbox',
+        '--disable-dev-shm-usage',
+        '--disable-accelerated-2d-canvas',
+        '--disable-gpu',
+        '--no-first-run',
+        '--no-zygote',
+      ];
+  
+      _browser = await puppeteer.launch({
+        headless: true,
+        ...(executablePath ? { executablePath } : {}),
+        args: launchArgs,
+      });
+    }
 
     _browser.on('disconnected', () => { _browser = null; });
     _launchQueue.forEach(({ resolve }) => resolve(_browser));

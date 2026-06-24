@@ -8,6 +8,7 @@ import RecentRidesTable from '../components/dashboard/RecentRidesTable'
 import ReportsSection from '../components/dashboard/ReportsSection'
 import WeeklyEarnings from '../components/dashboard/WeeklyEarnings'
 import NetEarningsCards from '../components/dashboard/NetEarningsCards'
+import ActiveShiftWidget from '../components/dashboard/ActiveShiftWidget'
 import api from '../services/api'
 
 const PLATFORM_COLORS = {
@@ -145,6 +146,10 @@ export default function DashboardPage() {
   return (
     <div className="space-y-6 sm:space-y-8 pb-28 max-w-[1440px] mx-auto">
       <DashboardHero todaySummary={todaySummaryReal} loading={loading} />
+
+      <section>
+        <ActiveShiftWidget />
+      </section>
 
       <section>
         <NetEarningsCards />

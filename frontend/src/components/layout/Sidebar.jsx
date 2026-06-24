@@ -1,7 +1,7 @@
 import { NavLink, useNavigate, Link } from 'react-router-dom'
 import {
   LayoutDashboard, Car, BarChart3, FileText,
-  Settings, LogOut, Plus, ChevronRight, Fuel,
+  Settings, LogOut, Plus, ChevronRight, Fuel, Clock,
 } from 'lucide-react'
 import GigTrackLogo from '../ui/GigTrackLogo'
 import UserAvatar from '../ui/UserAvatar'
@@ -13,6 +13,7 @@ const navItems = [
   { to: '/analytics', label: 'Analytics',  icon: BarChart3 },
   { to: '/reports',   label: 'Reports',    icon: FileText },
   { to: '/fuel',      label: 'Fuel Log',   icon: Fuel },
+  { to: '/shifts',    label: 'Shifts',     icon: Clock },
   { to: '/settings',  label: 'Settings',   icon: Settings },
 ]
 

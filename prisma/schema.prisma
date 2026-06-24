@@ -29,6 +29,7 @@ model User {
   createdAt    DateTime   @default(now()) @map("created_at")
   rides        Ride[]
   fuelLogs     FuelLog[]
+  shifts       Shift[]
 
   @@map("users")
 }
@@ -58,4 +59,28 @@ model FuelLog {
   user          User     @relation(fields: [userId], references: [id])
 
   @@map("fuel_logs")
+}
+
+model Shift {
+  id                 Int       @id @default(autoincrement())
+  userId             Int       @map("user_id")
+  date               DateTime
+  startTime          DateTime  @map("start_time")
+  endTime            DateTime? @map("end_time")
+  startOdometer      Float?    @map("start_odometer")
+  endOdometer        Float?    @map("end_odometer")
+  totalHours         Float?    @map("total_hours")
+  totalDistance      Float?    @map("total_distance")
+  totalEarnings      Float?    @map("total_earnings")
+  fuelCost           Float?    @map("fuel_cost")
+  profit             Float?    @map("profit")
+  status             String    @default("ACTIVE") @map("status")
+  platforms          String?   @map("platforms")
+  pausedAt           DateTime? @map("paused_at")
+  totalPausedMinutes Float     @default(0) @map("total_paused_minutes")
+  autoEnded          Boolean   @default(false) @map("auto_ended")
+  createdAt          DateTime  @default(now()) @map("created_at")
+  user               User      @relation(fields: [userId], references: [id])
+
+  @@map("shifts")
 }

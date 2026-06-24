@@ -5,3 +5,4 @@ generated/
 dist/
 firebase-service-account.json
 gigpay-tracker-firebase-adminsdk-*.json
+.claude/

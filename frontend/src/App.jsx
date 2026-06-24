@@ -11,6 +11,8 @@ const RideHistoryPage = lazy(() => import('./pages/RideHistoryPage'))
 const SettingsPage = lazy(() => import('./pages/SettingsPage'))
 const AnalyticsPage = lazy(() => import('./pages/AnalyticsPage'))
 const FuelPage = lazy(() => import('./pages/FuelPage'))
+const ShiftsPage = lazy(() => import('./pages/ShiftsPage'))
+const ShiftLogbookPage = lazy(() => import('./pages/ShiftLogbookPage'))
 const ReportsPage = lazy(() => import('./pages/ReportsPage'))
 
 function ProtectedRoute() {
@@ -50,6 +52,8 @@ export default function App() {
                 <Route path="/analytics" element={<AnalyticsPage />} />
                 <Route path="/reports" element={<ReportsPage />} />
                 <Route path="/fuel" element={<FuelPage />} />
+                <Route path="/shifts" element={<ShiftsPage />} />
+                <Route path="/shifts/logbook" element={<ShiftLogbookPage />} />
                 <Route path="/settings" element={<SettingsPage />} />
               </Route>
             </Route>

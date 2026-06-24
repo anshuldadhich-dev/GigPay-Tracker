@@ -76,15 +76,15 @@ export default function AuthLayout({ children, title, subtitle }) {
           </div>
 
           {/* Form card */}
-          <div className="gradient-border rounded-3xl p-8 sm:p-10 shadow-soft bg-white">
+          <div className="gradient-border rounded-3xl p-8 sm:p-10 shadow-soft bg-white dark:bg-gray-900">
             <div className="mb-7">
-              <h1 className="text-2xl sm:text-[28px] font-extrabold text-navy tracking-tight">{title}</h1>
-              <p className="text-muted mt-2 text-[14px] leading-relaxed">{subtitle}</p>
+              <h1 className="text-2xl sm:text-[28px] font-extrabold text-navy dark:text-gray-100 tracking-tight">{title}</h1>
+              <p className="text-muted dark:text-gray-400 mt-2 text-[14px] leading-relaxed">{subtitle}</p>
             </div>
             {children}
           </div>
 
-          <p className="text-center text-[11px] text-muted/60 mt-6 font-medium">
+          <p className="text-center text-[11px] text-muted/60 dark:text-gray-500 mt-6 font-medium">
             Secure · Private · No subscription required
           </p>
         </div>

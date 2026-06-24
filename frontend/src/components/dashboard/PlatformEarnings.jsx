@@ -29,17 +29,17 @@ export default function PlatformEarnings({ data, loading }) {
     <Card className="h-full" padding="lg">
       <div className="mb-6">
         <p className="text-[11px] font-bold text-royal uppercase tracking-[0.12em]">Revenue</p>
-        <h3 className="text-xl font-extrabold text-navy tracking-tight mt-1">Platform Performance</h3>
-        <p className="text-2xl font-extrabold text-navy mt-2">
+        <h3 className="text-xl font-extrabold text-navy tracking-tight mt-1 dark:text-gray-100">Platform Performance</h3>
+        <p className="text-2xl font-extrabold text-navy mt-2 dark:text-gray-100">
           {loading ? '…' : `₹${total.toLocaleString('en-IN')}`}
         </p>
-        <p className="text-xs text-muted">Combined earnings across platforms</p>
+        <p className="text-xs text-muted dark:text-gray-400">Combined earnings across platforms</p>
       </div>
 
       {loading ? (
-        <div className="h-48 flex items-center justify-center text-muted text-sm">Loading…</div>
+        <div className="h-48 flex items-center justify-center text-muted text-sm dark:text-gray-400">Loading…</div>
       ) : earnings.length === 0 ? (
-        <div className="h-48 flex items-center justify-center text-muted text-sm">No rides yet. Add your first ride!</div>
+        <div className="h-48 flex items-center justify-center text-muted text-sm dark:text-gray-400">No rides yet. Add your first ride!</div>
       ) : (
         <>
           <div className="flex items-end gap-2 h-24 mb-6 px-1">
@@ -49,7 +49,7 @@ export default function PlatformEarnings({ data, loading }) {
                   className="w-full rounded-t-xl transition-all duration-500 group-hover:opacity-80"
                   style={{ height: `${(amount / maxAmount) * 100}%`, minHeight: '20%', backgroundColor: color, opacity: 0.85 }}
                 />
-                <span className="text-[10px] font-bold text-muted">{platform}</span>
+                <span className="text-[10px] font-bold text-muted dark:text-gray-400">{platform}</span>
               </div>
             ))}
           </div>
@@ -58,7 +58,7 @@ export default function PlatformEarnings({ data, loading }) {
             {earnings.map(({ platform, amount, percentage, color, rides, growth }) => (
               <div
                 key={platform}
-                className="flex items-center gap-4 p-4 rounded-2xl bg-background border border-border/40 hover:border-royal/30 hover:bg-white hover:shadow-sm transition-all duration-300 card-premium group"
+                className="flex items-center gap-4 p-4 rounded-2xl bg-background border border-border/40 hover:border-royal/30 hover:bg-white hover:shadow-sm transition-all duration-300 card-premium group dark:bg-gray-800/60 dark:border-gray-700/40 dark:hover:border-gray-600 dark:hover:bg-gray-700 dark:hover:shadow-gray-900/30"
               >
                 <div className="relative shrink-0">
                   <RingProgress percentage={percentage} color={color} />
@@ -68,18 +68,18 @@ export default function PlatformEarnings({ data, loading }) {
                 </div>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center justify-between gap-2">
-                    <p className="font-bold text-navy">{platform}</p>
-                    <p className="font-extrabold text-navy">₹{amount.toLocaleString('en-IN')}</p>
+                    <p className="font-bold text-navy dark:text-gray-100">{platform}</p>
+                    <p className="font-extrabold text-navy dark:text-gray-100">₹{amount.toLocaleString('en-IN')}</p>
                   </div>
                   <div className="flex items-center justify-between mt-1">
-                    <p className="text-[11px] text-muted font-medium">{rides} rides</p>
+                    <p className="text-[11px] text-muted font-medium dark:text-gray-400">{rides} rides</p>
                     {growth && (
-                      <span className="inline-flex items-center gap-0.5 text-[11px] font-bold text-emerald-600">
+                      <span className="inline-flex items-center gap-0.5 text-[11px] font-bold text-emerald-600 dark:text-emerald-400">
                         <TrendingUp className="w-3 h-3" /> {growth}
                       </span>
                     )}
                   </div>
-                  <div className="h-1.5 bg-border/50 rounded-full mt-2.5 overflow-hidden">
+                  <div className="h-1.5 bg-border/50 rounded-full mt-2.5 overflow-hidden dark:bg-gray-700/50">
                     <div
                       className="h-full rounded-full transition-all duration-700 ease-out"
                       style={{ width: `${percentage}%`, background: `linear-gradient(90deg, ${color}, ${color}99)` }}

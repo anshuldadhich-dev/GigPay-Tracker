@@ -16,8 +16,8 @@ function TrendBadge({ thisMonth, lastMonth }) {
   return (
     <span className={`inline-flex items-center gap-0.5 text-[11px] font-bold px-2 py-0.5 rounded-full ${
       up
-        ? 'bg-emerald-50 text-emerald-600 ring-1 ring-emerald-100'
-        : 'bg-red-50 text-red-500 ring-1 ring-red-100'
+        ? 'bg-emerald-50 text-emerald-600 ring-1 ring-emerald-100 dark:bg-emerald-900/30 dark:text-emerald-400 dark:ring-emerald-800/50'
+        : 'bg-red-50 text-red-500 ring-1 ring-red-100 dark:bg-red-900/30 dark:text-red-400 dark:ring-red-800/50'
     }`}>
       <Icon className="w-3 h-3" />
       {Math.abs(pct).toFixed(1)}%
@@ -45,7 +45,7 @@ function MarginRing({ value }) {
 
 function SkeletonCard() {
   return (
-    <div className="rounded-[22px] p-6 bg-white border border-border/40 shadow-card animate-pulse">
+    <div className="rounded-[22px] p-6 bg-white border border-border/40 shadow-card animate-pulse dark:bg-gray-900 dark:border-gray-700/40">
       <div className="flex items-start justify-between mb-4">
         <div className="skeleton w-11 h-11 rounded-2xl" />
         <div className="skeleton w-14 h-5 rounded-full" />
@@ -86,8 +86,8 @@ export default function NetEarningsCards() {
   const todayVal = data?.today     || {}
 
   const marginColor =
-    (all.margin || 0) >= 70 ? 'text-emerald-600' :
-    (all.margin || 0) >= 40 ? 'text-bronze'       : 'text-red-500'
+    (all.margin || 0) >= 70 ? 'text-emerald-600 dark:text-emerald-400' :
+    (all.margin || 0) >= 40 ? 'text-bronze'       : 'text-red-500 dark:text-red-400'
 
   const cards = [
     {
@@ -96,7 +96,7 @@ export default function NetEarningsCards() {
       todayValue: fmt(todayVal.gross || 0),
       trend: <TrendBadge thisMonth={mon.gross || 0} lastMonth={lmon.gross || 0} />,
       icon: IndianRupee,
-      iconBg: 'bg-navy/8', iconColor: 'text-navy',
+      iconBg: 'bg-navy/8 dark:bg-white/10', iconColor: 'text-navy dark:text-gray-100',
       bar: 'from-navy to-royal',
       detail: `${all.rides || 0} total rides`,
     },
@@ -116,8 +116,8 @@ export default function NetEarningsCards() {
       todayValue: fmt(todayVal.net || 0),
       trend: <TrendBadge thisMonth={mon.net || 0} lastMonth={lmon.net || 0} />,
       icon: (all.net || 0) >= 0 ? TrendingUp : TrendingDown,
-      iconBg: (all.net || 0) >= 0 ? 'bg-emerald-50' : 'bg-red-50',
-      iconColor: (all.net || 0) >= 0 ? 'text-emerald-600' : 'text-red-500',
+      iconBg: (all.net || 0) >= 0 ? 'bg-emerald-50 dark:bg-emerald-900/30' : 'bg-red-50 dark:bg-red-900/30',
+      iconColor: (all.net || 0) >= 0 ? 'text-emerald-600 dark:text-emerald-400' : 'text-red-500 dark:text-red-400',
       bar: (all.net || 0) >= 0 ? 'from-emerald-400 to-emerald-500' : 'from-red-400 to-red-500',
       detail: 'gross − fuel',
     },
@@ -141,7 +141,7 @@ export default function NetEarningsCards() {
         return (
           <div
             key={card.id}
-            className="group relative bg-white rounded-[22px] p-6 border border-border/50 shadow-card overflow-hidden card-premium hover:shadow-soft animate-fade-up"
+            className="group relative bg-white rounded-[22px] p-6 border border-border/50 shadow-card overflow-hidden card-premium hover:shadow-soft animate-fade-up dark:bg-gray-900 dark:border-gray-700/50"
             style={{ animationDelay: `${i * 70}ms` }}
           >
             {/* Accent bar */}
@@ -163,7 +163,7 @@ export default function NetEarningsCards() {
               <div className="flex items-center gap-3">
                 <div>
                   <p className={`text-3xl font-extrabold tracking-tight ${marginColor}`}>{card.value}</p>
-                  <p className="text-[13px] text-muted font-semibold mt-1">{card.label}</p>
+                  <p className="text-[13px] text-muted font-semibold mt-1 dark:text-gray-400">{card.label}</p>
                 </div>
                 <div className="ml-auto relative flex items-center justify-center">
                   <MarginRing value={all.margin || 0} />
@@ -172,26 +172,26 @@ export default function NetEarningsCards() {
               </div>
             ) : (
               <>
-                <p className="text-[28px] font-extrabold text-navy tracking-tight leading-none">{card.value}</p>
-                <p className="text-[13px] text-muted font-semibold mt-1">{card.label}</p>
+                <p className="text-[28px] font-extrabold text-navy tracking-tight leading-none dark:text-gray-100">{card.value}</p>
+                <p className="text-[13px] text-muted font-semibold mt-1 dark:text-gray-400">{card.label}</p>
               </>
             )}
 
             {/* Divider */}
-            <div className="my-4 h-px bg-border/50" />
+            <div className="my-4 h-px bg-border/50 dark:bg-gray-700/50" />
 
             {/* Bottom rows */}
             <div className="space-y-1.5">
               <div className="flex items-center justify-between text-[12px]">
-                <span className="text-muted font-medium">This month</span>
-                <span className="font-bold text-navy">{card.monthValue}</span>
+                <span className="text-muted font-medium dark:text-gray-400">This month</span>
+                <span className="font-bold text-navy dark:text-gray-100">{card.monthValue}</span>
               </div>
               <div className="flex items-center justify-between text-[12px]">
-                <span className="text-muted font-medium">Today</span>
+                <span className="text-muted font-medium dark:text-gray-400">Today</span>
                 <span className="font-semibold text-royal">{card.todayValue}</span>
               </div>
               <div className="flex items-center justify-between text-[11px] pt-0.5">
-                <span className="text-muted/50 uppercase tracking-wider font-bold">{card.detail}</span>
+                <span className="text-muted/50 uppercase tracking-wider font-bold dark:text-gray-500">{card.detail}</span>
               </div>
             </div>
           </div>

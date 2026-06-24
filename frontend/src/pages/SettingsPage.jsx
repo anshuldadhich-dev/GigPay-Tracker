@@ -9,6 +9,7 @@ import {
 } from 'lucide-react'
 import api from '../services/api'
 import { useAuth } from '../contexts/AuthContext'
+import { useTheme } from '../contexts/ThemeContext'
 import PlatformLogo from '../components/ui/PlatformLogo'
 import Button from '../components/ui/Button'
 import ToggleSwitch from '../components/ui/ToggleSwitch'
@@ -19,7 +20,7 @@ import ToggleSwitch from '../components/ui/ToggleSwitch'
 
 function SettingsCard({ children, className = '' }) {
   return (
-    <div className={`bg-white rounded-[22px] border border-border/50 shadow-card overflow-hidden ${className}`}>
+    <div className={`bg-white dark:bg-gray-900 rounded-[22px] border border-border/50 dark:border-gray-700 shadow-card overflow-hidden ${className}`}>
       {children}
     </div>
   )
@@ -36,7 +37,7 @@ function SectionHeader({ title, description }) {
 
 function SettingsRow({ icon: Icon, iconBg = 'bg-slate-100', iconColor = 'text-muted', label, description, action, noBorder = false }) {
   return (
-    <div className={`flex items-center justify-between gap-4 px-6 py-[18px] group hover:bg-slate-50/70 transition-colors duration-150 ${noBorder ? '' : 'border-b border-border/40 last:border-0'}`}>
+    <div className={`flex items-center justify-between gap-4 px-6 py-[18px] group hover:bg-slate-50/70 dark:hover:bg-gray-800/50 transition-colors duration-150 ${noBorder ? '' : 'border-b border-border/40 dark:border-gray-700/40 dark:border-gray-700/40 last:border-0'}`}>
       <div className="flex items-center gap-4 min-w-0">
         {Icon && (
           <div className={`w-9 h-9 rounded-xl ${iconBg} flex items-center justify-center shrink-0 transition-transform duration-200 group-hover:scale-110`}>
@@ -53,8 +54,8 @@ function SettingsRow({ icon: Icon, iconBg = 'bg-slate-100', iconColor = 'text-mu
   )
 }
 
-const inputCls = 'w-full px-4 py-3 rounded-xl border border-border bg-slate-50/50 text-sm font-medium text-primary placeholder:text-muted/60 focus:outline-none focus:ring-4 focus:ring-secondary/10 focus:border-secondary focus:bg-white transition-all hover:border-slate-300'
-const lockedInputCls = 'w-full px-4 py-3 rounded-xl border border-border/40 bg-slate-50 text-sm font-medium text-muted cursor-not-allowed'
+const inputCls = 'w-full px-4 py-3 rounded-xl border border-border dark:border-gray-700 bg-slate-50/50 dark:bg-gray-800/50 dark:bg-gray-800/50 text-sm font-medium text-primary dark:text-gray-100 placeholder:text-muted/60 dark:placeholder:text-gray-500 focus:outline-none focus:ring-4 focus:ring-secondary/10 dark:focus:ring-blue-400/10 focus:border-secondary dark:focus:border-blue-400 focus:bg-white dark:focus:bg-gray-800 dark:focus:bg-gray-800 transition-all hover:border-slate-300 dark:hover:border-gray-600'
+const lockedInputCls = 'w-full px-4 py-3 rounded-xl border border-border/40 dark:border-gray-700/40 bg-slate-50 dark:bg-gray-800/60 text-sm font-medium text-muted dark:text-gray-500 cursor-not-allowed'
 
 // ─────────────────────────────────────────
 // 1. Profile
@@ -130,7 +131,7 @@ function ProfileSection({ user }) {
       />
 
       <SettingsCard>
-        <div className="p-6 sm:p-7 border-b border-border/40 flex items-center gap-5">
+        <div className="p-6 sm:p-7 border-b border-border/40 dark:border-gray-700/40 flex items-center gap-5">
           {/* Avatar — clickable to upload */}
           <div className="relative group shrink-0 cursor-pointer" onClick={() => fileRef.current?.click()}>
             {/* Show uploaded/fetched photo or initials */}
@@ -155,7 +156,7 @@ function ProfileSection({ user }) {
                 ? <Loader2 className="w-5 h-5 text-white animate-spin" />
                 : <Camera className="w-5 h-5 text-white" />}
             </div>
-            <div className="absolute -bottom-1 -right-1 w-5 h-5 rounded-full bg-emerald-500 ring-2 ring-white" />
+            <div className="absolute -bottom-1 -right-1 w-5 h-5 rounded-full bg-emerald-500 ring-2 ring-white dark:ring-gray-800" />
           </div>
 
           <input ref={fileRef} type="file" accept="image/*" className="hidden" onChange={handlePhotoChange} />
@@ -175,14 +176,14 @@ function ProfileSection({ user }) {
           </div>
 
           <div className="ml-auto hidden sm:block">
-            <div className="px-3 py-1.5 rounded-full bg-emerald-50 border border-emerald-100 text-emerald-600 text-[11px] font-bold">
+            <div className="px-3 py-1.5 rounded-full bg-emerald-50 dark:bg-emerald-900/30 border border-emerald-100 dark:border-emerald-800/50 text-emerald-600 dark:text-emerald-400 text-[11px] font-bold">
               Active rider
             </div>
           </div>
         </div>
 
         {error && (
-          <div className="mx-6 mt-4 flex items-center gap-2 p-3 rounded-xl bg-red-50 border border-red-100 text-red-600 text-sm">
+          <div className="mx-6 mt-4 flex items-center gap-2 p-3 rounded-xl bg-red-50 dark:bg-red-900/30 border border-red-100 dark:border-red-800/50 text-red-600 dark:text-red-400 text-sm">
             <AlertCircle className="w-4 h-4 shrink-0" />{error}
           </div>
         )}
@@ -240,7 +241,7 @@ function ProfileSection({ user }) {
           </div>
         </div>
 
-        <div className="px-6 sm:px-7 pb-6 flex items-center gap-3 border-t border-border/40 pt-5">
+        <div className="px-6 sm:px-7 pb-6 flex items-center gap-3 border-t border-border/40 dark:border-gray-700/40 pt-5">
           <Button variant="primary" size="md" onClick={handleSave} disabled={saving}>
             {saving
               ? <><Loader2 className="w-4 h-4 animate-spin" /> Saving…</>
@@ -321,9 +322,9 @@ function GoalsSection() {
   }
 
   const config = [
-    { key: 'daily',   label: 'Daily Goal',   icon: Sun,          iconBg: 'bg-teal-100',   iconColor: 'text-teal-600',   gradient: 'from-teal-400 to-secondary',  pill: 'bg-teal-50 text-teal-700 ring-teal-100'     },
-    { key: 'weekly',  label: 'Weekly Goal',  icon: CalendarDays, iconBg: 'bg-blue-100',   iconColor: 'text-blue-600',   gradient: 'from-blue-500 to-primary',    pill: 'bg-blue-50 text-blue-700 ring-blue-100'     },
-    { key: 'monthly', label: 'Monthly Goal', icon: TrendingUp,   iconBg: 'bg-orange-100', iconColor: 'text-orange-600', gradient: 'from-orange-400 to-accent',   pill: 'bg-orange-50 text-orange-700 ring-orange-100' },
+    { key: 'daily',   label: 'Daily Goal',   icon: Sun,          iconBg: 'bg-teal-100',   iconColor: 'text-teal-600',   gradient: 'from-teal-400 to-secondary',  pill: 'bg-teal-50 text-teal-700 ring-teal-100 dark:ring-teal-800/50'     },
+    { key: 'weekly',  label: 'Weekly Goal',  icon: CalendarDays, iconBg: 'bg-blue-100',   iconColor: 'text-blue-600',   gradient: 'from-blue-500 to-primary',    pill: 'bg-blue-50 text-blue-700 ring-blue-100 dark:ring-blue-800/50'     },
+    { key: 'monthly', label: 'Monthly Goal', icon: TrendingUp,   iconBg: 'bg-orange-100', iconColor: 'text-orange-600', gradient: 'from-orange-400 to-accent',   pill: 'bg-orange-50 text-orange-700 ring-orange-100 dark:ring-orange-800/50' },
   ]
 
   return (
@@ -337,7 +338,7 @@ function GoalsSection() {
           type="button"
           onClick={() => setRefreshKey(k => k + 1)}
           disabled={loading}
-          className="shrink-0 mt-1 flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-border text-xs font-bold text-muted hover:text-primary hover:border-secondary/40 transition-all disabled:opacity-40"
+          className="shrink-0 mt-1 flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-border dark:border-gray-700 text-xs font-bold text-muted hover:text-primary dark:hover:text-white hover:border-secondary/40 dark:hover:border-gray-600 transition-all disabled:opacity-40"
         >
           <Loader2 className={`w-3.5 h-3.5 ${loading ? 'animate-spin' : ''}`} />
           Refresh
@@ -345,7 +346,7 @@ function GoalsSection() {
       </div>
 
       {fetchError && (
-        <div className="flex items-center gap-2 p-3 rounded-xl bg-red-50 border border-red-100 text-red-600 text-sm">
+        <div className="flex items-center gap-2 p-3 rounded-xl bg-red-50 dark:bg-red-900/30 border border-red-100 dark:border-red-800/50 text-red-600 dark:text-red-400 text-sm">
           <AlertCircle className="w-4 h-4 shrink-0" />{fetchError}
         </div>
       )}
@@ -386,13 +387,13 @@ function GoalsSection() {
                       min="0"
                       value={goals[key]}
                       onChange={e => setGoals(g => ({ ...g, [key]: Math.max(0, Number(e.target.value)) }))}
-                      className="w-28 text-right px-3 py-2.5 rounded-xl border border-border bg-slate-50/60 text-sm font-extrabold text-primary focus:outline-none focus:ring-4 focus:ring-secondary/10 focus:border-secondary focus:bg-white transition-all"
+                      className="w-28 text-right px-3 py-2.5 rounded-xl border border-border bg-slate-50/60 dark:bg-gray-800/60 text-sm font-extrabold text-primary focus:outline-none focus:ring-4 focus:ring-secondary/10 focus:border-secondary focus:bg-white dark:focus:bg-gray-800 transition-all"
                     />
                   </div>
                 </div>
 
                 <div className="space-y-2">
-                  <div className="h-2 bg-slate-100 rounded-full overflow-hidden">
+                  <div className="h-2 bg-slate-100 dark:bg-gray-800rounded-full overflow-hidden">
                     <div
                       className={`h-full rounded-full bg-gradient-to-r ${gradient} transition-all duration-700 ease-out`}
                       style={{ width: `${pct}%` }}
@@ -465,14 +466,14 @@ function PlatformsSection() {
               className={`relative p-5 rounded-[20px] border-2 text-left transition-all duration-200 animate-fade-up ${
                 isActive
                   ? 'border-secondary bg-gradient-to-br from-secondary/5 to-secondary/10 shadow-[0_0_0_4px_rgba(20,184,166,0.08)]'
-                  : 'border-border/50 bg-white opacity-60'
+                  : 'border-border/50 dark:border-gray-700 bg-white dark:bg-gray-800/80 opacity-60'
               }`}
               style={{ animationDelay: `${i * 60}ms` }}
             >
               <div className="flex items-start justify-between mb-4">
                 <PlatformLogo platform={p} size="md" />
                 <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center transition-all duration-200 ${
-                  isActive ? 'bg-secondary border-secondary' : 'border-slate-200'
+                  isActive ? 'bg-secondary border-secondary' : 'border-slate-200 dark:border-gray-700'
                 }`}>
                   {isActive && <Check className="w-3 h-3 text-white" strokeWidth={3} />}
                 </div>
@@ -533,7 +534,7 @@ function ReportsSection() {
         />
 
         {prefs.autoReport && (
-          <div className="px-6 py-4 border-b border-border/40 bg-slate-50/50">
+          <div className="px-6 py-4 border-b border-border/40 dark:border-gray-700/40 bg-slate-50/50 dark:bg-gray-800/50">
             <p className="text-[11px] font-bold text-muted uppercase tracking-widest mb-3">Send reports</p>
             <div className="flex gap-2">
               {['weekly', 'monthly'].map(f => (
@@ -544,7 +545,7 @@ function ReportsSection() {
                   className={`flex-1 py-2.5 rounded-xl text-sm font-bold capitalize transition-all duration-150 ${
                     prefs.frequency === f
                       ? 'bg-primary text-white shadow-sm'
-                      : 'bg-white border border-border/60 text-muted hover:text-primary hover:border-secondary/40'
+                      : 'bg-white dark:bg-gray-800 border border-border/60 dark:border-gray-700 text-muted hover:text-primary dark:hover:text-white hover:border-secondary/40 dark:hover:border-gray-600'
                   }`}
                 >
                   {f}
@@ -581,7 +582,7 @@ function ReportsSection() {
 // ─────────────────────────────────────────
 
 function AppearanceSection() {
-  const [theme, setTheme] = useState('light')
+  const { mode, setTheme } = useTheme()
 
   const themes = [
     {
@@ -589,18 +590,18 @@ function AppearanceSection() {
       label: 'Light',
       icon: Sun,
       preview: (
-        <div className="w-full aspect-video rounded-xl bg-[#f8fafc] border border-slate-200 overflow-hidden p-3 space-y-2">
+        <div className="w-full aspect-video rounded-xl bg-[#f8fafc] dark:bg-gray-800 border border-slate-200 dark:border-gray-700 dark:border-gray-700 overflow-hidden p-3 space-y-2">
           <div className="flex items-center gap-1.5">
             <div className="w-3 h-3 rounded-full bg-blue-900/25" />
             <div className="flex-1 h-1.5 bg-slate-200 rounded-full" />
           </div>
           <div className="flex gap-1.5">
-            <div className="w-1/3 h-5 bg-white border border-slate-200 rounded-lg" />
-            <div className="w-1/3 h-5 bg-white border border-slate-200 rounded-lg" />
-            <div className="w-1/3 h-5 bg-teal-100 border border-teal-200 rounded-lg" />
+            <div className="w-1/3 h-5 bg-white border border-slate-200 dark:border-gray-700 dark:border-gray-700 rounded-lg" />
+            <div className="w-1/3 h-5 bg-white border border-slate-200 dark:border-gray-700 dark:border-gray-700 rounded-lg" />
+            <div className="w-1/3 h-5 bg-teal-100 dark:bg-teal-900/40border border-teal-200 rounded-lg" />
           </div>
-          <div className="h-3 w-3/4 bg-slate-100 rounded-full" />
-          <div className="h-3 w-1/2 bg-slate-100 rounded-full" />
+          <div className="h-3 w-3/4 bg-slate-100 dark:bg-gray-800rounded-full" />
+          <div className="h-3 w-1/2 bg-slate-100 dark:bg-gray-800rounded-full" />
         </div>
       ),
     },
@@ -629,10 +630,10 @@ function AppearanceSection() {
       label: 'System',
       icon: Monitor,
       preview: (
-        <div className="w-full aspect-video rounded-xl overflow-hidden border border-slate-200">
-          <div className="h-1/2 bg-[#f8fafc] p-3 border-b border-slate-200">
-            <div className="h-1.5 w-3/4 bg-slate-200 rounded-full" />
-            <div className="h-1.5 w-1/2 bg-slate-100 rounded-full mt-1.5" />
+        <div className="w-full aspect-video rounded-xl overflow-hidden border border-slate-200 dark:border-gray-700 dark:border-gray-700 dark:border-gray-700">
+          <div className="h-1/2 bg-[#f8fafc] dark:bg-gray-800 p-3 border-b border-slate-200 dark:border-gray-700 dark:border-gray-700">
+            <div className="h-1.5 w-3/4 bg-slate-200 dark:bg-gray-700 rounded-full" />
+            <div className="h-1.5 w-1/2 bg-slate-100 dark:bg-gray-800dark:bg-gray-800 rounded-full mt-1.5" />
           </div>
           <div className="h-1/2 bg-[#0f172a] p-3">
             <div className="h-1.5 w-2/3 bg-slate-700 rounded-full" />
@@ -647,7 +648,7 @@ function AppearanceSection() {
     <div className="space-y-5">
       <SectionHeader
         title="Appearance"
-        description="Choose how GigPay Tracker looks on your device. Dark mode is coming soon."
+        description="Choose how GigPay Tracker looks on your device. Changes apply instantly."
       />
 
       <div className="grid grid-cols-3 gap-4">
@@ -657,19 +658,19 @@ function AppearanceSection() {
             type="button"
             onClick={() => setTheme(id)}
             className={`p-4 rounded-[20px] border-2 text-left transition-all duration-200 group ${
-              theme === id
-                ? 'border-secondary shadow-[0_0_0_4px_rgba(20,184,166,0.08)] scale-[1.02] bg-gradient-to-b from-secondary/5 to-transparent'
-                : 'border-border/50 bg-white hover:border-secondary/40 hover:scale-[1.01]'
+              mode === id
+                ? 'border-secondary dark:border-blue-400 shadow-[0_0_0_4px_rgba(20,184,166,0.08)] dark:shadow-[0_0_0_4px_rgba(96,165,250,0.15)] scale-[1.02] bg-gradient-to-b from-secondary/5 to-transparent dark:from-blue-400/5'
+                : 'border-border/50 dark:border-gray-700 bg-white dark:bg-gray-800/80 hover:border-secondary/40 dark:hover:border-gray-600 hover:scale-[1.01]'
             }`}
           >
             {preview}
             <div className="flex items-center gap-2 mt-3.5">
-              <Icon className={`w-3.5 h-3.5 transition-colors ${theme === id ? 'text-secondary' : 'text-muted'}`} />
-              <span className={`text-sm font-bold transition-colors ${theme === id ? 'text-primary' : 'text-muted'}`}>
+              <Icon className={`w-3.5 h-3.5 transition-colors ${mode === id ? 'text-secondary dark:text-blue-400' : 'text-muted dark:text-gray-400'}`} />
+              <span className={`text-sm font-bold transition-colors ${mode === id ? 'text-primary dark:text-blue-300' : 'text-muted dark:text-gray-400'}`}>
                 {label}
               </span>
-              {theme === id && (
-                <span className="ml-auto w-4 h-4 rounded-full bg-secondary flex items-center justify-center shadow-sm">
+              {mode === id && (
+                <span className="ml-auto w-4 h-4 rounded-full bg-secondary dark:bg-blue-400 flex items-center justify-center shadow-sm">
                   <Check className="w-2.5 h-2.5 text-white" strokeWidth={3} />
                 </span>
               )}
@@ -681,8 +682,8 @@ function AppearanceSection() {
       <SettingsCard>
         <SettingsRow
           label="Dark mode"
-          description="Available in the next update"
-          action={<ToggleSwitch checked={false} onChange={() => {}} disabled />}
+          description={mode === 'dark' ? 'Dark theme is active' : mode === 'system' ? 'Following your system preference' : 'Light theme is active'}
+          action={<ToggleSwitch checked={mode === 'dark'} onChange={(v) => setTheme(v ? 'dark' : 'light')} />}
           noBorder
         />
       </SettingsCard>
@@ -766,7 +767,7 @@ function SecuritySection() {
 
       {/* Password */}
       <SettingsCard>
-        <div className="flex items-center gap-3.5 px-6 pt-6 pb-5 border-b border-border/40">
+        <div className="flex items-center gap-3.5 px-6 pt-6 pb-5 border-b border-border/40 dark:border-gray-700/40">
           <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
             <Lock className="w-5 h-5 text-primary" />
           </div>
@@ -780,8 +781,8 @@ function SecuritySection() {
           {status && (
             <div className={`flex items-center gap-2.5 p-3.5 rounded-xl text-sm font-medium animate-scale-in ${
               status.type === 'success'
-                ? 'bg-emerald-50 border border-emerald-100 text-emerald-700'
-                : 'bg-red-50 border border-red-100 text-red-600'
+                ? 'bg-emerald-50 border border-emerald-100 text-emerald-700 dark:text-emerald-300'
+                : 'bg-red-50 dark:bg-red-900/30 border border-red-100 dark:border-red-800/50 text-red-600 dark:text-red-400'
             }`}>
               {status.type === 'success'
                 ? <Check className="w-4 h-4 shrink-0" />
@@ -842,7 +843,7 @@ function SecuritySection() {
           ))}
         </div>
 
-        <div className="px-6 pb-6 pt-1 border-t border-border/40">
+        <div className="px-6 pb-6 pt-1 border-t border-border/40 dark:border-gray-700/40">
           <Button variant="primary" size="sm" onClick={handleUpdatePassword} disabled={loading}>
             {loading
               ? <><Loader2 className="w-4 h-4 animate-spin" /> Updating…</>
@@ -853,13 +854,13 @@ function SecuritySection() {
 
       {/* Sessions */}
       <SettingsCard>
-        <div className="px-6 pt-6 pb-4 border-b border-border/40">
+        <div className="px-6 pt-6 pb-4 border-b border-border/40 dark:border-gray-700/40">
           <p className="font-extrabold text-primary">Active Session</p>
           <p className="text-xs text-muted mt-0.5">Device currently signed in to your account</p>
         </div>
 
-        <div className="flex items-center gap-4 px-6 py-4 border-b border-border/30">
-          <div className="w-10 h-10 rounded-xl bg-slate-100 flex items-center justify-center shrink-0">
+        <div className="flex items-center gap-4 px-6 py-4 border-b border-border/30 dark:border-gray-700/30">
+          <div className="w-10 h-10 rounded-xl bg-slate-100 dark:bg-gray-800flex items-center justify-center shrink-0">
             {isMobile
               ? <Smartphone className="w-[18px] h-[18px] text-muted" />
               : <Monitor className="w-[18px] h-[18px] text-muted" />}
@@ -987,12 +988,12 @@ function DataSection() {
 
       {/* Export */}
       <SettingsCard>
-        <div className="px-6 pt-6 pb-4 border-b border-border/40">
+        <div className="px-6 pt-6 pb-4 border-b border-border/40 dark:border-gray-700/40">
           <p className="font-extrabold text-primary">Export Data</p>
           <p className="text-xs text-muted mt-0.5">Download a complete copy of your rides and earnings history</p>
         </div>
         {actionError && (
-          <div className="mx-5 mt-4 flex items-center gap-2 p-3 rounded-xl bg-red-50 border border-red-100 text-red-600 text-sm">
+          <div className="mx-5 mt-4 flex items-center gap-2 p-3 rounded-xl bg-red-50 dark:bg-red-900/30 border border-red-100 dark:border-red-800/50 text-red-600 dark:text-red-400 text-sm">
             <AlertCircle className="w-4 h-4 shrink-0" />{actionError}
           </div>
         )}
@@ -1001,7 +1002,7 @@ function DataSection() {
             type="button"
             onClick={handleExportCSV}
             disabled={exportLoading.csv}
-            className="group flex items-center gap-4 p-4 rounded-2xl border border-emerald-100 bg-gradient-to-br from-emerald-50/80 to-teal-50/60 hover:scale-[1.02] hover:shadow-sm transition-all duration-200 disabled:opacity-60 disabled:cursor-not-allowed"
+            className="group flex items-center gap-4 p-4 rounded-2xl border border-emerald-100 bg-gradient-to-br from-emerald-50/80 dark:from-emerald-900/30 to-teal-50/60 hover:scale-[1.02] hover:shadow-sm transition-all duration-200 disabled:opacity-60 disabled:cursor-not-allowed"
           >
             <div className="w-10 h-10 rounded-xl bg-emerald-100/80 flex items-center justify-center text-emerald-600 shrink-0">
               {exportLoading.csv ? <Loader2 className="w-5 h-5 animate-spin" /> : <FileText className="w-5 h-5" />}
@@ -1017,7 +1018,7 @@ function DataSection() {
             type="button"
             onClick={handleExportPDF}
             disabled={exportLoading.pdf}
-            className="group flex items-center gap-4 p-4 rounded-2xl border border-blue-100 bg-gradient-to-br from-blue-50/80 to-indigo-50/60 hover:scale-[1.02] hover:shadow-sm transition-all duration-200 disabled:opacity-60 disabled:cursor-not-allowed"
+            className="group flex items-center gap-4 p-4 rounded-2xl border border-blue-100 bg-gradient-to-br from-blue-50/80 dark:from-blue-900/30 to-indigo-50/60 hover:scale-[1.02] hover:shadow-sm transition-all duration-200 disabled:opacity-60 disabled:cursor-not-allowed"
           >
             <div className="w-10 h-10 rounded-xl bg-blue-100/80 flex items-center justify-center text-blue-600 shrink-0">
               {exportLoading.pdf ? <Loader2 className="w-5 h-5 animate-spin" /> : <FileText className="w-5 h-5" />}
@@ -1032,8 +1033,8 @@ function DataSection() {
       </SettingsCard>
 
       {/* Danger Zone */}
-      <div className="rounded-[22px] border border-red-200/60 bg-white overflow-hidden">
-        <div className="px-6 py-5 bg-gradient-to-r from-red-50/80 to-orange-50/30 border-b border-red-100/60 flex items-center gap-3">
+      <div className="rounded-[22px] border border-red-200/60 dark:border-red-800/40 bg-white dark:bg-gray-900 overflow-hidden">
+        <div className="px-6 py-5 bg-gradient-to-r from-red-50/80 dark:from-red-900/30 to-orange-50/30 border-b border-red-100/60 flex items-center gap-3">
           <div className="w-8 h-8 rounded-xl bg-red-100 flex items-center justify-center shrink-0">
             <AlertTriangle className="w-4 h-4 text-red-500" />
           </div>
@@ -1043,7 +1044,7 @@ function DataSection() {
           </div>
         </div>
 
-        <div className="divide-y divide-red-50">
+        <div className="divide-y divide-red-50 dark:divide-red-900/20">
           {/* Clear history */}
           <div className="flex flex-wrap items-center justify-between gap-3 px-6 py-5">
             <div className="min-w-0">
@@ -1064,7 +1065,7 @@ function DataSection() {
                   type="button"
                   onClick={() => setConfirmClear(false)}
                   disabled={clearLoading}
-                  className="px-3.5 py-2 rounded-xl border border-border text-sm font-bold text-muted hover:bg-slate-100 transition-all disabled:opacity-50"
+                  className="px-3.5 py-2 rounded-xl border border-border text-sm font-bold text-muted hover:bg-slate-100 dark:hover:bg-gray-800 dark:bg-gray-800transition-all disabled:opacity-50"
                 >
                   Cancel
                 </button>
@@ -1100,7 +1101,7 @@ function DataSection() {
                   type="button"
                   onClick={() => setConfirmDelete(false)}
                   disabled={deleteLoading}
-                  className="px-3.5 py-2 rounded-xl border border-border text-sm font-bold text-muted hover:bg-slate-100 transition-all disabled:opacity-50"
+                  className="px-3.5 py-2 rounded-xl border border-border text-sm font-bold text-muted hover:bg-slate-100 dark:hover:bg-gray-800 dark:bg-gray-800transition-all disabled:opacity-50"
                 >
                   Cancel
                 </button>
@@ -1172,7 +1173,7 @@ export default function SettingsPage() {
               className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-bold whitespace-nowrap transition-all shrink-0 ${
                 active === id
                   ? 'bg-primary text-white shadow-sm'
-                  : 'bg-white border border-border/60 text-muted hover:text-primary hover:border-secondary/40'
+                  : 'bg-white dark:bg-gray-800 border border-border/60 dark:border-gray-700 text-muted hover:text-primary dark:hover:text-white hover:border-secondary/40 dark:hover:border-gray-600'
               }`}
             >
               <Icon className="w-3.5 h-3.5" />
@@ -1193,13 +1194,13 @@ export default function SettingsPage() {
               className={`group flex items-center gap-3.5 px-3.5 py-3 rounded-2xl text-left transition-all duration-200 ${
                 active === id
                   ? 'bg-primary text-white shadow-md shadow-primary/20'
-                  : 'text-muted hover:text-primary hover:bg-white hover:shadow-sm'
+                  : 'text-muted hover:text-primary hover:bg-white dark:hover:bg-gray-800 hover:shadow-sm'
               }`}
             >
               <div className={`w-8 h-8 rounded-xl flex items-center justify-center shrink-0 transition-all duration-200 ${
                 active === id
                   ? 'bg-white/15'
-                  : 'bg-slate-100 group-hover:bg-slate-200'
+                  : 'bg-slate-100 dark:bg-gray-800group-hover:bg-slate-200 dark:group-hover:bg-gray-700'
               }`}>
                 <Icon className="w-[15px] h-[15px]" strokeWidth={active === id ? 2.5 : 2} />
               </div>

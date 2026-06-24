@@ -8,9 +8,9 @@ export default function PlaceholderPage({ title, description }) {
         <div className="w-16 h-16 rounded-2xl bg-secondary/10 flex items-center justify-center mx-auto mb-6">
           <Construction className="w-8 h-8 text-secondary" />
         </div>
-        <h2 className="text-2xl font-extrabold text-primary">{title}</h2>
-        <p className="text-muted mt-3 max-w-sm mx-auto">{description}</p>
-        <span className="inline-block mt-8 text-xs font-bold text-secondary bg-teal-50 px-5 py-2.5 rounded-full border border-teal-100">
+        <h2 className="text-2xl font-extrabold text-primary dark:text-gray-100">{title}</h2>
+        <p className="text-muted dark:text-gray-400 mt-3 max-w-sm mx-auto">{description}</p>
+        <span className="inline-block mt-8 text-xs font-bold text-secondary dark:text-teal-300 bg-teal-50 dark:bg-teal-900/30 px-5 py-2.5 rounded-full border border-teal-100 dark:border-teal-800/50">
           Coming Soon
         </span>
       </Card>

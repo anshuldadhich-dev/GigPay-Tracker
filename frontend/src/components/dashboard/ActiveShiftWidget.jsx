@@ -36,15 +36,15 @@ export default function ActiveShiftWidget() {
                 <Play className="w-6 h-6 text-royal" />
               </div>
               <div>
-                <p className="text-sm font-bold text-navy group-hover:text-royal transition-colors">
+                <p className="text-sm font-bold text-navy group-hover:text-royal transition-colors dark:text-gray-100 dark:group-hover:text-white">
                   Ready to start your shift?
                 </p>
-                <p className="text-xs text-muted mt-0.5">
+                <p className="text-xs text-muted mt-0.5 dark:text-gray-400">
                   Tap here to begin tracking your session
                 </p>
               </div>
             </div>
-            <ChevronRight className="w-5 h-5 text-muted group-hover:text-royal group-hover:translate-x-0.5 transition-all" />
+            <ChevronRight className="w-5 h-5 text-muted group-hover:text-royal group-hover:translate-x-0.5 transition-all dark:text-gray-400 dark:group-hover:text-white" />
           </div>
         </Card>
       </Link>
@@ -57,26 +57,26 @@ export default function ActiveShiftWidget() {
 
   return (
     <Link to="/shifts" className="block group">
-      <Card className="card-premium border-emerald-200 bg-gradient-to-r from-emerald-50/40 to-white hover:shadow-soft transition-all duration-300">
+      <Card className="card-premium border-emerald-200 bg-gradient-to-r from-emerald-50/40 to-white hover:shadow-soft transition-all duration-300 dark:border-emerald-800/50 dark:from-emerald-900/30 dark:to-gray-900">
         <div className="flex flex-wrap items-center justify-between gap-4">
           {/* Left: Timer + status */}
           <div className="flex items-center gap-4">
             <div className="relative">
-              <div className="w-12 h-12 rounded-2xl bg-emerald-100 flex items-center justify-center">
-                <Clock className="w-6 h-6 text-emerald-600" />
+              <div className="w-12 h-12 rounded-2xl bg-emerald-100 flex items-center justify-center dark:bg-emerald-900/50">
+                <Clock className="w-6 h-6 text-emerald-600 dark:text-emerald-400" />
               </div>
-              <div className="absolute -top-1 -right-1 w-3.5 h-3.5 rounded-full bg-emerald-500 border-2 border-white animate-glow" />
+              <div className="absolute -top-1 -right-1 w-3.5 h-3.5 rounded-full bg-emerald-500 border-2 border-white animate-glow dark:border-gray-900" />
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <p className="text-sm font-bold text-navy">
+                <p className="text-sm font-bold text-navy dark:text-gray-100">
                   Shift Active
                 </p>
-                <span className="px-2 py-0.5 rounded-full bg-emerald-100 text-[10px] font-bold text-emerald-700">
+                <span className="px-2 py-0.5 rounded-full bg-emerald-100 text-[10px] font-bold text-emerald-700 dark:bg-emerald-900/50 dark:text-emerald-300">
                   ● LIVE
                 </span>
               </div>
-              <p className="text-lg font-extrabold text-navy tabular-nums tracking-tight">
+              <p className="text-lg font-extrabold text-navy tabular-nums tracking-tight dark:text-gray-100">
                 {String(elapsedH).padStart(2, "0")}h {String(elapsedM).padStart(2, "0")}m
               </p>
             </div>
@@ -85,13 +85,13 @@ export default function ActiveShiftWidget() {
           {/* Right: Mini stats */}
           <div className="flex items-center gap-5">
             <div className="text-center">
-              <div className="flex items-center gap-1 text-emerald-700">
+              <div className="flex items-center gap-1 text-emerald-700 dark:text-emerald-400">
                 <IndianRupee className="w-3.5 h-3.5" />
                 <span className="text-sm font-extrabold tabular-nums">
                   {active.liveEarnings?.toLocaleString("en-IN") || 0}
                 </span>
               </div>
-              <p className="text-[10px] text-muted font-medium">earnings</p>
+              <p className="text-[10px] text-muted font-medium dark:text-gray-400">earnings</p>
             </div>
             <div className="text-center">
               <div className="flex items-center gap-1 text-royal">
@@ -100,9 +100,9 @@ export default function ActiveShiftWidget() {
                   {active.ridesCompleted || 0}
                 </span>
               </div>
-              <p className="text-[10px] text-muted font-medium">rides</p>
+              <p className="text-[10px] text-muted font-medium dark:text-gray-400">rides</p>
             </div>
-            <ChevronRight className="w-5 h-5 text-muted group-hover:translate-x-0.5 transition-all" />
+            <ChevronRight className="w-5 h-5 text-muted group-hover:translate-x-0.5 transition-all dark:text-gray-400" />
           </div>
         </div>
       </Card>

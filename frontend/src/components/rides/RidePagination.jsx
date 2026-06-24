@@ -11,17 +11,17 @@ export default function RidePagination({ page, totalPages, onPage, total, pageSi
   }
 
   const btnCls =
-    'w-9 h-9 rounded-xl border border-border/60 bg-white text-sm font-bold text-primary hover:border-secondary/40 hover:bg-slate-50 transition-all shadow-sm'
+    'w-9 h-9 rounded-xl border border-border/60 dark:border-gray-700/60 bg-white dark:bg-gray-900 text-sm font-bold text-primary dark:text-gray-100 hover:border-secondary/40 hover:bg-slate-50 dark:hover:bg-gray-800/50 transition-all shadow-sm'
   const navBtnCls =
-    'flex items-center gap-1.5 px-3.5 py-2 rounded-xl border border-border/60 bg-white text-sm font-bold text-primary hover:border-secondary/40 hover:bg-slate-50 disabled:opacity-40 disabled:cursor-not-allowed transition-all shadow-sm'
+    'flex items-center gap-1.5 px-3.5 py-2 rounded-xl border border-border/60 dark:border-gray-700/60 bg-white dark:bg-gray-900 text-sm font-bold text-primary dark:text-gray-100 hover:border-secondary/40 hover:bg-slate-50 dark:hover:bg-gray-800/50 disabled:opacity-40 disabled:cursor-not-allowed transition-all shadow-sm'
 
   return (
     <div className="flex flex-wrap items-center justify-between gap-4 px-1">
-      <p className="text-sm text-muted font-medium">
+      <p className="text-sm text-muted dark:text-gray-400 font-medium">
         Showing{' '}
-        <span className="font-bold text-primary">{from}–{to}</span>
+        <span className="font-bold text-primary dark:text-gray-100">{from}–{to}</span>
         {' '}of{' '}
-        <span className="font-bold text-primary">{total}</span> rides
+        <span className="font-bold text-primary dark:text-gray-100">{total}</span> rides
       </p>
 
       <div className="flex items-center gap-1.5">
@@ -33,7 +33,7 @@ export default function RidePagination({ page, totalPages, onPage, total, pageSi
         {pages[0] > 1 && (
           <>
             <button type="button" onClick={() => onPage(1)} className={btnCls}>1</button>
-            {pages[0] > 2 && <span className="text-muted font-bold px-1 text-sm">…</span>}
+            {pages[0] > 2 && <span className="text-muted dark:text-gray-400 font-bold px-1 text-sm">…</span>}
           </>
         )}
 
@@ -45,7 +45,7 @@ export default function RidePagination({ page, totalPages, onPage, total, pageSi
             className={`w-9 h-9 rounded-xl border text-sm font-bold transition-all shadow-sm ${
               p === page
                 ? 'bg-primary border-primary text-white'
-                : 'border-border/60 bg-white text-primary hover:border-secondary/40 hover:bg-slate-50'
+                : 'border-border/60 dark:border-gray-700/60 bg-white dark:bg-gray-900 text-primary dark:text-gray-100 hover:border-secondary/40 hover:bg-slate-50 dark:hover:bg-gray-800/50'
             }`}
           >
             {p}
@@ -55,7 +55,7 @@ export default function RidePagination({ page, totalPages, onPage, total, pageSi
         {pages[pages.length - 1] < totalPages && (
           <>
             {pages[pages.length - 1] < totalPages - 1 && (
-              <span className="text-muted font-bold px-1 text-sm">…</span>
+              <span className="text-muted dark:text-gray-400 font-bold px-1 text-sm">…</span>
             )}
             <button type="button" onClick={() => onPage(totalPages)} className={btnCls}>
               {totalPages}

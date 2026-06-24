@@ -32,20 +32,20 @@ export default function LiveTimer({ startTime, isPaused = false, pausedMs = 0, c
 
   return (
     <div className={`flex items-center gap-2.5 ${className}`}>
-      <div className="w-10 h-10 rounded-xl bg-navy/10 flex items-center justify-center">
+      <div className="w-10 h-10 rounded-xl bg-navy/10 dark:bg-navy-dark/20 flex items-center justify-center">
         {isPaused ? (
-          <Pause className="w-5 h-5 text-amber-500" />
+          <Pause className="w-5 h-5 text-amber-500 dark:text-amber-400" />
         ) : (
-          <Clock className="w-5 h-5 text-navy" />
+          <Clock className="w-5 h-5 text-navy dark:text-gray-100" />
         )}
       </div>
       <div>
-        <p className="text-[10px] font-bold text-muted uppercase tracking-wider">
+        <p className="text-[10px] font-bold text-muted dark:text-gray-400 uppercase tracking-wider">
           {isPaused ? "Paused" : "Elapsed Time"}
         </p>
         <p
           className={`text-2xl font-extrabold tabular-nums tracking-tight ${
-            isPaused ? "text-amber-500" : "text-navy"
+            isPaused ? "text-amber-500 dark:text-amber-400" : "text-navy dark:text-gray-100"
           }`}
         >
           {pad(hours)}:{pad(minutes)}:{pad(seconds)}

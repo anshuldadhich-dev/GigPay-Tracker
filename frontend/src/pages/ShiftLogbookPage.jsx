@@ -128,10 +128,10 @@ export default function ShiftLogbookPage() {
         <Card>
           {/* Toolbar */}
           <div className="flex flex-wrap items-center justify-between gap-3 mb-5">
-            <h3 className="text-base font-bold text-primary flex items-center gap-2">
-              <CalendarCheck className="w-4 h-4 text-secondary" />
+            <h3 className="text-base font-bold text-primary dark:text-gray-100 flex items-center gap-2">
+              <CalendarCheck className="w-4 h-4 text-secondary dark:text-teal-300" />
               All Shifts
-              <span className="text-xs font-medium text-muted bg-slate-100 px-2 py-0.5 rounded-full">
+              <span className="text-xs font-medium text-muted dark:text-gray-400 bg-slate-100 dark:bg-gray-800 px-2 py-0.5 rounded-full">
                 {totalEntries}
               </span>
             </h3>
@@ -149,7 +149,7 @@ export default function ShiftLogbookPage() {
 
           {/* Platform filter chips */}
           {showFilters && (
-            <div className="mb-4 flex flex-wrap gap-2 p-3 rounded-xl bg-slate-50 animate-scale-in">
+            <div className="mb-4 flex flex-wrap gap-2 p-3 rounded-xl bg-slate-50 dark:bg-gray-800/60 animate-scale-in">
               {["", "uber", "ola", "rapido", "indrive"].map((p) => (
                 <button
                   key={p}
@@ -159,7 +159,7 @@ export default function ShiftLogbookPage() {
                       ? p
                         ? `${getPlatformBadge(p)} shadow-sm`
                         : "bg-navy text-white shadow-sm"
-                      : "bg-white text-muted border border-border hover:bg-slate-100"
+                      : "bg-white dark:bg-gray-900 text-muted dark:text-gray-400 border border-border dark:border-gray-700 hover:bg-slate-100 dark:hover:bg-gray-800"
                   }`}
                 >
                   {p || "All"}
@@ -172,7 +172,7 @@ export default function ShiftLogbookPage() {
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
                 <thead>
-                  <tr className="text-left text-xs font-bold text-muted uppercase tracking-wider border-b border-border">
+                  <tr className="text-left text-xs font-bold text-muted dark:text-gray-400 uppercase tracking-wider border-b border-border dark:border-gray-700">
                     <th className="pb-3 pr-4">Date</th>
                     <th className="pb-3 pr-4">Start</th>
                     <th className="pb-3 pr-4">End</th>
@@ -183,7 +183,7 @@ export default function ShiftLogbookPage() {
                     <th className="pb-3" />
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-border/50">
+                <tbody className="divide-y divide-border/50 dark:divide-gray-700/50">
                   {Array.from({ length: 6 }).map((_, i) => (
                     <SkeletonRow key={i} />
                   ))}
@@ -192,15 +192,15 @@ export default function ShiftLogbookPage() {
             </div>
           ) : filteredShifts.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-14 gap-3 text-center animate-fade-in">
-              <div className="w-16 h-16 rounded-2xl bg-slate-100 flex items-center justify-center">
-                <BookOpen className="w-8 h-8 text-slate-300" />
+              <div className="w-16 h-16 rounded-2xl bg-slate-100 dark:bg-gray-800 flex items-center justify-center">
+                <BookOpen className="w-8 h-8 text-slate-300 dark:text-gray-500" />
               </div>
-              <p className="text-sm font-semibold text-muted">
+              <p className="text-sm font-semibold text-muted dark:text-gray-400">
                 {filterPlatform
                   ? `No shifts found for "${filterPlatform}"`
                   : "No shift history yet"}
               </p>
-              <p className="text-xs text-muted">
+              <p className="text-xs text-muted dark:text-gray-400">
                 {filterPlatform
                   ? "Try a different filter"
                   : "Start your first shift to build your logbook"}
@@ -216,7 +216,7 @@ export default function ShiftLogbookPage() {
               <div className="overflow-x-auto">
                 <table className="w-full text-sm">
                   <thead>
-                    <tr className="text-left text-xs font-bold text-muted uppercase tracking-wider border-b border-border">
+                    <tr className="text-left text-xs font-bold text-muted dark:text-gray-400 uppercase tracking-wider border-b border-border dark:border-gray-700">
                       <th className="pb-3 pr-4">Date</th>
                       <th className="pb-3 pr-4">Start</th>
                       <th className="pb-3 pr-4">End</th>
@@ -227,7 +227,7 @@ export default function ShiftLogbookPage() {
                       <th className="pb-3" />
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-border/50">
+                  <tbody className="divide-y divide-border/50 dark:divide-gray-700/50">
                     {filteredShifts.map((shift, i) => {
                       const start = new Date(shift.startTime);
                       const end = shift.endTime ? new Date(shift.endTime) : null;
@@ -241,11 +241,11 @@ export default function ShiftLogbookPage() {
                       return (
                         <tr
                           key={shift.id}
-                          className="hover:bg-slate-50 transition-colors animate-fade-up group"
+                          className="hover:bg-slate-50 dark:hover:bg-gray-800/50 transition-colors animate-fade-up group"
                           style={{ animationDelay: `${i * 35}ms` }}
                         >
                           <td className="py-3 pr-4">
-                            <p className="font-medium text-primary">
+                            <p className="font-medium text-primary dark:text-gray-100">
                               {start.toLocaleDateString("en-IN", {
                                 timeZone: "Asia/Kolkata",
                                 dateStyle: "medium",
@@ -274,31 +274,31 @@ export default function ShiftLogbookPage() {
                               </span>
                             )}
                           </td>
-                          <td className="py-3 pr-4 text-muted text-xs">
+                          <td className="py-3 pr-4 text-muted dark:text-gray-400 text-xs">
                             {timeFmt(start)}
                           </td>
-                          <td className="py-3 pr-4 text-muted text-xs">
+                          <td className="py-3 pr-4 text-muted dark:text-gray-400 text-xs">
                             {end ? timeFmt(end) : "—"}
                           </td>
-                          <td className="py-3 pr-4 text-muted font-medium tabular-nums">
+                          <td className="py-3 pr-4 text-muted dark:text-gray-400 font-medium tabular-nums">
                             {shift.totalHours != null
                               ? `${shift.totalHours.toFixed(1)}h`
                               : "—"}
                           </td>
-                          <td className="py-3 pr-4 text-muted tabular-nums">
+                          <td className="py-3 pr-4 text-muted dark:text-gray-400 tabular-nums">
                             {shift.totalDistance != null
                               ? `${shift.totalDistance.toFixed(0)} km`
                               : "—"}
                           </td>
-                          <td className="py-3 pr-4 font-semibold text-emerald-700 tabular-nums">
+                          <td className="py-3 pr-4 font-semibold text-emerald-700 dark:text-emerald-300 tabular-nums">
                             ₹{shift.totalEarnings?.toLocaleString("en-IN") || 0}
                           </td>
                           <td className="py-3 font-semibold tabular-nums">
                             <span
                               className={
                                 (shift.profit || 0) >= 0
-                                  ? "text-navy"
-                                  : "text-red-500"
+                                  ? "text-navy dark:text-gray-100"
+                                  : "text-red-500 dark:text-red-400"
                               }
                             >
                               ₹{shift.profit?.toLocaleString("en-IN") || 0}
@@ -309,7 +309,7 @@ export default function ShiftLogbookPage() {
                               type="button"
                               onClick={() => handleDelete(shift.id)}
                               disabled={deletingId === shift.id}
-                              className="p-1.5 rounded-lg text-muted hover:text-red-500 hover:bg-red-50 transition-colors disabled:opacity-40 opacity-0 group-hover:opacity-100"
+                              className="p-1.5 rounded-lg text-muted dark:text-gray-400 hover:text-red-500 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/30 transition-colors disabled:opacity-40 opacity-0 group-hover:opacity-100"
                               title="Delete shift"
                             >
                               <Trash2 className="w-4 h-4" />
@@ -324,22 +324,22 @@ export default function ShiftLogbookPage() {
 
               {/* Pagination */}
               {totalPages > 1 && (
-                <div className="flex items-center justify-between pt-4 mt-2 border-t border-border/50">
-                  <p className="text-xs text-muted">
+                <div className="flex items-center justify-between pt-4 mt-2 border-t border-border/50 dark:border-gray-700/50">
+                  <p className="text-xs text-muted dark:text-gray-400">
                     Page {page} of {totalPages}
                   </p>
                   <div className="flex gap-1.5">
                     <button
                       onClick={() => setPage((p) => Math.max(1, p - 1))}
                       disabled={page === 1}
-                      className="p-2 rounded-lg hover:bg-slate-100 disabled:opacity-30 transition-colors"
+                      className="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-gray-800 disabled:opacity-30 transition-colors"
                     >
                       <ChevronLeft className="w-4 h-4" />
                     </button>
                     <button
                       onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
                       disabled={page === totalPages}
-                      className="p-2 rounded-lg hover:bg-slate-100 disabled:opacity-30 transition-colors"
+                      className="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-gray-800 disabled:opacity-30 transition-colors"
                     >
                       <ChevronRight className="w-4 h-4" />
                     </button>

@@ -1,14 +1,16 @@
 import { useState } from 'react'
-import { Menu } from 'lucide-react'
+import { Menu, Sun, Moon, Monitor } from 'lucide-react'
 import { useNavigate, useLocation } from 'react-router-dom'
 import SearchBar from '../ui/SearchBar'
 import GigTrackLogo from '../ui/GigTrackLogo'
 import UserAvatar from '../ui/UserAvatar'
 import { useAuth } from '../../contexts/AuthContext'
+import { useTheme } from '../../contexts/ThemeContext'
 import NotificationPanel from '../ui/NotificationPanel'
 
 export default function Header({ onMenuClick }) {
   const { user } = useAuth()
+  const { mode, toggleTheme, isDark } = useTheme()
   const navigate = useNavigate()
   const { pathname } = useLocation()
   const [searchVal, setSearchVal] = useState('')
@@ -48,6 +50,23 @@ export default function Header({ onMenuClick }) {
               onSubmit={handleSearch}
             />
           )}
+
+          {/* Theme Toggle */}
+          <button
+            type="button"
+            onClick={toggleTheme}
+            className="p-2.5 rounded-xl bg-white dark:bg-gray-800 border border-border/60 dark:border-gray-700 hover:border-navy/20 dark:hover:border-gray-600 hover:shadow-sm transition-all btn-press shrink-0"
+            aria-label={`Theme: ${mode}`}
+            title={`Theme: ${mode} (click to cycle)`}
+          >
+            {mode === 'dark' ? (
+              <Moon className="w-4 h-4 text-indigo-400" />
+            ) : mode === 'system' ? (
+              <Monitor className="w-4 h-4 text-muted dark:text-gray-400" />
+            ) : (
+              <Sun className="w-4 h-4 text-gold" />
+            )}
+          </button>
 
           <NotificationPanel />
 

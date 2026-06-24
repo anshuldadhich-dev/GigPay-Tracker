@@ -68,7 +68,7 @@ export default function DashboardHero({ todaySummary, loading }) {
           <div className="flex flex-wrap gap-3 mt-7">
             <Link
               to="/rides/add"
-              className="inline-flex items-center gap-2.5 bg-white text-navy hover:bg-white/90 px-6 py-3 rounded-2xl text-sm font-bold transition-all shadow-lg shadow-black/20 btn-press hover:scale-[1.02]"
+              className="inline-flex items-center gap-2.5 bg-white text-navy hover:bg-white/90 px-6 py-3 rounded-2xl text-sm font-bold transition-all shadow-lg shadow-black/20 btn-press hover:scale-[1.02] dark:bg-gray-800 dark:text-gray-100 dark:hover:bg-gray-700"
             >
               <Plus className="w-4 h-4" />
               Add Ride

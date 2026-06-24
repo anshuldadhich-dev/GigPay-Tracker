@@ -124,8 +124,8 @@ export default function FuelPage() {
               >
                 <Icon className={`w-5 h-5 ${color}`} />
               </div>
-              <p className="text-lg font-extrabold text-primary">{value}</p>
-              <p className="text-xs text-muted mt-1">{label}</p>
+              <p className="text-lg font-extrabold text-primary dark:text-gray-100">{value}</p>
+              <p className="text-xs text-muted dark:text-gray-400 mt-1">{label}</p>
             </Card>
           </div>
         ))}
@@ -134,17 +134,17 @@ export default function FuelPage() {
       {/* Add form */}
       <div className="animate-fade-up" style={{ animationDelay: '320ms' }}>
         <Card>
-          <h3 className="text-base font-bold text-primary mb-5 flex items-center gap-2">
-            <Plus className="w-4 h-4 text-secondary" /> Add Fuel Entry
+          <h3 className="text-base font-bold text-primary dark:text-gray-100 mb-5 flex items-center gap-2">
+            <Plus className="w-4 h-4 text-secondary dark:text-teal-300" /> Add Fuel Entry
           </h3>
           <form onSubmit={handleSubmit} className="space-y-4">
             {error && (
-              <div className="flex items-center gap-2.5 p-3.5 rounded-xl bg-red-50 border border-red-100 text-red-600 text-sm font-medium animate-scale-in">
+              <div className="flex items-center gap-2.5 p-3.5 rounded-xl bg-red-50 border border-red-100 text-red-600 text-sm font-medium animate-scale-in dark:bg-red-900/30 dark:border-red-800/50 dark:text-red-400">
                 <AlertCircle className="w-4 h-4 shrink-0" /> {error}
               </div>
             )}
             {success && (
-              <div className="flex items-center gap-2.5 p-3.5 rounded-xl bg-emerald-50 border border-emerald-100 text-emerald-700 text-sm font-medium animate-scale-in">
+              <div className="flex items-center gap-2.5 p-3.5 rounded-xl bg-emerald-50 border border-emerald-100 text-emerald-700 text-sm font-medium animate-scale-in dark:bg-emerald-900/30 dark:border-emerald-800/50 dark:text-emerald-300">
                 <CheckCircle2 className="w-4 h-4 shrink-0" /> Fuel log saved!
               </div>
             )}
@@ -173,59 +173,59 @@ export default function FuelPage() {
       {/* History */}
       <div className="animate-fade-up" style={{ animationDelay: '400ms' }}>
         <Card>
-          <h3 className="text-base font-bold text-primary mb-4">Fuel History</h3>
+          <h3 className="text-base font-bold text-primary dark:text-gray-100 mb-4">Fuel History</h3>
 
           {loading ? (
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
                 <thead>
-                  <tr className="text-left text-xs font-bold text-muted uppercase tracking-wider border-b border-border">
+                  <tr className="text-left text-xs font-bold text-muted dark:text-gray-400 uppercase tracking-wider border-b border-border dark:border-gray-700">
                     <th className="pb-3 pr-4">Date</th><th className="pb-3 pr-4">Liters</th>
                     <th className="pb-3 pr-4">₹/L</th><th className="pb-3 pr-4">Total</th>
                     <th className="pb-3">Notes</th><th className="pb-3"></th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-border/50">
+                <tbody className="divide-y divide-border/50 dark:divide-gray-700/50">
                   {Array.from({ length: 4 }).map((_, i) => <SkeletonRow key={i} />)}
                 </tbody>
               </table>
             </div>
           ) : logs.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-12 gap-3 text-center animate-fade-in">
-              <div className="w-14 h-14 rounded-2xl bg-slate-100 flex items-center justify-center">
-                <Fuel className="w-7 h-7 text-slate-300" />
+              <div className="w-14 h-14 rounded-2xl bg-slate-100 dark:bg-gray-800 flex items-center justify-center">
+                <Fuel className="w-7 h-7 text-slate-300 dark:text-gray-500" />
               </div>
-              <p className="text-sm font-semibold text-muted">No fuel entries yet</p>
-              <p className="text-xs text-muted">Add your first entry above</p>
+              <p className="text-sm font-semibold text-muted dark:text-gray-400">No fuel entries yet</p>
+              <p className="text-xs text-muted dark:text-gray-400">Add your first entry above</p>
             </div>
           ) : (
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
                 <thead>
-                  <tr className="text-left text-xs font-bold text-muted uppercase tracking-wider border-b border-border">
+                  <tr className="text-left text-xs font-bold text-muted dark:text-gray-400 uppercase tracking-wider border-b border-border dark:border-gray-700">
                     <th className="pb-3 pr-4">Date</th><th className="pb-3 pr-4">Liters</th>
                     <th className="pb-3 pr-4">₹/L</th><th className="pb-3 pr-4">Total</th>
                     <th className="pb-3">Notes</th><th className="pb-3"></th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-border/50">
+                <tbody className="divide-y divide-border/50 dark:divide-gray-700/50">
                   {logs.map((log, i) => (
                     <tr
                       key={log.id}
-                      className="hover:bg-slate-50 transition-colors animate-fade-up"
+                      className="hover:bg-slate-50 dark:hover:bg-gray-800/50 transition-colors animate-fade-up"
                       style={{ animationDelay: `${i * 45}ms` }}
                     >
-                      <td className="py-3 pr-4 font-medium text-primary">{log.date}</td>
-                      <td className="py-3 pr-4 text-muted">{log.liters} L</td>
-                      <td className="py-3 pr-4 text-muted">₹{log.pricePerLiter}</td>
-                      <td className="py-3 pr-4 font-semibold text-primary">₹{log.totalCost.toLocaleString('en-IN')}</td>
-                      <td className="py-3 text-muted max-w-[160px] truncate">{log.notes || '—'}</td>
+                      <td className="py-3 pr-4 font-medium text-primary dark:text-gray-100">{log.date}</td>
+                      <td className="py-3 pr-4 text-muted dark:text-gray-400">{log.liters} L</td>
+                      <td className="py-3 pr-4 text-muted dark:text-gray-400">₹{log.pricePerLiter}</td>
+                      <td className="py-3 pr-4 font-semibold text-primary dark:text-gray-100">₹{log.totalCost.toLocaleString('en-IN')}</td>
+                      <td className="py-3 text-muted dark:text-gray-400 max-w-[160px] truncate">{log.notes || '—'}</td>
                       <td className="py-3 text-right">
                         <button
                           type="button"
                           onClick={() => handleDelete(log.id)}
                           disabled={deletingId === log.id}
-                          className="p-1.5 rounded-lg text-muted hover:text-red-500 hover:bg-red-50 transition-colors disabled:opacity-40"
+                          className="p-1.5 rounded-lg text-muted dark:text-gray-400 hover:text-red-500 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/30 transition-colors disabled:opacity-40"
                         >
                           <Trash2 className="w-4 h-4" />
                         </button>

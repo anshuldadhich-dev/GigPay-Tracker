@@ -113,7 +113,7 @@ export default function RideHistoryPage() {
           </div>
           <Link
             to="/rides/add"
-            className="inline-flex items-center gap-2 bg-white text-primary hover:bg-white/90 px-5 py-2.5 rounded-2xl text-sm font-bold transition-all shadow-lg shadow-black/20 btn-press"
+            className="inline-flex items-center gap-2 bg-white dark:bg-gray-900 text-primary dark:text-gray-100 hover:bg-white/90 dark:hover:bg-gray-800 px-5 py-2.5 rounded-2xl text-sm font-bold transition-all shadow-lg shadow-black/20 btn-press"
           >
             <Plus className="w-4 h-4" />
             Add Ride

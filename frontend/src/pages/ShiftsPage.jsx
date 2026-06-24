@@ -204,12 +204,12 @@ export default function ShiftsPage() {
 
       {/* Success / Error banners */}
       {success && (
-        <div className="flex items-center gap-2.5 p-3.5 rounded-xl bg-emerald-50 border border-emerald-100 text-emerald-700 text-sm font-medium animate-scale-in">
+        <div className="flex items-center gap-2.5 p-3.5 rounded-xl bg-emerald-50 border border-emerald-100 text-emerald-700 text-sm font-medium animate-scale-in dark:bg-emerald-900/30 dark:border-emerald-800/50 dark:text-emerald-300">
           <CheckCircle2 className="w-4 h-4 shrink-0" /> {success}
         </div>
       )}
       {error && (
-        <div className="flex items-center gap-2.5 p-3.5 rounded-xl bg-red-50 border border-red-100 text-red-600 text-sm font-medium animate-scale-in">
+        <div className="flex items-center gap-2.5 p-3.5 rounded-xl bg-red-50 border border-red-100 text-red-600 text-sm font-medium animate-scale-in dark:bg-red-900/30 dark:border-red-800/50 dark:text-red-400">
           <AlertCircle className="w-4 h-4 shrink-0" /> {error}
           <button className="ml-auto text-xs underline" onClick={() => setError(null)}>Dismiss</button>
         </div>
@@ -217,22 +217,22 @@ export default function ShiftsPage() {
 
       {/* Auto-ended notification */}
       {autoEnded && (
-        <Card className="border-amber-200 bg-amber-50 animate-scale-in">
+        <Card className="border-amber-200 dark:border-amber-800/50 bg-amber-50 dark:bg-amber-900/30 animate-scale-in">
           <div className="flex items-start gap-3">
-            <div className="w-10 h-10 rounded-xl bg-amber-100 flex items-center justify-center shrink-0">
-              <Info className="w-5 h-5 text-amber-600" />
+            <div className="w-10 h-10 rounded-xl bg-amber-100 dark:bg-amber-900/40 flex items-center justify-center shrink-0">
+              <Info className="w-5 h-5 text-amber-600 dark:text-amber-400" />
             </div>
             <div className="flex-1">
-              <p className="font-bold text-amber-800 text-sm">
+              <p className="font-bold text-amber-800 dark:text-amber-300 text-sm">
                 Previous Shift Auto-Ended
               </p>
-              <p className="text-amber-600 text-xs mt-0.5">
+              <p className="text-amber-600 dark:text-amber-400 text-xs mt-0.5">
                 {autoEnded.reason}. Hours: {autoEnded.shift.totalHours?.toFixed(1)}h
                 {" · "}Earnings: ₹{autoEnded.shift.totalEarnings?.toLocaleString("en-IN") || 0}
               </p>
             </div>
             <button
-              className="text-xs text-amber-500 underline shrink-0"
+              className="text-xs text-amber-500 dark:text-amber-400 underline shrink-0"
               onClick={() => setAutoEnded(null)}
             >
               Dismiss
@@ -273,8 +273,8 @@ export default function ShiftsPage() {
                   <span
                     className={`px-3 py-1 rounded-full text-xs font-bold ${
                       active.isPaused
-                        ? "bg-amber-100 text-amber-700"
-                        : "bg-emerald-100 text-emerald-700"
+                        ? "bg-amber-100 dark:bg-amber-900/40 text-amber-700 dark:text-amber-300"
+                        : "bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-300"
                     }`}
                   >
                     {active.isPaused ? "⏸ PAUSED" : "● LIVE"}
@@ -297,53 +297,53 @@ export default function ShiftsPage() {
               {/* Metric cards */}
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 {/* Earnings */}
-                <div className="glass-warm rounded-2xl p-4 border border-border/50">
+                <div className="glass-warm rounded-2xl p-4 border border-border/50 dark:border-gray-700/50">
                   <div className="flex items-center gap-2 mb-2">
-                    <div className="w-8 h-8 rounded-lg bg-emerald-100 flex items-center justify-center">
-                      <IndianRupee className="w-4 h-4 text-emerald-600" />
+                    <div className="w-8 h-8 rounded-lg bg-emerald-100 dark:bg-emerald-900/40 flex items-center justify-center">
+                      <IndianRupee className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
                     </div>
-                    <p className="text-[11px] font-bold text-muted uppercase tracking-wider">
+                    <p className="text-[11px] font-bold text-muted dark:text-gray-400 uppercase tracking-wider">
                       Live Earnings
                     </p>
                   </div>
-                  <p className="text-2xl font-extrabold text-navy tabular-nums">
+                  <p className="text-2xl font-extrabold text-navy dark:text-gray-100 tabular-nums">
                     ₹{liveEarnings.toLocaleString("en-IN")}
                   </p>
-                  <p className="text-xs text-muted mt-0.5">
+                  <p className="text-xs text-muted dark:text-gray-400 mt-0.5">
                     from {active.ridesCompleted || 0} ride{active.ridesCompleted !== 1 ? "s" : ""}
                   </p>
                 </div>
 
                 {/* Rides Completed */}
-                <div className="glass-warm rounded-2xl p-4 border border-border/50">
+                <div className="glass-warm rounded-2xl p-4 border border-border/50 dark:border-gray-700/50">
                   <div className="flex items-center gap-2 mb-2">
                     <div className="w-8 h-8 rounded-lg bg-royal/10 flex items-center justify-center">
                       <MapPin className="w-4 h-4 text-royal" />
                     </div>
-                    <p className="text-[11px] font-bold text-muted uppercase tracking-wider">
+                    <p className="text-[11px] font-bold text-muted dark:text-gray-400 uppercase tracking-wider">
                       Rides Done
                     </p>
                   </div>
-                  <p className="text-2xl font-extrabold text-navy tabular-nums">
+                  <p className="text-2xl font-extrabold text-navy dark:text-gray-100 tabular-nums">
                     {active.ridesCompleted || 0}
                   </p>
-                  <p className="text-xs text-muted mt-0.5">this shift</p>
+                  <p className="text-xs text-muted dark:text-gray-400 mt-0.5">this shift</p>
                 </div>
 
                 {/* Daily Target Progress */}
-                <div className="glass-warm rounded-2xl p-4 border border-border/50">
+                <div className="glass-warm rounded-2xl p-4 border border-border/50 dark:border-gray-700/50">
                   <div className="flex items-center gap-2 mb-2">
                     <div className="w-8 h-8 rounded-lg bg-accent/10 flex items-center justify-center">
                       <Target className="w-4 h-4 text-accent" />
                     </div>
-                    <p className="text-[11px] font-bold text-muted uppercase tracking-wider">
+                    <p className="text-[11px] font-bold text-muted dark:text-gray-400 uppercase tracking-wider">
                       Daily Goal
                     </p>
                   </div>
-                  <p className="text-2xl font-extrabold text-navy tabular-nums">
+                  <p className="text-2xl font-extrabold text-navy dark:text-gray-100 tabular-nums">
                     {goalPct}%
                   </p>
-                  <div className="mt-2 w-full h-2 rounded-full bg-slate-200 overflow-hidden">
+                  <div className="mt-2 w-full h-2 rounded-full bg-slate-200 dark:bg-gray-700 overflow-hidden">
                     <div
                       className="h-full rounded-full transition-all duration-700 ease-out"
                       style={{
@@ -357,7 +357,7 @@ export default function ShiftsPage() {
                       }}
                     />
                   </div>
-                  <p className="text-[10px] text-muted mt-1">
+                  <p className="text-[10px] text-muted dark:text-gray-400 mt-1">
                     ₹{liveEarnings.toLocaleString("en-IN")} / ₹{dailyGoal.toLocaleString("en-IN")}
                   </p>
                 </div>
@@ -392,11 +392,11 @@ export default function ShiftsPage() {
           {showEndConfirm && (
             <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
               <div
-                className="absolute inset-0 bg-navy-dark/60 backdrop-blur-sm"
+                className="absolute inset-0 bg-navy-dark/60 dark:bg-black/70 backdrop-blur-sm"
                 onClick={() => setShowEndConfirm(false)}
               />
               <div className="relative w-full max-w-sm glass rounded-3xl border border-white/10 shadow-2xl p-6 animate-scale-in">
-                <h3 className="text-lg font-extrabold text-navy mb-4">End Your Shift</h3>
+                <h3 className="text-lg font-extrabold text-navy dark:text-gray-100 mb-4">End Your Shift</h3>
                 <div className="space-y-4">
                   <Input
                     id="endOdometer"
@@ -442,8 +442,8 @@ export default function ShiftsPage() {
       <div className="animate-fade-up" style={{ animationDelay: "200ms" }}>
         <Card>
           <div className="flex items-center justify-between mb-4">
-            <h3 className="text-base font-bold text-primary flex items-center gap-2">
-              <List className="w-4 h-4 text-secondary" /> Recent Shifts
+            <h3 className="text-base font-bold text-primary dark:text-gray-100 flex items-center gap-2">
+              <List className="w-4 h-4 text-secondary dark:text-teal-300" /> Recent Shifts
             </h3>
             <Button
               variant="ghost"
@@ -456,17 +456,17 @@ export default function ShiftsPage() {
 
           {recentShifts.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-10 gap-3 text-center animate-fade-in">
-              <div className="w-14 h-14 rounded-2xl bg-slate-100 flex items-center justify-center">
-                <Timer className="w-7 h-7 text-slate-300" />
+              <div className="w-14 h-14 rounded-2xl bg-slate-100 dark:bg-gray-800 flex items-center justify-center">
+                <Timer className="w-7 h-7 text-slate-300 dark:text-gray-500" />
               </div>
-              <p className="text-sm font-semibold text-muted">No shifts yet</p>
-              <p className="text-xs text-muted">Start your first shift above</p>
+              <p className="text-sm font-semibold text-muted dark:text-gray-400">No shifts yet</p>
+              <p className="text-xs text-muted dark:text-gray-400">Start your first shift above</p>
             </div>
           ) : (
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
                 <thead>
-                  <tr className="text-left text-xs font-bold text-muted uppercase tracking-wider border-b border-border">
+                  <tr className="text-left text-xs font-bold text-muted dark:text-gray-400 uppercase tracking-wider border-b border-border dark:border-gray-700">
                     <th className="pb-3 pr-4">Date</th>
                     <th className="pb-3 pr-4">Hours</th>
                     <th className="pb-3 pr-4">Dist.</th>
@@ -474,32 +474,32 @@ export default function ShiftsPage() {
                     <th className="pb-3">Profit</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-border/50">
+                <tbody className="divide-y divide-border/50 dark:divide-gray-700/50">
                   {recentShifts.map((shift, i) => (
                     <tr
                       key={shift.id}
-                      className="hover:bg-slate-50 transition-colors animate-fade-up cursor-pointer"
+                      className="hover:bg-slate-50 dark:hover:bg-gray-800/50 transition-colors animate-fade-up cursor-pointer"
                       style={{ animationDelay: `${i * 45}ms` }}
                       onClick={() => navigate("/shifts/logbook")}
                     >
-                      <td className="py-3 pr-4 font-medium text-primary">
+                      <td className="py-3 pr-4 font-medium text-primary dark:text-gray-100">
                         {new Date(shift.startTime).toLocaleDateString("en-IN", {
                           timeZone: "Asia/Kolkata",
                           dateStyle: "medium",
                         })}
                       </td>
-                      <td className="py-3 pr-4 text-muted">
+                      <td className="py-3 pr-4 text-muted dark:text-gray-400">
                         {shift.totalHours != null ? `${shift.totalHours.toFixed(1)}h` : "—"}
                       </td>
-                      <td className="py-3 pr-4 text-muted">
+                      <td className="py-3 pr-4 text-muted dark:text-gray-400">
                         {shift.totalDistance != null
                           ? `${shift.totalDistance.toFixed(0)} km`
                           : "—"}
                       </td>
-                      <td className="py-3 pr-4 font-semibold text-emerald-700">
+                      <td className="py-3 pr-4 font-semibold text-emerald-700 dark:text-emerald-300">
                         ₹{shift.totalEarnings?.toLocaleString("en-IN") || 0}
                       </td>
-                      <td className="py-3 font-semibold text-navy">
+                      <td className="py-3 font-semibold text-navy dark:text-gray-100">
                         ₹{shift.profit?.toLocaleString("en-IN") || 0}
                       </td>
                     </tr>

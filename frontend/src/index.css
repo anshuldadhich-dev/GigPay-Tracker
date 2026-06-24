@@ -1,6 +1,9 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
 @import "tailwindcss";
 
+/* ── Class-based dark mode (toggle via .dark on <html>) ── */
+@custom-variant dark (&:where(.dark, .dark *));
+
 @theme {
   /* ── GigPay Brand Palette ── */
   --color-navy:         #082B6B;
@@ -420,4 +423,100 @@
 @keyframes spin {
   from { transform: rotate(0deg); }
   to   { transform: rotate(360deg); }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════════
+   DARK MODE — CSS Custom Property Overrides
+   ═══════════════════════════════════════════════════════════════════════════════ */
+.dark {
+  /* ── Surface & Background ── */
+  --color-background:   #0B1121;
+  --color-surface:      #1E293B;
+  --color-card:         #1E293B;
+  --color-muted:        #94A3B8;
+  --color-border:       #334155;
+
+  /* ── Brand Colors (toned down for dark) ── */
+  --color-primary:      #93C5FD;
+  --color-primary-dark: #BFDBFE;
+  --color-primary-light:#60A5FA;
+  --color-secondary:    #60A5FA;
+  --color-secondary-light: #93C5FD;
+  --color-secondary-dark:  #3B82F6;
+  --color-accent:       #D9A48E;
+  --color-accent-dark:  #C98D73;
+  --color-accent-light: #E3BC8A;
+  --color-navy:         #93C5FD;
+  --color-navy-dark:    #BFDBFE;
+  --color-navy-light:   #60A5FA;
+  --color-royal:        #60A5FA;
+  --color-royal-light:  #93C5FD;
+  --color-royal-dark:   #3B82F6;
+  --color-bronze:       #D9A48E;
+  --color-bronze-light: #E3BC8A;
+  --color-bronze-dark:  #C98D73;
+  --color-gold:         #E3BC8A;
+  --color-gold-light:   #F0D4A0;
+  --color-gold-dark:    #D9A48E;
+
+  /* ── Shadows (dark-adapted) ── */
+  --shadow-xs:      0 1px 2px rgba(0, 0, 0, 0.3);
+  --shadow-card:    0 0 0 1px rgba(255, 255, 255, 0.05), 0 2px 8px rgba(0, 0, 0, 0.3), 0 12px 32px -12px rgba(0, 0, 0, 0.4);
+  --shadow-soft:    0 12px 32px -8px rgba(0, 0, 0, 0.4), 0 4px 12px -2px rgba(0, 0, 0, 0.3);
+  --shadow-navy:    0 8px 24px -6px rgba(59, 130, 246, 0.2);
+  --shadow-bronze:  0 8px 24px -6px rgba(217, 164, 142, 0.2);
+  --shadow-royal:   0 8px 24px -6px rgba(96, 165, 250, 0.18);
+  --shadow-glow-teal:   0 8px 24px -6px rgba(96, 165, 250, 0.18);
+  --shadow-glow-orange: 0 8px 24px -6px rgba(217, 164, 142, 0.2);
+  --shadow-glow-blue:   0 8px 24px -6px rgba(59, 130, 246, 0.2);
+}
+
+/* Dark mode scrollbar */
+.dark ::-webkit-scrollbar-thumb {
+  background: #475569;
+}
+.dark ::-webkit-scrollbar-thumb:hover {
+  background: #64748B;
+}
+.dark * {
+  scrollbar-color: #475569 transparent;
+}
+
+/* Dark mode skeleton animation */
+.dark .skeleton {
+  background: linear-gradient(90deg, #334155 25%, #475569 50%, #334155 75%);
+  background-size: 200% 100%;
+}
+
+/* Dark mode mesh bg */
+.dark .mesh-bg {
+  background-image:
+    radial-gradient(ellipse 70% 50% at 0% 0%, rgba(59, 130, 246, 0.06) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 40% at 100% 0%, rgba(217, 164, 142, 0.05) 0%, transparent 50%),
+    radial-gradient(ellipse 50% 50% at 50% 100%, rgba(227, 188, 138, 0.04) 0%, transparent 60%);
+}
+
+.dark .dot-grid {
+  background-image: radial-gradient(circle, #334155 0.7px, transparent 0.7px);
+}
+
+/* Dark mode glass */
+.dark .glass {
+  background: rgba(15, 23, 42, 0.80);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+}
+
+.dark .glass-warm {
+  background: rgba(11, 17, 33, 0.85);
+  backdrop-filter: blur(16px) saturate(160%);
+  -webkit-backdrop-filter: blur(16px) saturate(160%);
+}
+
+/* Dark gradient border */
+.dark .gradient-border::before {
+  background: linear-gradient(135deg,
+    rgba(217, 164, 142, 0.20),
+    rgba(96, 165, 250, 0.10),
+    rgba(227, 188, 138, 0.15));
 }

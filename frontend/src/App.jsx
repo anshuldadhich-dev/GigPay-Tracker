@@ -1,6 +1,7 @@
 import { Suspense, lazy } from 'react'
 import { BrowserRouter, Routes, Route, Navigate, Outlet } from 'react-router-dom'
 import { AuthProvider, useAuth } from './contexts/AuthContext'
+import { ThemeProvider } from './contexts/ThemeContext'
 import DashboardLayout from './components/layout/DashboardLayout'
 
 const LoginPage = lazy(() => import('./pages/LoginPage'))
@@ -28,17 +29,18 @@ function GuestRoute({ children }) {
 // Simple loading spinner for suspense fallback
 function PageLoader() {
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-slate-50">
+    <div className="min-h-screen flex flex-col items-center justify-center bg-slate-50 dark:bg-gray-950">
       <div className="w-10 h-10 border-4 border-secondary/30 border-t-secondary rounded-full animate-spin"></div>
-      <p className="mt-4 text-sm font-semibold text-muted animate-pulse">Loading...</p>
+      <p className="mt-4 text-sm font-semibold text-muted dark:text-gray-400 animate-pulse">Loading...</p>
     </div>
   )
 }
 
 export default function App() {
   return (
-    <AuthProvider>
-      <BrowserRouter>
+    <ThemeProvider>
+      <AuthProvider>
+        <BrowserRouter>
         <Suspense fallback={<PageLoader />}>
           <Routes>
             <Route path="/login" element={<GuestRoute><LoginPage /></GuestRoute>} />
@@ -63,5 +65,6 @@ export default function App() {
         </Suspense>
       </BrowserRouter>
     </AuthProvider>
+    </ThemeProvider>
   )
 }

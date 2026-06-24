@@ -83,13 +83,13 @@ export default function ReportsSection({ rides = [] }) {
 
         <div className="flex-1 min-w-0">
           <p className="text-[11px] font-bold text-secondary uppercase tracking-[0.12em]">History</p>
-          <h3 className="text-xl font-extrabold text-primary tracking-tight mt-1 mb-5">Report Archive</h3>
+          <h3 className="text-xl font-extrabold text-primary tracking-tight mt-1 mb-5 dark:text-gray-100">Report Archive</h3>
 
           {history.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-12 text-center gap-3">
-              <FileText className="w-10 h-10 text-slate-200" />
-              <p className="text-sm font-medium text-muted">No reports yet.</p>
-              <p className="text-xs text-muted">Add rides to generate monthly reports.</p>
+              <FileText className="w-10 h-10 text-slate-200 dark:text-gray-700" />
+              <p className="text-sm font-medium text-muted dark:text-gray-400">No reports yet.</p>
+              <p className="text-xs text-muted dark:text-gray-400">Add rides to generate monthly reports.</p>
             </div>
           ) : (
             <div className="space-y-2.5">
@@ -99,28 +99,28 @@ export default function ReportsSection({ rides = [] }) {
                 return (
                   <div
                     key={key}
-                    className="flex items-center justify-between p-4 rounded-2xl border border-border/40 hover:border-secondary/25 hover:bg-gradient-to-r hover:from-teal-50/30 hover:to-transparent transition-all duration-200 group card-premium"
+                    className="flex items-center justify-between p-4 rounded-2xl border border-border/40 hover:border-secondary/25 hover:bg-gradient-to-r hover:from-teal-50/30 hover:to-transparent transition-all duration-200 group card-premium dark:border-gray-700/40 dark:hover:border-gray-600 dark:hover:bg-gradient-to-r dark:hover:from-teal-900/30 dark:hover:to-transparent"
                   >
                     <div className="flex items-center gap-3.5 min-w-0">
-                      <div className="w-11 h-11 rounded-xl bg-blue-50 flex items-center justify-center ring-1 ring-blue-100 group-hover:scale-105 transition-transform shrink-0">
-                        <FileText className="w-5 h-5 text-primary" />
+                      <div className="w-11 h-11 rounded-xl bg-blue-50 flex items-center justify-center ring-1 ring-blue-100 group-hover:scale-105 transition-transform shrink-0 dark:bg-blue-900/30 dark:ring-blue-800/50">
+                        <FileText className="w-5 h-5 text-primary dark:text-gray-100" />
                       </div>
                       <div className="min-w-0">
-                        <p className="text-sm font-bold text-primary truncate">{report.month} {report.year} Earnings Report</p>
+                        <p className="text-sm font-bold text-primary truncate dark:text-gray-100">{report.month} {report.year} Earnings Report</p>
                         <div className="flex flex-wrap items-center gap-x-3 gap-y-0.5 mt-1">
-                          <span className="text-[11px] text-muted flex items-center gap-1 font-medium">
+                          <span className="text-[11px] text-muted flex items-center gap-1 font-medium dark:text-gray-400">
                             <Calendar className="w-3 h-3" />
                             {report.month} {report.year}
                           </span>
-                          <span className="text-[11px] text-muted font-medium">{report.rideCount} rides</span>
-                          <span className="text-[11px] text-emerald-600 flex items-center gap-0.5 font-bold">
+                          <span className="text-[11px] text-muted font-medium dark:text-gray-400">{report.rideCount} rides</span>
+                          <span className="text-[11px] text-emerald-600 flex items-center gap-0.5 font-bold dark:text-emerald-400">
                             <CheckCircle2 className="w-3 h-3" /> Ready
                           </span>
                         </div>
                       </div>
                     </div>
                     <div className="text-right shrink-0 ml-3">
-                      <p className="text-base font-extrabold text-primary">₹{Math.round(report.total).toLocaleString('en-IN')}</p>
+                      <p className="text-base font-extrabold text-primary dark:text-gray-100">₹{Math.round(report.total).toLocaleString('en-IN')}</p>
                       <button
                         type="button"
                         disabled={isDownloading}

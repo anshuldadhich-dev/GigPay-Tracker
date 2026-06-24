@@ -82,7 +82,7 @@ export default function StatCard({
   const TrendIcon = trend === 'up' ? ArrowUpRight : ArrowDownRight
 
   return (
-    <div className="group relative bg-white rounded-[22px] p-6 border border-border/50 shadow-card card-premium overflow-hidden hover:shadow-soft">
+    <div className="group relative bg-white dark:bg-gray-900 rounded-[22px] p-6 border border-border/50 dark:border-gray-700/50 shadow-card card-premium overflow-hidden hover:shadow-soft">
       {/* top accent bar */}
       <div className={`absolute top-0 inset-x-0 h-[3px] bg-gradient-to-r ${style.bar} rounded-t-[22px]`} />
 
@@ -96,8 +96,8 @@ export default function StatCard({
         {change && (
           <span className={`inline-flex items-center gap-0.5 text-[11px] font-bold px-2.5 py-1 rounded-full animate-trend ${
             trend === 'up'
-              ? 'bg-emerald-50 text-emerald-600 ring-1 ring-emerald-100'
-              : 'bg-red-50 text-red-500 ring-1 ring-red-100'
+              ? 'bg-emerald-50 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 ring-1 ring-emerald-100 dark:ring-emerald-800/50'
+              : 'bg-red-50 dark:bg-red-900/30 text-red-500 dark:text-red-400 ring-1 ring-red-100 dark:ring-red-800/50'
           }`}>
             <TrendIcon className="w-3 h-3" />
             {change}
@@ -106,14 +106,14 @@ export default function StatCard({
       </div>
 
       <div className="relative mt-5">
-        <p className="text-[12px] text-muted font-semibold tracking-wide uppercase">{label}</p>
-        <p className="text-[28px] font-extrabold text-navy mt-1 tracking-tight leading-none">{value}</p>
+        <p className="text-[12px] text-muted dark:text-gray-400 font-semibold tracking-wide uppercase">{label}</p>
+        <p className="text-[28px] font-extrabold text-navy dark:text-gray-100 mt-1 tracking-tight leading-none">{value}</p>
       </div>
 
       {sparkline && (
-        <div className="relative mt-5 pt-4 border-t border-border/40 flex items-end justify-between">
+        <div className="relative mt-5 pt-4 border-t border-border/40 dark:border-gray-700/40 flex items-end justify-between">
           <Sparkline data={sparkline} color={style.spark} />
-          <span className="text-[10px] text-muted font-semibold uppercase tracking-wider">7d trend</span>
+          <span className="text-[10px] text-muted dark:text-gray-400 font-semibold uppercase tracking-wider">7d trend</span>
         </div>
       )}
     </div>

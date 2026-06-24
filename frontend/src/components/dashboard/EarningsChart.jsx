@@ -11,10 +11,10 @@ function CustomTooltip({ active, payload, label }) {
   const earnings = payload.find((p) => p.dataKey === 'earnings')?.value
   const rides = payload[0]?.payload?.rides
   return (
-    <div className="glass-warm rounded-2xl px-5 py-4 shadow-soft border border-border/60 text-sm min-w-[160px]">
-      <p className="font-bold text-navy">{label}</p>
+    <div className="glass-warm rounded-2xl px-5 py-4 shadow-soft border border-border/60 text-sm min-w-[160px] dark:shadow-gray-900/30 dark:border-gray-700/60">
+      <p className="font-bold text-navy dark:text-gray-100">{label}</p>
       <p className="text-royal font-bold text-lg mt-1">₹{earnings?.toLocaleString('en-IN')}</p>
-      <p className="text-muted text-xs mt-1">{rides} rides</p>
+      <p className="text-muted text-xs mt-1 dark:text-gray-400">{rides} rides</p>
     </div>
   )
 }
@@ -32,11 +32,11 @@ export default function EarningsChart({ data = [], insights = [], loading = fals
     return (
       <Card className="h-full" padding="lg">
         <p className="text-[11px] font-bold text-royal uppercase tracking-[0.12em]">Analytics</p>
-        <h3 className="text-xl font-extrabold text-navy tracking-tight mt-1">Earnings Overview</h3>
+        <h3 className="text-xl font-extrabold text-navy tracking-tight mt-1 dark:text-gray-100">Earnings Overview</h3>
         <div className="flex flex-col items-center justify-center h-64 text-center gap-3">
-          <BarChart2 className="w-12 h-12 text-border" />
-          <p className="text-sm font-medium text-muted">No ride data yet.</p>
-          <p className="text-xs text-muted">Add rides to see your earnings chart.</p>
+          <BarChart2 className="w-12 h-12 text-border dark:text-gray-700" />
+          <p className="text-sm font-medium text-muted dark:text-gray-400">No ride data yet.</p>
+          <p className="text-xs text-muted dark:text-gray-400">Add rides to see your earnings chart.</p>
         </div>
       </Card>
     )
@@ -47,19 +47,19 @@ export default function EarningsChart({ data = [], insights = [], loading = fals
       <div className="flex flex-col lg:flex-row lg:items-start justify-between gap-5 mb-6">
         <div>
           <p className="text-[11px] font-bold text-royal uppercase tracking-[0.12em]">Analytics</p>
-          <h3 className="text-xl font-extrabold text-navy tracking-tight mt-1">Earnings Overview</h3>
+          <h3 className="text-xl font-extrabold text-navy tracking-tight mt-1 dark:text-gray-100">Earnings Overview</h3>
           <div className="flex items-baseline gap-3 mt-3">
-            <p className="text-4xl font-extrabold text-navy tracking-tight">₹{total.toLocaleString('en-IN')}</p>
+            <p className="text-4xl font-extrabold text-navy tracking-tight dark:text-gray-100">₹{total.toLocaleString('en-IN')}</p>
             {growth !== null && (
-              <span className="inline-flex items-center gap-1 text-xs font-bold text-emerald-600 bg-emerald-50 px-2.5 py-1 rounded-full ring-1 ring-emerald-100">
+              <span className="inline-flex items-center gap-1 text-xs font-bold text-emerald-600 bg-emerald-50 px-2.5 py-1 rounded-full ring-1 ring-emerald-100 dark:text-emerald-400 dark:bg-emerald-900/30 dark:ring-emerald-800/50">
                 <TrendingUp className="w-3 h-3" /> {growth >= 0 ? '+' : ''}{growth}%
               </span>
             )}
           </div>
-          <p className="text-xs text-muted mt-1">Total revenue · {period} period</p>
+          <p className="text-xs text-muted mt-1 dark:text-gray-400">Total revenue · {period} period</p>
         </div>
 
-        <div className="flex bg-background p-1 rounded-xl gap-0.5 shrink-0 self-start border border-border/50">
+        <div className="flex bg-background p-1 rounded-xl gap-0.5 shrink-0 self-start border border-border/50 dark:bg-gray-800/60 dark:border-gray-700/50">
           {periods.map((p) => (
             <button
               key={p}
@@ -67,8 +67,8 @@ export default function EarningsChart({ data = [], insights = [], loading = fals
               onClick={() => setPeriod(p)}
               className={`px-5 py-2 rounded-lg text-xs font-bold transition-all duration-200 btn-press ${
                 period === p
-                  ? 'bg-white text-navy shadow-sm ring-1 ring-border/60'
-                  : 'text-muted hover:text-navy'
+                  ? 'bg-white text-navy shadow-sm ring-1 ring-border/60 dark:bg-gray-800 dark:text-gray-100 dark:ring-gray-700'
+                  : 'text-muted hover:text-navy dark:text-gray-400 dark:hover:text-white'
               }`}
             >
               {p}
@@ -103,16 +103,16 @@ export default function EarningsChart({ data = [], insights = [], loading = fals
       </div>
 
       {insights.length > 0 && (
-        <div className="grid grid-cols-3 gap-3 mt-6 pt-6 border-t border-border/50">
+        <div className="grid grid-cols-3 gap-3 mt-6 pt-6 border-t border-border/50 dark:border-gray-700/50">
           {insights.map(({ label, value, change, icon }) => {
             const Icon = insightIcons[icon]
             return (
-              <div key={label} className="rounded-2xl bg-background p-4 hover:bg-navy/[0.03] transition-colors group border border-border/40">
-                <div className="flex items-center gap-2 text-muted">
+              <div key={label} className="rounded-2xl bg-background p-4 hover:bg-navy/[0.03] transition-colors group border border-border/40 dark:bg-gray-800/60 dark:hover:bg-gray-800 dark:border-gray-700/40">
+                <div className="flex items-center gap-2 text-muted dark:text-gray-400">
                   <Icon className="w-3.5 h-3.5 text-royal group-hover:scale-110 transition-transform" />
                   <span className="text-[10px] font-bold uppercase tracking-wider">{label}</span>
                 </div>
-                <p className="text-lg font-extrabold text-navy mt-2">{value}</p>
+                <p className="text-lg font-extrabold text-navy mt-2 dark:text-gray-100">{value}</p>
                 <p className="text-[11px] text-bronze font-semibold mt-0.5">{change}</p>
               </div>
             )

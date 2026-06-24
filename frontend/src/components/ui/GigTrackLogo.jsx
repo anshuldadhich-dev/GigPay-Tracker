@@ -20,7 +20,7 @@ export default function GigTrackLogo({
     <div className={`${markSizes[size]} shrink-0 rounded-2xl overflow-hidden flex items-center justify-center ${
       variant === 'dark'
         ? 'bg-white/90 shadow-lg ring-1 ring-white/30'
-        : 'bg-white shadow-md ring-1 ring-navy/8'
+        : 'bg-white dark:bg-gray-800 shadow-md dark:shadow-gray-900/30 ring-1 ring-navy/8 dark:ring-gray-500/20'
     }`}>
       <img
         src={gigPayLogo}
@@ -34,12 +34,12 @@ export default function GigTrackLogo({
   const wordmark = showWordmark && (
     <div className="min-w-0 leading-none">
       <span className={`block text-[17px] font-extrabold tracking-tight ${
-        variant === 'dark' ? 'text-white' : 'text-navy'
+        variant === 'dark' ? 'text-white' : 'text-navy dark:text-gray-100'
       }`}>
         GigPay
       </span>
       <span className={`block text-[10px] font-bold tracking-[0.18em] uppercase mt-0.5 ${
-        variant === 'dark' ? 'text-white/55' : 'text-muted'
+        variant === 'dark' ? 'text-white/55' : 'text-muted dark:text-gray-400'
       }`}>
         Tracker
       </span>
@@ -74,7 +74,7 @@ export function GigTrackMark({ size = 'md', className = '', variant = 'light' })
     <div className={`${markSizes[size]} shrink-0 rounded-2xl overflow-hidden flex items-center justify-center ${
       variant === 'dark'
         ? 'bg-white/90 shadow-xl ring-1 ring-white/30'
-        : 'bg-white shadow-lg ring-1 ring-navy/8'
+        : 'bg-white dark:bg-gray-800 shadow-lg dark:shadow-gray-900/30 ring-1 ring-navy/8 dark:ring-gray-500/20'
     } ${className}`}>
       <img
         src={gigPayLogo}

@@ -66,12 +66,12 @@ export default function WeeklyEarnings({ rides = [], loading = false }) {
       <div className="flex items-start justify-between mb-6">
         <div>
           <p className="text-[11px] font-bold text-royal uppercase tracking-[0.12em]">This Week</p>
-          <h3 className="text-lg font-extrabold text-navy tracking-tight mt-0.5">Daily Breakdown</h3>
+          <h3 className="text-lg font-extrabold text-navy tracking-tight mt-0.5 dark:text-gray-100">Daily Breakdown</h3>
         </div>
         {!loading && weekTotal > 0 && (
           <div className="text-right">
-            <p className="text-xl font-extrabold text-navy">₹{Math.round(weekTotal).toLocaleString('en-IN')}</p>
-            <p className="text-[11px] text-muted mt-0.5">{weekRides} rides · {activeDays} days active</p>
+            <p className="text-xl font-extrabold text-navy dark:text-gray-100">₹{Math.round(weekTotal).toLocaleString('en-IN')}</p>
+            <p className="text-[11px] text-muted mt-0.5 dark:text-gray-400">{weekRides} rides · {activeDays} days active</p>
           </div>
         )}
       </div>
@@ -94,14 +94,14 @@ export default function WeeklyEarnings({ rides = [], loading = false }) {
               return (
                 <div key={day.key} className="flex flex-col items-center gap-1.5">
                   {/* Day label */}
-                  <span className={`text-[10px] font-bold uppercase tracking-wider ${day.isToday ? 'text-secondary' : 'text-muted'}`}>
+                  <span className={`text-[10px] font-bold uppercase tracking-wider ${day.isToday ? 'text-secondary' : 'text-muted dark:text-gray-400'}`}>
                     {day.dayLabel}
                   </span>
 
                   {/* Bar container */}
                   <div className="relative w-full h-20 flex items-end justify-center">
                     {day.isFuture ? (
-                      <div className="w-full h-2 rounded-full bg-slate-100" />
+                      <div className="w-full h-2 rounded-full bg-slate-100 dark:bg-gray-700" />
                     ) : day.earnings > 0 ? (
                       <div
                         className={`w-full rounded-xl transition-all duration-500 relative group cursor-default ${
@@ -117,7 +117,7 @@ export default function WeeklyEarnings({ rides = [], loading = false }) {
                         </div>
                       </div>
                     ) : (
-                      <div className="w-full h-2 rounded-full bg-slate-100" />
+                      <div className="w-full h-2 rounded-full bg-slate-100 dark:bg-gray-700" />
                     )}
                   </div>
 
@@ -126,15 +126,15 @@ export default function WeeklyEarnings({ rides = [], loading = false }) {
                     day.isToday
                       ? 'bg-royal text-white'
                       : day.earnings > 0
-                      ? 'text-navy'
-                      : 'text-muted/30'
+                      ? 'text-navy dark:text-gray-100'
+                      : 'text-muted/30 dark:text-gray-600'
                   }`}>
                     {day.date}
                   </span>
 
                   {/* Earnings label */}
                   <span className={`text-[10px] font-semibold text-center leading-tight ${
-                    day.isFuture ? 'text-transparent' : day.earnings > 0 ? 'text-royal' : 'text-muted/30'
+                    day.isFuture ? 'text-transparent' : day.earnings > 0 ? 'text-royal' : 'text-muted/30 dark:text-gray-600'
                   }`}>
                     {day.earnings > 0
                       ? day.earnings >= 1000
@@ -149,7 +149,7 @@ export default function WeeklyEarnings({ rides = [], loading = false }) {
 
           {/* Bottom insights row */}
           {weekTotal > 0 && (
-            <div className="mt-5 pt-4 border-t border-border/40 grid grid-cols-3 gap-3">
+            <div className="mt-5 pt-4 border-t border-border/40 dark:border-gray-700/40 grid grid-cols-3 gap-3">
               {(() => {
                 const bestDay = days.reduce((b, d) => d.earnings > b.earnings ? d : b, days[0])
                 const avgDay = activeDays > 0 ? Math.round(weekTotal / activeDays) : 0
@@ -158,9 +158,9 @@ export default function WeeklyEarnings({ rides = [], loading = false }) {
                   { label: 'Daily Avg', value: avgDay > 0 ? `₹${avgDay.toLocaleString('en-IN')}` : '—' },
                   { label: 'Active Days', value: `${activeDays} / 7` },
                 ].map(({ label, value }) => (
-                  <div key={label} className="rounded-xl bg-background border border-border/40 p-3 text-center">
-                    <p className="text-[10px] font-bold text-muted uppercase tracking-wider">{label}</p>
-                    <p className="text-sm font-extrabold text-navy mt-1">{value}</p>
+                  <div key={label} className="rounded-xl bg-background border border-border/40 p-3 text-center dark:bg-gray-800/60 dark:border-gray-700/40">
+                    <p className="text-[10px] font-bold text-muted uppercase tracking-wider dark:text-gray-400">{label}</p>
+                    <p className="text-sm font-extrabold text-navy mt-1 dark:text-gray-100">{value}</p>
                   </div>
                 ))
               })()}
@@ -168,8 +168,8 @@ export default function WeeklyEarnings({ rides = [], loading = false }) {
           )}
 
           {weekTotal === 0 && (
-            <div className="mt-4 flex items-center justify-center gap-2 text-sm text-muted py-2">
-              <TrendingUp className="w-4 h-4 text-slate-300" />
+            <div className="mt-4 flex items-center justify-center gap-2 text-sm text-muted py-2 dark:text-gray-400">
+              <TrendingUp className="w-4 h-4 text-slate-300 dark:text-gray-600" />
               <span>No rides this week yet</span>
             </div>
           )}

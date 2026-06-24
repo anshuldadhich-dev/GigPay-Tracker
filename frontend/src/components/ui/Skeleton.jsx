@@ -4,7 +4,7 @@ export function Skeleton({ className = '' }) {
 
 export function StatCardSkeleton() {
   return (
-    <div className="rounded-3xl p-6 bg-white border border-border/50 shadow-card">
+    <div className="rounded-3xl p-6 bg-white dark:bg-gray-900 border border-border/50 dark:border-gray-700/50 shadow-card">
       <div className="flex justify-between">
         <Skeleton className="w-12 h-12 rounded-2xl" />
         <Skeleton className="w-16 h-6 rounded-full" />

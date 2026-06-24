@@ -56,10 +56,10 @@ export default function ShiftSummaryCards({ summary }) {
             >
               <Icon className={`w-5 h-5 ${color}`} />
             </div>
-            <p className="text-lg font-extrabold text-primary">{value}</p>
-            <p className="text-[11px] text-muted mt-0.5">{label}</p>
+            <p className="text-lg font-extrabold text-primary dark:text-gray-100">{value}</p>
+            <p className="text-[11px] text-muted dark:text-gray-400 mt-0.5">{label}</p>
             {sub && (
-              <p className="text-[10px] text-muted/70 mt-0.5 font-medium">{sub}</p>
+              <p className="text-[10px] text-muted/70 dark:text-gray-400/70 mt-0.5 font-medium">{sub}</p>
             )}
           </Card>
         </div>

@@ -16,7 +16,7 @@ export default function ToggleSwitch({ checked, onChange, disabled = false, size
         transition-colors duration-200 ease-in-out
         focus:outline-none focus:ring-4 focus:ring-secondary/20
         disabled:opacity-40 disabled:cursor-not-allowed
-        ${s.track} ${checked ? 'bg-secondary' : 'bg-slate-200 hover:bg-slate-300'}`}
+        ${s.track} ${checked ? 'bg-secondary' : 'bg-slate-200 dark:bg-gray-700 hover:bg-slate-300 dark:hover:bg-gray-600'}`}
     >
       <span
         aria-hidden="true"

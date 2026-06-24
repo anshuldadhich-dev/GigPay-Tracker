@@ -120,7 +120,7 @@ export default function StartShiftModal({ isOpen, onClose, onStart }) {
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       {/* Backdrop */}
       <div
-        className="absolute inset-0 bg-navy-dark/60 backdrop-blur-sm animate-fade-in"
+        className="absolute inset-0 bg-navy-dark/60 dark:bg-black/70 backdrop-blur-sm animate-fade-in"
         onClick={onClose}
       />
 
@@ -130,19 +130,19 @@ export default function StartShiftModal({ isOpen, onClose, onStart }) {
           {/* Header */}
           <div className="flex items-center justify-between mb-6">
             <div>
-              <h2 className="text-xl font-extrabold text-navy">Start Your Shift</h2>
-              <p className="text-xs text-muted mt-0.5">Log a new driving session</p>
+              <h2 className="text-xl font-extrabold text-navy dark:text-gray-100">Start Your Shift</h2>
+              <p className="text-xs text-muted dark:text-gray-400 mt-0.5">Log a new driving session</p>
             </div>
             <button
               onClick={onClose}
-              className="w-8 h-8 rounded-xl bg-slate-100 hover:bg-slate-200 flex items-center justify-center transition-colors"
+              className="w-8 h-8 rounded-xl bg-slate-100 dark:bg-gray-800 hover:bg-slate-200 dark:hover:bg-gray-700 flex items-center justify-center transition-colors"
             >
-              <X className="w-4 h-4 text-muted" />
+              <X className="w-4 h-4 text-muted dark:text-gray-400" />
             </button>
           </div>
 
           {error && (
-            <div className="flex items-center gap-2 p-3 rounded-xl bg-red-50 border border-red-100 text-red-600 text-sm font-medium mb-4">
+            <div className="flex items-center gap-2 p-3 rounded-xl bg-red-50 border border-red-100 text-red-600 text-sm font-medium mb-4 dark:bg-red-900/30 dark:border-red-800/50 dark:text-red-400">
               {error}
             </div>
           )}
@@ -150,7 +150,7 @@ export default function StartShiftModal({ isOpen, onClose, onStart }) {
           <form onSubmit={handleSubmit} className="space-y-5">
             {/* Platform selector */}
             <div>
-              <label className="block text-sm font-semibold text-navy mb-2.5">
+              <label className="block text-sm font-semibold text-navy dark:text-gray-100 mb-2.5">
                 Active Platforms
               </label>
               <div className="flex flex-wrap gap-2">
@@ -162,7 +162,7 @@ export default function StartShiftModal({ isOpen, onClose, onStart }) {
                     className={`px-3.5 py-2 rounded-xl text-xs font-semibold transition-all duration-200 btn-press ${
                       selected.includes(id)
                         ? `${color} shadow-md`
-                        : "bg-slate-100 text-muted hover:bg-slate-200"
+                        : "bg-slate-100 dark:bg-gray-800 text-muted dark:text-gray-400 hover:bg-slate-200 dark:hover:bg-gray-700"
                     }`}
                   >
                     {label}
@@ -198,7 +198,7 @@ export default function StartShiftModal({ isOpen, onClose, onStart }) {
                   <Plus className="w-4 h-4" /> Add
                 </Button>
               </div>
-              <p className="text-[10px] text-muted mt-1.5">
+              <p className="text-[10px] text-muted dark:text-gray-400 mt-1.5">
                 Type any platform name and press Add — it saves for next time
               </p>
             </div>

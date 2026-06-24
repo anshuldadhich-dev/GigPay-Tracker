@@ -15,7 +15,7 @@ const MONTH_NAMES = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct'
 const currentYear = new Date().getFullYear()
 const YEARS = Array.from({ length: 5 }, (_, i) => currentYear - i)
 
-const selectCls = 'appearance-none pl-4 pr-9 py-3 rounded-xl border border-border/60 bg-white text-sm font-semibold text-primary focus:outline-none focus:ring-4 focus:ring-secondary/10 focus:border-secondary/50 transition-all cursor-pointer hover:border-secondary/30'
+const selectCls = 'appearance-none pl-4 pr-9 py-3 rounded-xl border border-border/60 dark:border-gray-700/60 bg-white dark:bg-gray-900 text-sm font-semibold text-primary dark:text-gray-100 focus:outline-none focus:ring-4 focus:ring-secondary/10 focus:border-secondary/50 transition-all cursor-pointer hover:border-secondary/30'
 
 const parseMonthYear = (createdAt) => {
   const parts = createdAt?.split(' ') || []
@@ -147,23 +147,23 @@ export default function ReportsPage() {
       {/* Custom generate */}
       <div className="animate-fade-up" style={{ animationDelay: '80ms' }}>
         <Card>
-          <h2 className="text-base font-bold text-primary mb-1">Generate Report</h2>
-          <p className="text-xs text-muted mb-5">Pick any month and year to download a PDF report</p>
+          <h2 className="text-base font-bold text-primary dark:text-gray-100 mb-1">Generate Report</h2>
+          <p className="text-xs text-muted dark:text-gray-400 mb-5">Pick any month and year to download a PDF report</p>
 
           {(customError || downloadError) && (
-            <div className="flex items-center gap-2.5 p-3.5 rounded-xl bg-red-50 border border-red-100 text-red-600 text-sm font-medium mb-4 animate-scale-in">
+            <div className="flex items-center gap-2.5 p-3.5 rounded-xl bg-red-50 border border-red-100 text-red-600 text-sm font-medium mb-4 animate-scale-in dark:bg-red-900/30 dark:border-red-800/50 dark:text-red-400">
               <AlertCircle className="w-4 h-4 shrink-0" /> {customError || downloadError}
             </div>
           )}
 
           <div className="flex flex-wrap items-end gap-3">
             <div className="space-y-1.5">
-              <label className="text-xs font-bold text-muted uppercase tracking-wider">Month</label>
+              <label className="text-xs font-bold text-muted dark:text-gray-400 uppercase tracking-wider">Month</label>
               <div className="relative">
                 <select value={customMonth} onChange={e => { setCustomMonth(Number(e.target.value)); setCustomError(null) }} className={selectCls}>
                   {MONTHS.map(m => <option key={m.value} value={m.value}>{m.label}</option>)}
                 </select>
-                <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-muted pointer-events-none" />
+                <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-muted dark:text-gray-400 pointer-events-none" />
               </div>
             </div>
 
@@ -173,7 +173,7 @@ export default function ReportsPage() {
                 <select value={customYear} onChange={e => { setCustomYear(Number(e.target.value)); setCustomError(null) }} className={selectCls}>
                   {YEARS.map(y => <option key={y} value={y}>{y}</option>)}
                 </select>
-                <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-muted pointer-events-none" />
+                <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-muted dark:text-gray-400 pointer-events-none" />
               </div>
             </div>
 
@@ -191,8 +191,8 @@ export default function ReportsPage() {
       {/* Archive */}
       <div className="animate-fade-up" style={{ animationDelay: '160ms' }}>
         <Card>
-          <h2 className="text-base font-bold text-primary mb-1">Report Archive</h2>
-          <p className="text-xs text-muted mb-5">All months with recorded rides</p>
+          <h2 className="text-base font-bold text-primary dark:text-gray-100 mb-1">Report Archive</h2>
+          <p className="text-xs text-muted dark:text-gray-400 mb-5">All months with recorded rides</p>
 
           {loading ? (
             <div className="space-y-2.5">
@@ -204,11 +204,11 @@ export default function ReportsPage() {
             </div>
           ) : archive.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-14 text-center gap-3 animate-fade-in">
-              <div className="w-14 h-14 rounded-2xl bg-slate-100 flex items-center justify-center">
-                <FileText className="w-7 h-7 text-slate-300" />
+              <div className="w-14 h-14 rounded-2xl bg-slate-100 dark:bg-gray-800 flex items-center justify-center">
+                <FileText className="w-7 h-7 text-slate-300 dark:text-gray-500" />
               </div>
-              <p className="text-sm font-semibold text-muted">No reports yet</p>
-              <p className="text-xs text-muted">Add rides to auto-generate monthly reports</p>
+              <p className="text-sm font-semibold text-muted dark:text-gray-400">No reports yet</p>
+              <p className="text-xs text-muted dark:text-gray-400">Add rides to auto-generate monthly reports</p>
             </div>
           ) : (
             <div className="space-y-2.5">
@@ -218,21 +218,21 @@ export default function ReportsPage() {
                 return (
                   <div
                     key={key}
-                    className="flex items-center justify-between p-4 rounded-2xl border border-border/40 hover:border-secondary/25 hover:bg-teal-50/20 transition-all group card-premium animate-fade-up"
+                    className="flex items-center justify-between p-4 rounded-2xl border border-border/40 dark:border-gray-700/40 hover:border-secondary/25 hover:bg-teal-50/20 dark:hover:bg-teal-900/10 transition-all group card-premium animate-fade-up"
                     style={{ animationDelay: `${i * 55}ms` }}
                   >
                     <div className="flex items-center gap-3.5 min-w-0">
-                      <div className="w-11 h-11 rounded-xl bg-blue-50 ring-1 ring-blue-100 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
-                        <FileText className="w-5 h-5 text-primary" />
+                      <div className="w-11 h-11 rounded-xl bg-blue-50 dark:bg-blue-900/30 ring-1 ring-blue-100 dark:ring-blue-800 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
+                        <FileText className="w-5 h-5 text-primary dark:text-blue-300" />
                       </div>
                       <div className="min-w-0">
-                        <p className="text-sm font-bold text-primary">{report.month} {report.year} — Earnings Report</p>
+                        <p className="text-sm font-bold text-primary dark:text-gray-100">{report.month} {report.year} — Earnings Report</p>
                         <div className="flex flex-wrap items-center gap-x-3 gap-y-0.5 mt-1">
-                          <span className="text-[11px] text-muted flex items-center gap-1 font-medium">
+                          <span className="text-[11px] text-muted dark:text-gray-400 flex items-center gap-1 font-medium">
                             <Calendar className="w-3 h-3" /> {report.month} {report.year}
                           </span>
-                          <span className="text-[11px] text-muted font-medium">{report.rideCount} rides</span>
-                          <span className="text-[11px] text-emerald-600 flex items-center gap-1 font-bold">
+                          <span className="text-[11px] text-muted dark:text-gray-400 font-medium">{report.rideCount} rides</span>
+                          <span className="text-[11px] text-emerald-600 dark:text-emerald-400 flex items-center gap-1 font-bold">
                             <CheckCircle2 className="w-3 h-3" /> Ready
                           </span>
                         </div>
@@ -240,7 +240,7 @@ export default function ReportsPage() {
                     </div>
 
                     <div className="flex items-center gap-4 shrink-0 ml-3">
-                      <p className="text-base font-extrabold text-primary hidden sm:block">
+                      <p className="text-base font-extrabold text-primary dark:text-gray-100 hidden sm:block">
                         ₹{Math.round(report.total).toLocaleString('en-IN')}
                       </p>
                       <button

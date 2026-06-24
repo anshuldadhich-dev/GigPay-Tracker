@@ -23,13 +23,15 @@ model User {
   phone        String?
   city         String?
   profilePhoto String?    @map("profile_photo")
-  goalDaily    Float      @default(1500) @map("goal_daily")
-  goalWeekly   Float      @default(8000) @map("goal_weekly")
-  goalMonthly  Float      @default(30000) @map("goal_monthly")
-  createdAt    DateTime   @default(now()) @map("created_at")
-  rides        Ride[]
-  fuelLogs     FuelLog[]
-  shifts       Shift[]
+  goalDaily         Float      @default(1500) @map("goal_daily")
+  goalWeekly        Float      @default(8000) @map("goal_weekly")
+  goalMonthly       Float      @default(30000) @map("goal_monthly")
+  autoMonthlyReport Boolean    @default(false) @map("auto_monthly_report")
+  createdAt         DateTime   @default(now()) @map("created_at")
+  rides             Ride[]
+  fuelLogs          FuelLog[]
+  shifts            Shift[]
+  reportJobs        ReportJob[]
 
   @@map("users")
 }
@@ -83,4 +85,18 @@ model Shift {
   user               User      @relation(fields: [userId], references: [id])
 
   @@map("shifts")
+}
+
+model ReportJob {
+  id        Int       @id @default(autoincrement())
+  userId    Int       @map("user_id")
+  month     Int
+  year      Int
+  status    String    @default("QUEUED")
+  createdAt DateTime  @default(now()) @map("created_at")
+  sentAt    DateTime? @map("sent_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("report_jobs")
 }

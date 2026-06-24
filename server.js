@@ -10,9 +10,13 @@ const rideRoutes = require("./routes/rideRoutes");
 const authRoutes = require("./routes/authRoutes");
 const fuelRoutes = require("./routes/fuelRoutes");
 const shiftRoutes = require("./routes/shiftRoutes");
+const reportRoutes = require("./routes/reportRoutes");
+const testQueue = require("./routes/testQueue");
+
 
 // Pre-warm Puppeteer browser at startup (avoids cold-launch on first PDF request)
 require("./services/pdfService");
+require("./workers/reportWorker");
 
 
 const allowedOrigins = process.env.CLIENT_URL
@@ -38,6 +42,8 @@ app.use("/ride", rideRoutes);
 app.use("/health", healthRoutes);
 app.use("/fuel", fuelRoutes);
 app.use("/shift", shiftRoutes);
+app.use("/reports", reportRoutes);
+app.use("/test-queue", testQueue);
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {

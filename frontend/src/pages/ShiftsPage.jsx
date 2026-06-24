@@ -267,7 +267,7 @@ export default function ShiftsPage() {
                 <LiveTimer
                   startTime={active.startTime}
                   isPaused={active.isPaused}
-                  pausedMs={active.isPaused ? 0 : 0}
+                  pausedMs={active.totalPausedMinutes || 0}
                 />
                 <div className="flex items-center gap-2">
                   <span

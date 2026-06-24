@@ -1,28 +1,24 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { Clock, Pause } from "lucide-react";
 
 export default function LiveTimer({ startTime, isPaused = false, pausedMs = 0, className = "" }) {
   const [elapsed, setElapsed] = useState(0);
-  const startRef = useRef(new Date(startTime).getTime());
-  const resumeRef = useRef(null);
 
   useEffect(() => {
-    startRef.current = new Date(startTime).getTime();
-  }, [startTime]);
+    // Guard: don't start if paused or no valid startTime
+    if (isPaused || !startTime) return;
 
-  useEffect(() => {
-    if (isPaused) {
-      resumeRef.current = null;
-      return;
-    }
+    // Convert once for this effect instance
+    const startMs = new Date(startTime).getTime();
+    if (isNaN(startMs)) return;
 
     const tick = () => {
-      const base = startRef.current;
       const now = Date.now();
-      const raw = Math.floor((now - base) / 1000) - Math.floor((pausedMs * 60) / 1000);
+      const raw = Math.floor((now - startMs) / 1000) - Math.floor((pausedMs * 60) / 1000);
       setElapsed(Math.max(0, raw));
     };
 
+    // Fire immediately so timer shows value on first paint
     tick();
     const interval = setInterval(tick, 200);
     return () => clearInterval(interval);
@@ -55,7 +51,6 @@ export default function LiveTimer({ startTime, isPaused = false, pausedMs = 0, c
           {pad(hours)}:{pad(minutes)}:{pad(seconds)}
         </p>
       </div>
-      {/* Pulser dot when running */}
       {!isPaused && (
         <div className="ml-1 w-2.5 h-2.5 rounded-full bg-emerald-500 animate-glow" />
       )}

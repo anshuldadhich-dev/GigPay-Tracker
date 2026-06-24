@@ -17,8 +17,7 @@ const PLATFORM_COLORS = {
   uber: "bg-black text-white",
   ola: "bg-emerald-600 text-white",
   rapido: "bg-orange-500 text-white",
-  "namma-yatri": "bg-purple-600 text-white",
-  other: "bg-slate-500 text-white",
+  indrive: "bg-gray-900 text-white",
 };
 
 function getPlatformBadge(p) {
@@ -408,8 +407,9 @@ export default function ShiftsPage() {
                     value={endOdometer}
                     onChange={(e) => setEndOdometer(e.target.value)}
                     min="0"
+                    max="999999"
                     step="0.1"
-                    hint="Optional — enter to calculate distance"
+                    hint="Optional — enter to calculate distance (max 6 digits)"
                   />
                   <div className="flex gap-3">
                     <Button

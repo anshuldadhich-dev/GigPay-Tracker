@@ -8,8 +8,8 @@ const prisma = new PrismaClient({ adapter });
 // Seed for this user ID
 const USER_ID = 1;
 
-const PLATFORMS = ["Uber", "Ola", "Rapido", "InDrive", "Namma Yatri"];
-const PLATFORM_WEIGHTS = [35, 25, 20, 12, 8]; // percentage distribution
+const PLATFORMS = ["Uber", "Ola", "Rapido", "InDrive"];
+const PLATFORM_WEIGHTS = [38, 28, 22, 12]; // percentage distribution
 
 const ROUTES = [
   { pickup: "Koramangala", dropoff: "MG Road" },
@@ -40,7 +40,6 @@ const FARE_RANGE = {
   Ola: { min: 70, max: 700 },
   Rapido: { min: 40, max: 300 },
   InDrive: { min: 90, max: 600 },
-  "Namma Yatri": { min: 50, max: 400 },
 };
 
 function pickPlatform() {

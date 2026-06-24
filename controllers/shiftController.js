@@ -95,6 +95,13 @@ const startShift = async (req, res) => {
   try {
     const { platforms, startOdometer, date } = req.body;
 
+    if (startOdometer != null && (isNaN(startOdometer) || startOdometer < 0 || startOdometer > 999999)) {
+      return res.status(400).json({
+        success: false,
+        message: "Odometer must be between 0 and 999999 (6 digits max)",
+      });
+    }
+
     // Check for existing active/paused shift
     const existing = await prisma.shift.findFirst({
       where: {
@@ -142,6 +149,13 @@ const startShift = async (req, res) => {
 const endShift = async (req, res) => {
   try {
     const { endOdometer } = req.body;
+
+    if (endOdometer != null && (isNaN(endOdometer) || endOdometer < 0 || endOdometer > 999999)) {
+      return res.status(400).json({
+        success: false,
+        message: "Odometer must be between 0 and 999999 (6 digits max)",
+      });
+    }
 
     const shift = await prisma.shift.findFirst({
       where: {

@@ -1,38 +1,112 @@
-import { useState } from "react";
-import { X, Gauge, Calendar, ChevronRight } from "lucide-react";
+import { useState, useEffect } from "react";
+import { X, Gauge, Calendar, ChevronRight, Plus } from "lucide-react";
 import Button from "../ui/Button";
 import Input from "../ui/Input";
 
-const PLATFORM_OPTIONS = [
+const BUILTIN_PLATFORMS = [
   { id: "uber", label: "Uber", color: "bg-black text-white" },
   { id: "ola", label: "Ola", color: "bg-emerald-600 text-white" },
   { id: "rapido", label: "Rapido", color: "bg-orange-500 text-white" },
-  { id: "namma-yatri", label: "Namma Yatri", color: "bg-purple-600 text-white" },
-  { id: "other", label: "Other", color: "bg-slate-500 text-white" },
+  { id: "indrive", label: "InDrive", color: "bg-gray-900 text-white" },
 ];
 
+const CUSTOM_COLORS = [
+  "bg-purple-600 text-white",
+  "bg-cyan-600 text-white",
+  "bg-pink-600 text-white",
+  "bg-teal-600 text-white",
+  "bg-indigo-600 text-white",
+  "bg-rose-600 text-white",
+  "bg-amber-600 text-white",
+  "bg-lime-600 text-white",
+];
+
+function hashColor(name) {
+  let hash = 0;
+  for (let i = 0; i < name.length; i++) {
+    hash = name.charCodeAt(i) + ((hash << 5) - hash);
+  }
+  return CUSTOM_COLORS[Math.abs(hash) % CUSTOM_COLORS.length];
+}
+
+function loadCustomPlatforms() {
+  try {
+    return JSON.parse(localStorage.getItem("gigpay-custom-platforms") || "[]");
+  } catch {
+    return [];
+  }
+}
+
+function saveCustomPlatforms(names) {
+  localStorage.setItem("gigpay-custom-platforms", JSON.stringify(names));
+}
+
 export default function StartShiftModal({ isOpen, onClose, onStart }) {
-  const [platforms, setPlatforms] = useState([]);
+  const [selected, setSelected] = useState([]);
   const [startOdometer, setStartOdometer] = useState("");
   const [date, setDate] = useState(new Date().toISOString().split("T")[0]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [customName, setCustomName] = useState("");
+  const [customPlatforms, setCustomPlatforms] = useState(loadCustomPlatforms);
+
+  // Reset form when modal opens
+  useEffect(() => {
+    if (isOpen) {
+      setCustomPlatforms(loadCustomPlatforms());
+    }
+  }, [isOpen]);
 
   if (!isOpen) return null;
 
+  // Build final list: builtin + previously saved customs
+  const allOptions = [
+    ...BUILTIN_PLATFORMS,
+    ...customPlatforms.map((name) => ({
+      id: `custom:${name}`,
+      label: name,
+      color: hashColor(name),
+      isCustom: true,
+    })),
+  ];
+
   const togglePlatform = (id) => {
-    setPlatforms((prev) =>
+    setSelected((prev) =>
       prev.includes(id) ? prev.filter((p) => p !== id) : [...prev, id]
     );
+  };
+
+  const addCustomPlatform = () => {
+    const trimmed = customName.trim();
+    if (!trimmed) return;
+    if (customPlatforms.includes(trimmed)) {
+      // Already exists — just select it
+      const id = `custom:${trimmed}`;
+      if (!selected.includes(id)) setSelected([...selected, id]);
+    } else {
+      const updated = [...customPlatforms, trimmed];
+      setCustomPlatforms(updated);
+      saveCustomPlatforms(updated);
+      setSelected([...selected, `custom:${trimmed}`]);
+    }
+    setCustomName("");
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError(null);
+
+    // Build platform string: builtin ids + custom label names
+    const platformNames = selected.map((id) => {
+      if (id.startsWith("custom:")) return id.replace("custom:", "");
+      const builtin = BUILTIN_PLATFORMS.find((p) => p.id === id);
+      return builtin ? builtin.label : id;
+    });
+
     setLoading(true);
     try {
       await onStart({
-        platforms: platforms.join(","),
+        platforms: platformNames.join(","),
         startOdometer: startOdometer ? parseFloat(startOdometer) : undefined,
         date,
       });
@@ -80,21 +154,53 @@ export default function StartShiftModal({ isOpen, onClose, onStart }) {
                 Active Platforms
               </label>
               <div className="flex flex-wrap gap-2">
-                {PLATFORM_OPTIONS.map(({ id, label, color }) => (
+                {allOptions.map(({ id, label, color }) => (
                   <button
                     key={id}
                     type="button"
                     onClick={() => togglePlatform(id)}
                     className={`px-3.5 py-2 rounded-xl text-xs font-semibold transition-all duration-200 btn-press ${
-                      platforms.includes(id)
+                      selected.includes(id)
                         ? `${color} shadow-md`
                         : "bg-slate-100 text-muted hover:bg-slate-200"
                     }`}
                   >
                     {label}
+                    <span className="ml-1 opacity-60">
+                      {selected.includes(id) ? "✓" : "+"}
+                    </span>
                   </button>
                 ))}
               </div>
+
+              {/* Custom platform input */}
+              <div className="mt-3 flex gap-2">
+                <Input
+                  id="customPlatform"
+                  placeholder="Other platform name…"
+                  value={customName}
+                  onChange={(e) => setCustomName(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      e.preventDefault();
+                      addCustomPlatform();
+                    }
+                  }}
+                  className="flex-1"
+                />
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={addCustomPlatform}
+                  className="shrink-0"
+                >
+                  <Plus className="w-4 h-4" /> Add
+                </Button>
+              </div>
+              <p className="text-[10px] text-muted mt-1.5">
+                Type any platform name and press Add — it saves for next time
+              </p>
             </div>
 
             {/* Start Odometer */}
@@ -107,8 +213,9 @@ export default function StartShiftModal({ isOpen, onClose, onStart }) {
               value={startOdometer}
               onChange={(e) => setStartOdometer(e.target.value)}
               min="0"
+              max="999999"
               step="0.1"
-              hint="Optional — enter to track distance"
+              hint="Optional — enter to track distance (max 6 digits)"
             />
 
             {/* Date */}

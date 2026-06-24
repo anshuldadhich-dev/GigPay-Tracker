@@ -14,7 +14,7 @@ const PLATFORM_COLORS = {
   uber: "bg-black text-white",
   ola: "bg-emerald-600 text-white",
   rapido: "bg-orange-500 text-white",
-  "namma-yatri": "bg-purple-600 text-white",
+  "indrive": "bg-gray-900 text-white",
   other: "bg-slate-500 text-white",
 };
 
@@ -150,7 +150,7 @@ export default function ShiftLogbookPage() {
           {/* Platform filter chips */}
           {showFilters && (
             <div className="mb-4 flex flex-wrap gap-2 p-3 rounded-xl bg-slate-50 animate-scale-in">
-              {["", "uber", "ola", "rapido", "namma-yatri", "other"].map((p) => (
+              {["", "uber", "ola", "rapido", "indrive"].map((p) => (
                 <button
                   key={p}
                   onClick={() => setFilterPlatform(p)}

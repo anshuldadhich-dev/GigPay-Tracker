@@ -387,7 +387,7 @@ function GoalsSection() {
                       min="0"
                       value={goals[key]}
                       onChange={e => setGoals(g => ({ ...g, [key]: Math.max(0, Number(e.target.value)) }))}
-                      className="w-28 text-right px-3 py-2.5 rounded-xl border border-border bg-slate-50/60 dark:bg-gray-800/60 text-sm font-extrabold text-primary focus:outline-none focus:ring-4 focus:ring-secondary/10 focus:border-secondary focus:bg-white dark:focus:bg-gray-800 transition-all"
+                      className="w-28 text-right px-3 py-2.5 rounded-xl border border-border dark:border-gray-700 bg-slate-50/60 dark:bg-gray-800/60 text-sm font-extrabold text-primary dark:text-gray-100 focus:outline-none focus:ring-4 focus:ring-secondary/10 dark:focus:ring-blue-400/10 focus:border-secondary dark:focus:border-blue-400 focus:bg-white dark:focus:bg-gray-800 transition-all"
                     />
                   </div>
                 </div>

@@ -30,7 +30,7 @@ export default function Header({ onMenuClick }) {
           <button
             type="button"
             onClick={onMenuClick}
-            className="lg:hidden p-2.5 rounded-xl bg-white border border-border/60 hover:border-navy/20 hover:shadow-sm transition-all btn-press shrink-0"
+            className="lg:hidden p-2.5 rounded-xl bg-white dark:bg-gray-800 border border-border/60 dark:border-gray-700 hover:border-navy/20 dark:hover:border-gray-500 hover:shadow-sm transition-all btn-press shrink-0"
             aria-label="Open menu"
           >
             <Menu className="w-5 h-5 text-navy" />

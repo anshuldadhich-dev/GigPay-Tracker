@@ -168,7 +168,7 @@
   /* ── Gradient Border ── */
   .gradient-border {
     position: relative;
-    background: white;
+    background-color: white;
     border-radius: 1.5rem;
   }
 
@@ -514,6 +514,9 @@
 }
 
 /* Dark gradient border */
+.dark .gradient-border {
+  background-color: #1E293B;
+}
 .dark .gradient-border::before {
   background: linear-gradient(135deg,
     rgba(217, 164, 142, 0.20),

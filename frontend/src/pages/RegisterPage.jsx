@@ -102,7 +102,7 @@ export default function RegisterPage() {
 
         <p className="text-center text-sm text-muted dark:text-gray-400">
           Already have an account?{' '}
-          <Link to="/login" className="text-royal font-bold hover:text-navy dark:hover:text-white transition-colors">
+          <Link to="/login" className="text-royal dark:text-blue-400 font-bold hover:text-navy dark:hover:text-white transition-colors">
             Sign in →
           </Link>
         </p>

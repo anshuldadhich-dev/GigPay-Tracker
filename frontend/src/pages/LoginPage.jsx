@@ -138,7 +138,7 @@ export default function LoginPage() {
         </div>
 
         <p className="text-center text-sm text-muted dark:text-gray-400">
-          <Link to="/register" className="text-royal font-bold hover:text-navy dark:hover:text-white transition-colors">
+          <Link to="/register" className="text-royal dark:text-blue-400 font-bold hover:text-navy dark:hover:text-white transition-colors">
             Create a free account →
           </Link>
         </p>

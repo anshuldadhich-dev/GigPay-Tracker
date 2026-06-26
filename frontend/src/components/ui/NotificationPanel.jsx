@@ -23,8 +23,8 @@ function buildNotifications(profile, earnings, totalRides) {
         notes.push({
           id: `goal-done-${g.key}`,
           icon: Target,
-          iconBg: 'bg-emerald-100',
-          iconColor: 'text-emerald-600',
+          iconBg: 'bg-emerald-100 dark:bg-emerald-500/15',
+          iconColor: 'text-emerald-600 dark:text-emerald-400',
           title: `${g.label} goal reached!`,
           body: `You earned ₹${g.earned.toLocaleString('en-IN')} — target was ₹${g.target.toLocaleString('en-IN')}`,
           type: 'success',
@@ -34,8 +34,8 @@ function buildNotifications(profile, earnings, totalRides) {
         notes.push({
           id: `goal-close-${g.key}`,
           icon: TrendingUp,
-          iconBg: 'bg-blue-100',
-          iconColor: 'text-blue-600',
+          iconBg: 'bg-blue-100 dark:bg-blue-500/15',
+          iconColor: 'text-blue-600 dark:text-blue-400',
           title: `${g.label} goal almost there`,
           body: `₹${remaining.toLocaleString('en-IN')} more to hit your ₹${g.target.toLocaleString('en-IN')} target`,
           type: 'info',
@@ -48,8 +48,8 @@ function buildNotifications(profile, earnings, totalRides) {
       notes.push({
         id: 'no-rides-today',
         icon: Bike,
-        iconBg: 'bg-orange-100',
-        iconColor: 'text-orange-500',
+        iconBg: 'bg-orange-100 dark:bg-orange-500/15',
+        iconColor: 'text-orange-500 dark:text-orange-400',
         title: 'No rides logged today',
         body: 'Add your rides to track daily earnings',
         type: 'warning',
@@ -64,8 +64,8 @@ function buildNotifications(profile, earnings, totalRides) {
     notes.push({
       id: `milestone-${hit}`,
       icon: Award,
-      iconBg: 'bg-purple-100',
-      iconColor: 'text-purple-600',
+      iconBg: 'bg-purple-100 dark:bg-purple-500/15',
+      iconColor: 'text-purple-600 dark:text-purple-400',
       title: `${hit} rides completed!`,
       body: `You've logged ${totalRides} rides total. Keep it up!`,
       type: 'milestone',
@@ -128,30 +128,30 @@ export default function NotificationPanel() {
       <button
         type="button"
         onClick={() => setOpen(o => !o)}
-        className="relative p-2.5 rounded-xl bg-white dark:bg-gray-900 border border-border/60 dark:border-gray-700/60 hover:border-secondary/30 hover:shadow-sm transition-all btn-press"
+        className="relative p-2.5 rounded-xl bg-white dark:bg-[#1C2333] border border-border/60 dark:border-[#2A3650] hover:border-secondary/30 dark:hover:border-[#374B6E] hover:shadow-sm dark:hover:shadow-[0_2px_8px_rgba(0,0,0,0.4)] transition-all btn-press"
         aria-label="Notifications"
       >
-        <Bell className="w-[18px] h-[18px] text-primary dark:text-gray-100" />
+        <Bell className="w-[18px] h-[18px] text-primary dark:text-[#8B9DC3]" />
         {visible.length > 0 && (
-          <span className="absolute -top-1 -right-1 w-5 h-5 bg-accent text-white text-[10px] font-extrabold rounded-full flex items-center justify-center border-2 border-white dark:border-gray-900 shadow-sm dark:shadow-gray-900/30">
+          <span className="absolute -top-1 -right-1 w-5 h-5 bg-accent text-white text-[10px] font-extrabold rounded-full flex items-center justify-center border-2 border-white dark:border-[#1C2333] shadow-sm">
             {visible.length > 9 ? '9+' : visible.length}
           </span>
         )}
       </button>
 
       {open && (
-        <div className="absolute right-0 top-full mt-2 w-80 bg-white dark:bg-gray-900 rounded-2xl shadow-xl border border-border/60 dark:border-gray-700/60 z-50 overflow-hidden animate-scale-in">
+        <div className="absolute right-0 top-full mt-2 w-80 bg-white dark:bg-[#161B27] rounded-2xl shadow-xl dark:shadow-[0_20px_60px_-12px_rgba(0,0,0,0.7),0_0_0_1px_rgba(255,255,255,0.04)] border border-border/60 dark:border-[#2A3650] z-50 overflow-hidden animate-scale-in">
           {/* Header */}
-          <div className="flex items-center justify-between px-4 py-3 border-b border-border/40 dark:border-gray-700/40">
+          <div className="flex items-center justify-between px-4 py-3 border-b border-border/40 dark:border-[#1F2A40]">
             <div>
-              <p className="text-sm font-extrabold text-primary dark:text-gray-100">Notifications</p>
-              <p className="text-[10px] text-muted dark:text-gray-400 font-medium">{visible.length} unread</p>
+              <p className="text-sm font-extrabold text-primary dark:text-[#C8D6F0]">Notifications</p>
+              <p className="text-[10px] text-muted dark:text-[#6B7FA8] font-medium">{visible.length} unread</p>
             </div>
             {visible.length > 0 && (
               <button
                 type="button"
                 onClick={dismissAll}
-                className="flex items-center gap-1 text-[11px] font-bold text-secondary hover:text-secondary-dark transition-colors"
+                className="flex items-center gap-1 text-[11px] font-bold text-secondary dark:text-[#5B9BF8] hover:text-secondary-dark dark:hover:text-[#7DB8FF] transition-colors"
               >
                 <CheckCheck className="w-3.5 h-3.5" /> Mark all read
               </button>
@@ -159,31 +159,31 @@ export default function NotificationPanel() {
           </div>
 
           {/* Body */}
-          <div className="max-h-80 overflow-y-auto divide-y divide-border/30 dark:divide-gray-700/30">
+          <div className="max-h-80 overflow-y-auto divide-y divide-border/30 dark:divide-[#1F2A40]">
             {loading ? (
-              <div className="px-4 py-8 text-center text-sm text-muted dark:text-gray-400">Loading…</div>
+              <div className="px-4 py-8 text-center text-sm text-muted dark:text-[#8B9DC3]">Loading…</div>
             ) : visible.length === 0 ? (
               <div className="px-4 py-8 text-center">
-                <Bell className="w-8 h-8 text-muted/30 dark:text-gray-400/30 mx-auto mb-2" />
-                <p className="text-sm font-semibold text-muted dark:text-gray-400">All caught up!</p>
-                <p className="text-xs text-muted/70 dark:text-gray-400/70 mt-0.5">No new notifications</p>
+                <Bell className="w-8 h-8 text-muted/30 dark:text-[#2A3650] mx-auto mb-2" />
+                <p className="text-sm font-semibold text-muted dark:text-[#8B9DC3]">All caught up!</p>
+                <p className="text-xs text-muted/70 dark:text-[#6B7FA8] mt-0.5">No new notifications</p>
               </div>
             ) : (
               visible.map(({ id, icon: Icon, iconBg, iconColor, title, body }) => (
-                <div key={id} className="flex items-start gap-3 px-4 py-3.5 hover:bg-slate-50/70 dark:hover:bg-gray-800/50 transition-colors group">
+                <div key={id} className="flex items-start gap-3 px-4 py-3.5 hover:bg-slate-50/70 dark:hover:bg-[#1C2333] transition-colors group">
                   <div className={`w-8 h-8 rounded-xl ${iconBg} flex items-center justify-center shrink-0 mt-0.5`}>
                     <Icon className={`w-4 h-4 ${iconColor}`} />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="text-[12.5px] font-bold text-primary dark:text-gray-100 leading-snug">{title}</p>
-                    <p className="text-[11px] text-muted dark:text-gray-400 mt-0.5 leading-relaxed">{body}</p>
+                    <p className="text-[12.5px] font-bold text-primary dark:text-[#C8D6F0] leading-snug">{title}</p>
+                    <p className="text-[11px] text-muted dark:text-[#8B9DC3] mt-0.5 leading-relaxed">{body}</p>
                   </div>
                   <button
                     type="button"
                     onClick={() => dismiss(id)}
-                    className="shrink-0 p-1 rounded-lg opacity-0 group-hover:opacity-100 hover:bg-slate-200 dark:hover:bg-gray-700 transition-all mt-0.5"
+                    className="shrink-0 p-1 rounded-lg opacity-0 group-hover:opacity-100 hover:bg-slate-200 dark:hover:bg-[#21293D] transition-all mt-0.5"
                   >
-                    <X className="w-3 h-3 text-muted dark:text-gray-400" />
+                    <X className="w-3 h-3 text-muted dark:text-[#8B9DC3]" />
                   </button>
                 </div>
               ))

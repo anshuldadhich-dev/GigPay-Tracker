@@ -39,7 +39,7 @@ export default function LoginPage() {
       <form onSubmit={handleSubmit} className="space-y-5">
         {/* Error alert */}
         {error && (
-          <div className="flex items-center gap-2.5 p-3.5 rounded-xl bg-red-50 border border-red-100 text-red-600 text-sm font-medium dark:bg-red-900/30 dark:border-red-800/50 dark:text-red-400">
+          <div className="flex items-center gap-2.5 p-3.5 rounded-xl bg-red-50 border border-red-100 text-red-600 text-sm font-medium dark:bg-red-500/10 dark:border-red-500/20 dark:text-red-400">
             <AlertCircle className="w-4 h-4 shrink-0" />
             {error}
           </div>
@@ -68,16 +68,16 @@ export default function LoginPage() {
 
         {/* Remember me + Forgot */}
         <div className="flex items-center justify-between text-sm">
-          <label className="flex items-center gap-2 text-muted dark:text-gray-400 cursor-pointer font-medium select-none">
+          <label className="flex items-center gap-2 text-muted dark:text-[#8B9DC3] cursor-pointer font-medium select-none">
             <input
               type="checkbox"
               checked={rememberMe}
               onChange={(e) => setRememberMe(e.target.checked)}
-              className="w-4 h-4 rounded border-border dark:border-gray-700 accent-navy focus:ring-royal/20"
+              className="w-4 h-4 rounded border-border dark:border-[#2A3650] accent-navy focus:ring-royal/20"
             />
             Remember me
           </label>
-          <span className="text-muted/60 dark:text-gray-500 text-sm font-medium cursor-not-allowed" title="Coming soon">
+          <span className="text-muted/60 dark:text-[#6B7FA8] text-sm font-medium cursor-not-allowed" title="Coming soon">
             Forgot password?
           </span>
         </div>
@@ -91,10 +91,10 @@ export default function LoginPage() {
         {/* Divider */}
         <div className="relative py-1">
           <div className="absolute inset-0 flex items-center">
-            <div className="w-full border-t border-border/60 dark:border-gray-700/60" />
+            <div className="w-full border-t border-border/60 dark:border-[#2A3650]" />
           </div>
           <div className="relative flex justify-center">
-            <span className="bg-white dark:bg-gray-900 px-3 text-xs text-muted dark:text-gray-400 font-semibold">or continue with</span>
+            <span className="bg-white dark:bg-[#1C2333] px-3 text-xs text-muted dark:text-[#8B9DC3] font-semibold">or continue with</span>
           </div>
         </div>
 
@@ -104,11 +104,11 @@ export default function LoginPage() {
           id="google-signin-btn"
           onClick={handleGoogleLogin}
           disabled={loading || !serverReady}
-          className="w-full flex items-center justify-center gap-3 px-5 py-3 rounded-xl border-2 border-border/60 bg-white hover:bg-background hover:border-royal/30 text-navy font-semibold text-sm transition-all duration-200 hover:shadow-sm disabled:opacity-50 disabled:cursor-not-allowed dark:border-gray-700/60 dark:bg-gray-900 dark:hover:bg-gray-800 dark:text-gray-100"
+          className="w-full flex items-center justify-center gap-3 px-5 py-3 rounded-xl border border-border/60 bg-white hover:bg-background hover:border-royal/30 text-navy font-semibold text-sm transition-all duration-200 hover:shadow-sm disabled:opacity-50 disabled:cursor-not-allowed dark:border-[#2A3650] dark:bg-[#21293D] dark:hover:bg-[#2A3650] dark:text-[#C8D6F0] dark:hover:border-[#374B6E]"
         >
           {!serverReady ? (
             <>
-              <svg className="w-4 h-4 animate-spin text-muted dark:text-gray-400" fill="none" viewBox="0 0 24 24">
+              <svg className="w-4 h-4 animate-spin text-muted dark:text-[#8B9DC3]" fill="none" viewBox="0 0 24 24">
                 <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/>
                 <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"/>
               </svg>
@@ -127,18 +127,18 @@ export default function LoginPage() {
           )}
         </button>
 
-        {/* Register link */}
+        {/* Register link divider */}
         <div className="relative py-1">
           <div className="absolute inset-0 flex items-center">
-            <div className="w-full border-t border-border/60 dark:border-gray-700/60" />
+            <div className="w-full border-t border-border/60 dark:border-[#2A3650]" />
           </div>
           <div className="relative flex justify-center">
-            <span className="bg-white dark:bg-gray-900 px-3 text-xs text-muted dark:text-gray-400 font-semibold">New to GigPay?</span>
+            <span className="bg-white dark:bg-[#1C2333] px-3 text-xs text-muted dark:text-[#8B9DC3] font-semibold">New to GigPay?</span>
           </div>
         </div>
 
-        <p className="text-center text-sm text-muted dark:text-gray-400">
-          <Link to="/register" className="text-royal dark:text-blue-400 font-bold hover:text-navy dark:hover:text-white transition-colors">
+        <p className="text-center text-sm text-muted dark:text-[#8B9DC3]">
+          <Link to="/register" className="text-royal dark:text-[#6EA8FE] font-bold hover:text-navy dark:hover:text-[#93C5FD] transition-colors">
             Create a free account →
           </Link>
         </p>

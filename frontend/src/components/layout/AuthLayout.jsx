@@ -12,7 +12,7 @@ const features = [
 export default function AuthLayout({ children, title, subtitle }) {
   return (
     <div className="min-h-svh flex">
-      {/* ── Left Panel: Deep Navy ── */}
+      {/* ── Left Panel: Deep Navy (always dark, no changes needed) ── */}
       <div className="hidden lg:flex lg:w-[52%] bg-navy-dark p-10 xl:p-14 flex-col justify-between relative overflow-hidden">
         {/* Ambient orbs */}
         <div className="absolute inset-0 pointer-events-none">
@@ -61,13 +61,13 @@ export default function AuthLayout({ children, title, subtitle }) {
         </div>
       </div>
 
-      {/* ── Right Panel: Warm Cream ── */}
-      <div className="flex-1 flex items-center justify-center p-6 sm:p-10 bg-background mesh-bg relative">
+      {/* ── Right Panel: Warm Cream (Light) / Deep Navy (Dark) ── */}
+      <div className="flex-1 flex items-center justify-center p-6 sm:p-10 bg-background dark:bg-[#0D1117] mesh-bg relative transition-colors duration-300">
         <div className="absolute inset-0 dot-grid opacity-15 pointer-events-none" />
 
         {/* Subtle orbs */}
-        <div className="absolute top-0 right-0 w-64 h-64 bg-bronze/5 rounded-full blur-[80px] pointer-events-none" />
-        <div className="absolute bottom-0 left-0 w-48 h-48 bg-navy/4 rounded-full blur-[60px] pointer-events-none" />
+        <div className="absolute top-0 right-0 w-64 h-64 bg-bronze/5 dark:bg-blue-500/5 rounded-full blur-[80px] pointer-events-none" />
+        <div className="absolute bottom-0 left-0 w-48 h-48 bg-navy/4 dark:bg-indigo-500/5 rounded-full blur-[60px] pointer-events-none" />
 
         <div className="w-full max-w-[420px] relative z-10">
           {/* Mobile logo */}
@@ -76,15 +76,15 @@ export default function AuthLayout({ children, title, subtitle }) {
           </div>
 
           {/* Form card */}
-          <div className="gradient-border rounded-3xl p-8 sm:p-10 shadow-soft bg-white dark:bg-gray-900">
+          <div className="gradient-border rounded-3xl p-8 sm:p-10 shadow-soft bg-white dark:bg-[#1C2333] dark:shadow-[0_20px_60px_-12px_rgba(0,0,0,0.6),0_0_0_1px_rgba(255,255,255,0.05)]">
             <div className="mb-7">
-              <h1 className="text-2xl sm:text-[28px] font-extrabold text-navy dark:text-gray-100 tracking-tight">{title}</h1>
-              <p className="text-muted dark:text-gray-400 mt-2 text-[14px] leading-relaxed">{subtitle}</p>
+              <h1 className="text-2xl sm:text-[28px] font-extrabold text-navy dark:text-[#C8D6F0] tracking-tight">{title}</h1>
+              <p className="text-muted dark:text-[#8B9DC3] mt-2 text-[14px] leading-relaxed">{subtitle}</p>
             </div>
             {children}
           </div>
 
-          <p className="text-center text-[11px] text-muted/60 dark:text-gray-500 mt-6 font-medium">
+          <p className="text-center text-[11px] text-muted/60 dark:text-[#6B7FA8] mt-6 font-medium">
             Secure · Private · No subscription required
           </p>
         </div>

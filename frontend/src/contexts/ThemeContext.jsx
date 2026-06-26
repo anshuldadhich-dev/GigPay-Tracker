@@ -4,34 +4,21 @@ const ThemeContext = createContext(null)
 
 const STORAGE_KEY = 'gigpay-theme'
 
-function getSystemTheme() {
-  if (typeof window === 'undefined') return 'light'
-  return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
-}
-
 function getStoredTheme() {
   try {
     const stored = localStorage.getItem(STORAGE_KEY)
-    if (stored === 'dark' || stored === 'light' || stored === 'system') return stored
+    if (stored === 'dark' || stored === 'light') return stored
   } catch { /* localStorage blocked */ }
-  return 'system'
-}
-
-function resolveTheme(mode) {
-  if (mode === 'system') return getSystemTheme()
-  return mode
+  return 'light' // default is always light, no system mode
 }
 
 export function ThemeProvider({ children }) {
   const [mode, setMode] = useState(getStoredTheme)
-  const [resolved, setResolved] = useState(() => resolveTheme(getStoredTheme()))
 
   // Apply .dark class to <html>
   const applyTheme = useCallback((newMode) => {
-    const actual = resolveTheme(newMode)
-    setResolved(actual)
     const root = document.documentElement
-    if (actual === 'dark') {
+    if (newMode === 'dark') {
       root.classList.add('dark')
     } else {
       root.classList.remove('dark')
@@ -43,39 +30,20 @@ export function ThemeProvider({ children }) {
     applyTheme(mode)
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
-  // Listen for system theme changes when in 'system' mode
-  useEffect(() => {
-    if (mode !== 'system') return
-
-    const mq = window.matchMedia('(prefers-color-scheme: dark)')
-    const handler = () => {
-      const actual = getSystemTheme()
-      setResolved(actual)
-      const root = document.documentElement
-      if (actual === 'dark') {
-        root.classList.add('dark')
-      } else {
-        root.classList.remove('dark')
-      }
-    }
-    mq.addEventListener('change', handler)
-    return () => mq.removeEventListener('change', handler)
-  }, [mode])
-
   const setTheme = useCallback((newMode) => {
     setMode(newMode)
     try { localStorage.setItem(STORAGE_KEY, newMode) } catch {}
     applyTheme(newMode)
   }, [applyTheme])
 
+  // Simple toggle: light ↔ dark only
   const toggleTheme = useCallback(() => {
-    // Cycle: light → dark → system → light
-    const next = mode === 'light' ? 'dark' : mode === 'dark' ? 'system' : 'light'
+    const next = mode === 'dark' ? 'light' : 'dark'
     setTheme(next)
   }, [mode, setTheme])
 
-  // Derive boolean for simple toggle UIs
-  const isDark = resolved === 'dark'
+  const isDark = mode === 'dark'
+  const resolved = mode // resolved === mode since no system mode
 
   return (
     <ThemeContext.Provider value={{ mode, resolved, isDark, setTheme, toggleTheme }}>

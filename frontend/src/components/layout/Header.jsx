@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Menu, Sun, Moon, Monitor } from 'lucide-react'
+import { Menu, Sun, Moon } from 'lucide-react'
 import { useNavigate, useLocation } from 'react-router-dom'
 import SearchBar from '../ui/SearchBar'
 import GigTrackLogo from '../ui/GigTrackLogo'
@@ -23,17 +23,17 @@ export default function Header({ onMenuClick }) {
   }
 
   return (
-    <header className="sticky top-0 z-30 glass border-b border-border/50 px-4 sm:px-6 lg:px-8 py-3">
+    <header className="sticky top-0 z-30 glass dark:glass border-b border-border/50 dark:border-[#1F2A40] px-4 sm:px-6 lg:px-8 py-3 transition-colors duration-300">
       <div className="flex items-center justify-between gap-3">
         {/* Left: Hamburger + Mobile Logo */}
         <div className="flex items-center gap-3 min-w-0">
           <button
             type="button"
             onClick={onMenuClick}
-            className="lg:hidden p-2.5 rounded-xl bg-white dark:bg-gray-800 border border-border/60 dark:border-gray-700 hover:border-navy/20 dark:hover:border-gray-500 hover:shadow-sm transition-all btn-press shrink-0"
+            className="lg:hidden p-2.5 rounded-xl bg-white dark:bg-[#1C2333] border border-border/60 dark:border-[#2A3650] hover:border-navy/20 dark:hover:border-[#374B6E] hover:shadow-sm dark:hover:shadow-[0_2px_8px_rgba(0,0,0,0.4)] transition-all btn-press shrink-0"
             aria-label="Open menu"
           >
-            <Menu className="w-5 h-5 text-navy" />
+            <Menu className="w-5 h-5 text-navy dark:text-[#8B9DC3]" />
           </button>
           <div className="lg:hidden shrink-0">
             <GigTrackLogo size="sm" showWordmark={false} />
@@ -55,14 +55,12 @@ export default function Header({ onMenuClick }) {
           <button
             type="button"
             onClick={toggleTheme}
-            className="p-2.5 rounded-xl bg-white dark:bg-gray-800 border border-border/60 dark:border-gray-700 hover:border-navy/20 dark:hover:border-gray-600 hover:shadow-sm transition-all btn-press shrink-0"
-            aria-label={`Theme: ${mode}`}
-            title={`Theme: ${mode} (click to cycle)`}
+            className="p-2.5 rounded-xl bg-white dark:bg-[#1C2333] border border-border/60 dark:border-[#2A3650] hover:border-navy/20 dark:hover:border-[#374B6E] hover:shadow-sm dark:hover:shadow-[0_2px_8px_rgba(0,0,0,0.4)] transition-all btn-press shrink-0"
+            aria-label={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
+            title={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
           >
-            {mode === 'dark' ? (
-              <Moon className="w-4 h-4 text-indigo-400" />
-            ) : mode === 'system' ? (
-              <Monitor className="w-4 h-4 text-muted dark:text-gray-400" />
+            {isDark ? (
+              <Moon className="w-4 h-4 text-[#6EA8FE]" />
             ) : (
               <Sun className="w-4 h-4 text-gold" />
             )}
@@ -71,12 +69,12 @@ export default function Header({ onMenuClick }) {
           <NotificationPanel />
 
           <div
-            className="flex items-center gap-2.5 px-2 py-1.5 rounded-xl hover:bg-navy/[0.04] transition-colors cursor-pointer"
+            className="flex items-center gap-2.5 px-2 py-1.5 rounded-xl hover:bg-navy/[0.04] dark:hover:bg-[#1C2333] transition-colors cursor-pointer"
             onClick={() => navigate('/settings?tab=profile')}
           >
             <div className="text-right hidden lg:block">
-              <p className="text-[13px] font-bold text-navy leading-none">{user?.name || 'Rider'}</p>
-              <p className="text-[10px] text-muted font-semibold mt-0.5 tracking-wide">Gig Rider</p>
+              <p className="text-[13px] font-bold text-navy dark:text-[#C8D6F0] leading-none">{user?.name || 'Rider'}</p>
+              <p className="text-[10px] text-muted dark:text-[#6B7FA8] font-semibold mt-0.5 tracking-wide">Gig Rider</p>
             </div>
             <UserAvatar size="sm" variant="light" />
           </div>

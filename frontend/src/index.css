@@ -19,7 +19,7 @@
   --color-gold-light:   #E3BC8A;
   --color-gold-dark:    #C08845;
 
-  /* ── Semantic Aliases (replaces old primary/secondary/accent) ── */
+  /* ── Semantic Aliases ── */
   --color-primary:      #082B6B;
   --color-primary-dark: #061B45;
   --color-primary-light:#2455B5;
@@ -30,12 +30,23 @@
   --color-accent-dark:  #B07255;
   --color-accent-light: #D9A48E;
 
-  /* ── Surface & Text ── */
+  /* ── Surface & Text (light mode defaults) ── */
   --color-background:   #F7F3EF;
   --color-surface:      #FFFFFF;
   --color-card:         #FFFFFF;
   --color-muted:        #6B7280;
   --color-border:       #E5DDD5;
+
+  /* Dark-mode surface tokens (used in JS classes directly) */
+  --color-dm-bg:        #0D1117;
+  --color-dm-surface:   #161B27;
+  --color-dm-card:      #1C2333;
+  --color-dm-elevated:  #21293D;
+  --color-dm-border:    #2A3650;
+  --color-dm-border-subtle: #1F2A40;
+  --color-dm-muted:     #8B9DC3;
+  --color-dm-text:      #E2E8F8;
+  --color-dm-text-dim:  #6B7FA8;
 
   /* ── Typography ── */
   --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
@@ -63,6 +74,7 @@
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     letter-spacing: -0.01em;
+    transition: background-color 0.3s ease, color 0.3s ease;
   }
 
   #root { min-height: 100svh; }
@@ -425,101 +437,133 @@
   to   { transform: rotate(360deg); }
 }
 
+
 /* ═══════════════════════════════════════════════════════════════════════════════
-   DARK MODE — CSS Custom Property Overrides
+   DARK MODE — Professional Design System
+   Deep navy-indigo palette, not generic gray
    ═══════════════════════════════════════════════════════════════════════════════ */
+
 .dark {
-  /* ── Surface & Background ── */
-  --color-background:   #0B1121;
-  --color-surface:      #1E293B;
-  --color-card:         #1E293B;
-  --color-muted:        #94A3B8;
-  --color-border:       #334155;
+  color-scheme: dark;
 
-  /* ── Brand Colors (toned down for dark) ── */
-  --color-primary:      #93C5FD;
-  --color-primary-dark: #BFDBFE;
-  --color-primary-light:#60A5FA;
-  --color-secondary:    #60A5FA;
-  --color-secondary-light: #93C5FD;
-  --color-secondary-dark:  #3B82F6;
-  --color-accent:       #D9A48E;
-  --color-accent-dark:  #C98D73;
-  --color-accent-light: #E3BC8A;
-  --color-navy:         #93C5FD;
-  --color-navy-dark:    #BFDBFE;
-  --color-navy-light:   #60A5FA;
-  --color-royal:        #60A5FA;
-  --color-royal-light:  #93C5FD;
-  --color-royal-dark:   #3B82F6;
-  --color-bronze:       #D9A48E;
-  --color-bronze-light: #E3BC8A;
-  --color-bronze-dark:  #C98D73;
-  --color-gold:         #E3BC8A;
-  --color-gold-light:   #F0D4A0;
-  --color-gold-dark:    #D9A48E;
+  /* ── Core Backgrounds ── */
+  --color-background:   #0D1117;   /* deepest bg — page canvas */
+  --color-surface:      #161B27;   /* panels, sidebar bg */
+  --color-card:         #1C2333;   /* cards, elevated sections */
+  --color-muted:        #8B9DC3;   /* secondary text */
+  --color-border:       #2A3650;   /* dividers, input borders */
 
-  /* ── Shadows (dark-adapted) ── */
-  --shadow-xs:      0 1px 2px rgba(0, 0, 0, 0.3);
-  --shadow-card:    0 0 0 1px rgba(255, 255, 255, 0.05), 0 2px 8px rgba(0, 0, 0, 0.3), 0 12px 32px -12px rgba(0, 0, 0, 0.4);
-  --shadow-soft:    0 12px 32px -8px rgba(0, 0, 0, 0.4), 0 4px 12px -2px rgba(0, 0, 0, 0.3);
-  --shadow-navy:    0 8px 24px -6px rgba(59, 130, 246, 0.2);
-  --shadow-bronze:  0 8px 24px -6px rgba(217, 164, 142, 0.2);
-  --shadow-royal:   0 8px 24px -6px rgba(96, 165, 250, 0.18);
-  --shadow-glow-teal:   0 8px 24px -6px rgba(96, 165, 250, 0.18);
-  --shadow-glow-orange: 0 8px 24px -6px rgba(217, 164, 142, 0.2);
-  --shadow-glow-blue:   0 8px 24px -6px rgba(59, 130, 246, 0.2);
+  /* ── Brand Colors (luminous for dark bg) ── */
+  --color-primary:      #6EA8FE;
+  --color-primary-dark: #93C5FD;
+  --color-primary-light:#4A90E8;
+  --color-secondary:    #5B9BF8;
+  --color-secondary-light: #7DB8FF;
+  --color-secondary-dark:  #3B7DE8;
+  --color-accent:       #E8A87C;
+  --color-accent-dark:  #D4865A;
+  --color-accent-light: #F5C4A0;
+  --color-navy:         #6EA8FE;
+  --color-navy-dark:    #93C5FD;
+  --color-navy-light:   #4A90E8;
+  --color-royal:        #5B9BF8;
+  --color-royal-light:  #7DB8FF;
+  --color-royal-dark:   #3B7DE8;
+  --color-bronze:       #E8A87C;
+  --color-bronze-light: #F5C4A0;
+  --color-bronze-dark:  #D4865A;
+  --color-gold:         #F0C87A;
+  --color-gold-light:   #FFDEA0;
+  --color-gold-dark:    #DBA855;
+
+  /* ── Shadows (richer in dark) ── */
+  --shadow-xs:      0 1px 3px rgba(0, 0, 0, 0.4);
+  --shadow-card:    0 0 0 1px rgba(255, 255, 255, 0.04), 0 4px 16px rgba(0, 0, 0, 0.4), 0 16px 40px -12px rgba(0, 0, 0, 0.5);
+  --shadow-soft:    0 16px 40px -8px rgba(0, 0, 0, 0.5), 0 6px 16px -2px rgba(0, 0, 0, 0.35);
+  --shadow-navy:    0 8px 24px -6px rgba(110, 168, 254, 0.15);
+  --shadow-bronze:  0 8px 24px -6px rgba(232, 168, 124, 0.15);
+  --shadow-royal:   0 8px 24px -6px rgba(91, 155, 248, 0.12);
+  --shadow-glow-teal:   0 8px 24px -6px rgba(91, 155, 248, 0.12);
+  --shadow-glow-orange: 0 8px 24px -6px rgba(232, 168, 124, 0.15);
+  --shadow-glow-blue:   0 8px 24px -6px rgba(110, 168, 254, 0.15);
+}
+
+/* ── Dark body text ── */
+.dark body {
+  background-color: #0D1117;
+  color: #C8D6F0;
 }
 
 /* Dark mode scrollbar */
-.dark ::-webkit-scrollbar-thumb {
-  background: #475569;
-}
-.dark ::-webkit-scrollbar-thumb:hover {
-  background: #64748B;
-}
-.dark * {
-  scrollbar-color: #475569 transparent;
-}
+.dark ::-webkit-scrollbar-thumb { background: #2A3650; }
+.dark ::-webkit-scrollbar-thumb:hover { background: #374B6E; }
+.dark * { scrollbar-color: #2A3650 transparent; }
 
 /* Dark mode skeleton animation */
 .dark .skeleton {
-  background: linear-gradient(90deg, #334155 25%, #475569 50%, #334155 75%);
+  background: linear-gradient(90deg, #1C2333 25%, #21293D 50%, #1C2333 75%);
   background-size: 200% 100%;
 }
 
 /* Dark mode mesh bg */
 .dark .mesh-bg {
   background-image:
-    radial-gradient(ellipse 70% 50% at 0% 0%, rgba(59, 130, 246, 0.06) 0%, transparent 60%),
-    radial-gradient(ellipse 60% 40% at 100% 0%, rgba(217, 164, 142, 0.05) 0%, transparent 50%),
-    radial-gradient(ellipse 50% 50% at 50% 100%, rgba(227, 188, 138, 0.04) 0%, transparent 60%);
+    radial-gradient(ellipse 70% 50% at 0% 0%, rgba(91, 155, 248, 0.07) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 40% at 100% 0%, rgba(232, 168, 124, 0.05) 0%, transparent 50%),
+    radial-gradient(ellipse 50% 50% at 50% 100%, rgba(240, 200, 122, 0.04) 0%, transparent 60%);
 }
 
 .dark .dot-grid {
-  background-image: radial-gradient(circle, #334155 0.7px, transparent 0.7px);
+  background-image: radial-gradient(circle, #1E2940 0.7px, transparent 0.7px);
 }
 
-/* Dark mode glass */
+/* Dark mode glass — uses surface token */
 .dark .glass {
-  background: rgba(15, 23, 42, 0.80);
-  backdrop-filter: blur(20px) saturate(180%);
-  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  background: rgba(22, 27, 39, 0.88);
+  backdrop-filter: blur(20px) saturate(150%);
+  -webkit-backdrop-filter: blur(20px) saturate(150%);
 }
 
 .dark .glass-warm {
-  background: rgba(11, 17, 33, 0.85);
-  backdrop-filter: blur(16px) saturate(160%);
-  -webkit-backdrop-filter: blur(16px) saturate(160%);
+  background: rgba(13, 17, 23, 0.90);
+  backdrop-filter: blur(16px) saturate(140%);
+  -webkit-backdrop-filter: blur(16px) saturate(140%);
 }
 
 /* Dark gradient border */
 .dark .gradient-border {
-  background-color: #1E293B;
+  background-color: #1C2333;
 }
 .dark .gradient-border::before {
   background: linear-gradient(135deg,
-    rgba(217, 164, 142, 0.20),
-    rgba(96, 165, 250, 0.10),
-    rgba(227, 188, 138, 0.15));
+    rgba(232, 168, 124, 0.20),
+    rgba(91, 155, 248, 0.10),
+    rgba(240, 200, 122, 0.12));
+}
+
+/* ── Dark Auth Right Panel fix ── */
+.dark .auth-right-panel {
+  background-color: #0D1117;
+}
+
+/* ── dm-* utility classes for dark mode surface system ── */
+/* These let JSX use clean, token-based class names */
+.dm-bg          { background-color: #0D1117; }
+.dm-surface     { background-color: #161B27; }
+.dm-card        { background-color: #1C2333; }
+.dm-elevated    { background-color: #21293D; }
+.dm-border      { border-color: #2A3650; }
+.dm-border-subtle { border-color: #1F2A40; }
+.dm-text        { color: #C8D6F0; }
+.dm-text-dim    { color: #6B7FA8; }
+.dm-text-muted  { color: #8B9DC3; }
+
+/* Input autofill dark fix */
+.dark input:-webkit-autofill,
+.dark input:-webkit-autofill:hover,
+.dark input:-webkit-autofill:focus {
+  -webkit-box-shadow: 0 0 0 1000px #1C2333 inset !important;
+  -webkit-text-fill-color: #C8D6F0 !important;
+  caret-color: #C8D6F0;
+  border-color: #2A3650 !important;
 }

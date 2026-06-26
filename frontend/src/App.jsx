@@ -29,9 +29,9 @@ function GuestRoute({ children }) {
 // Simple loading spinner for suspense fallback
 function PageLoader() {
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-slate-50 dark:bg-gray-950">
-      <div className="w-10 h-10 border-4 border-secondary/30 border-t-secondary rounded-full animate-spin"></div>
-      <p className="mt-4 text-sm font-semibold text-muted dark:text-gray-400 animate-pulse">Loading...</p>
+    <div className="min-h-screen flex flex-col items-center justify-center bg-background dark:bg-[#0D1117] transition-colors duration-300">
+      <div className="w-10 h-10 border-4 border-secondary/30 dark:border-[#2A3650] border-t-secondary dark:border-t-[#5B9BF8] rounded-full animate-spin"></div>
+      <p className="mt-4 text-sm font-semibold text-muted dark:text-[#8B9DC3] animate-pulse">Loading...</p>
     </div>
   )
 }

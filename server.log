@@ -1,1 +1,10 @@
-Access is denied.
+◇ injected env (11) from .env // tip: ⌘ override existing { override: true }
+[PDF] Using local puppeteer for development environment
+[PDF] Using Chrome at: C:\Program Files\Google\Chrome\Application\chrome.exe
+✅ Loaded Firebase credentials locally from gigpay-tracker-firebase-adminsdk-fbsvc-9976671bca.json
+Server running on port 5000
+ Redis connected
+[Worker] Processing report job #undefined — User 1 for 6/2026
+[Worker] Report #undefined — 5 rides, Gross: Rs.4236, Fuel: Rs.338, Net: Rs.3898, Hours: 0h
+[Worker] PDF generated successfully: D:\GigPay-Tracker\generated-reports\report-1.pdf
+[Worker] Job 7 completed — Report #undefined

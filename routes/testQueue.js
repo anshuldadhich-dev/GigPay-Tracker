@@ -2,12 +2,15 @@ const express = require("express");
 const router = express.Router();
 const reportQueue = require("../jobs/reportQueue");
 
+
+
 router.get("/", async (req, res) => {
   await reportQueue.add("generate-report", {
-    userId: "test-user",
+    userId: 1,
     month: 6,
     year: 2026,
   });
+  
 
   res.json({
     success: true,

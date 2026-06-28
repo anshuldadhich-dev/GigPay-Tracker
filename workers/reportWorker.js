@@ -1,11 +1,9 @@
 const { Worker } = require("bullmq");
 const fs = require("fs");
 const path = require("path");
-const os = require("os");
 const connection = require("../config/redis");
 const prisma = require("../config/db");
 const { generatePDF } = require("../services/pdfService");
-const { sendReportEmail } = require("../services/emailService");
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
@@ -116,25 +114,13 @@ async function fetchTotalWorkingHours(userId, month, year) {
 // ── Job processor ─────────────────────────────────────────────────────────────
 
 async function processReportJob(job) {
-  const { reportJobId, userId, email, name, month, year } = job.data;
+  const { reportJobId, userId, name, month, year } = job.data;
 
   console.log(
     `[Worker] Processing report job #${reportJobId} — User ${userId} for ${month}/${year}`
   );
 
-  // 1. Update status → PROCESSING
-  await prisma.reportJob.update({
-    where: { id: reportJobId },
-    data: { status: "PROCESSING" },
-  });
-
-  // 2. Fetch user (verify user exists)
-  const user = await prisma.user.findUnique({ where: { id: userId } });
-  if (!user) {
-    throw new Error(`User ${userId} not found`);
-  }
-
-  // 3. Fetch all data in parallel
+  // 1. Fetch all data from DB in parallel
   const [monthlySummary, platformSummary, rides, fuelCost, totalWorkingHours] =
     await Promise.all([
       fetchMonthlySummary(userId, month, year),
@@ -152,7 +138,7 @@ async function processReportJob(job) {
       `Net: Rs.${netEarnings}, Hours: ${totalWorkingHours}h`
   );
 
-  // 4. Format ride data for the PDF template
+  // 2. Format ride data for the PDF template
   const formattedRides = rides.map((ride) => ({
     client: ride.platform || "Unknown",
     title: `${ride.pickup} to ${ride.dropoff}`,
@@ -164,8 +150,8 @@ async function processReportJob(job) {
     status: "Completed",
   }));
 
-  // 5. Generate PDF using existing service
-  const pdfBuffer = await generatePDF({
+  // 3. Build report data
+  const reportData = {
     title: "GigPay Tracker Report",
     subtitle: `Monthly report for ${month}/${year}`,
     totalEarnings: `Rs. ${monthlySummary.grossIncome}`,
@@ -179,46 +165,24 @@ async function processReportJob(job) {
     },
     platformSummary,
     jobs: formattedRides,
-  });
+  };
 
-  // 6. Save PDF to temporary file
-  const tmpDir = os.tmpdir();
-  const pdfFileName = `gigpay_report_${userId}_${month}_${year}_${Date.now()}.pdf`;
-  const pdfPath = path.join(tmpDir, pdfFileName);
-  fs.writeFileSync(pdfPath, pdfBuffer);
-  console.log(`[Worker] PDF saved to ${pdfPath}`);
+  // 4. Generate PDF
+  const pdfBuffer = await generatePDF(reportData);
 
-  // 7. Send email with PDF attachment
-  try {
-    await sendReportEmail({
-      to: email,
-      name: name || user.name,
-      month,
-      year,
-      pdfPath,
-    });
-
-    // 8. Success → update status to SENT
-    await prisma.reportJob.update({
-      where: { id: reportJobId },
-      data: {
-        status: "SENT",
-        sentAt: new Date(),
-      },
-    });
-
-    console.log(`[Worker] Report #${reportJobId} sent successfully to ${email}`);
-  } finally {
-    // 9. Cleanup — always delete temp PDF
-    try {
-      if (fs.existsSync(pdfPath)) {
-        fs.unlinkSync(pdfPath);
-        console.log(`[Worker] Temp PDF deleted: ${pdfPath}`);
-      }
-    } catch (cleanupErr) {
-      console.warn(`[Worker] Failed to delete temp PDF: ${cleanupErr.message}`);
-    }
+  // 5. Create output directory if missing
+  const outputDir = path.join(__dirname, "..", "generated-reports");
+  if (!fs.existsSync(outputDir)) {
+    fs.mkdirSync(outputDir, { recursive: true });
+    console.log(`[Worker] Created directory: ${outputDir}`);
   }
+
+  // 6. Save PDF to file
+  const pdfFileName = `report-${userId}.pdf`;
+  const pdfPath = path.join(outputDir, pdfFileName);
+  fs.writeFileSync(pdfPath, pdfBuffer);
+
+  console.log(`[Worker] PDF generated successfully: ${pdfPath}`);
 }
 
 // ── Worker ────────────────────────────────────────────────────────────────────
@@ -234,21 +198,6 @@ worker.on("completed", (job) => {
 
 worker.on("failed", async (job, err) => {
   console.error(`[Worker] Job ${job?.id} failed:`, err.message);
-
-  // Update ReportJob status to FAILED
-  if (job?.data?.reportJobId) {
-    try {
-      await prisma.reportJob.update({
-        where: { id: job.data.reportJobId },
-        data: { status: "FAILED" },
-      });
-    } catch (dbErr) {
-      console.error(
-        `[Worker] Failed to update ReportJob #${job.data.reportJobId} status:`,
-        dbErr.message
-      );
-    }
-  }
 });
 
 worker.on("error", (err) => {
